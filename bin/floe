@@ -17,16 +17,215 @@ else
   puts "floe --configuration #{default_config_file}"
 end
 
-#Rake.application.init('floe')
+Rake.application.init('floe')
 
-#desc "Welcome to Floe!"
-#task :default do
-#  puts "Welcome to Floe!"
-#end
+desc "Welcome to Floe!"
+task :default do
+  puts "Welcome to Floe!"
+end
 
-#desc "Show usage information"
-#task :help do
+desc "Show usage information"
+task :help do
+	puts "no information here..."  
+end
+
+
+$VERBOSE = nil
+
+require 'net/ftp'
+require 'rubygems'
+require 'active_record'
+require 'active_record/fixtures'
+require 'yaml'
+require 'erb'
+require 'php_serialize'
+require 'php_compile'
+require 'rake/testtask'
+require 'ftools'
+
+
+def show_missing_option(option)
+  puts "project option #{option.to_s} not configured. "
+end
+
+def show_missing_resource(path)
+  puts "project resource missing #{path}"
+end
+
+def yaml_parse(path)
+  begin
+    out = YAML::load_file(path)
+  rescue
+    show_missing_resource(path)
+  end
+  out
+end
+
+###############################################################################################
+# set global environment vars for project configuration
+###############################################################################################
+
+$project = ENV['name'] || ENV['project']
+unless $project
+  raise "build process must refer to a global project name [override using ignore=config]"
+end
+
+$path = "/Users/maetl/Sites/" + $project
+$export_path = "/Users/maetl/Code/SVN/projects/" + $project
+$project_config_path = $path + "/dev/config/project.yml"
+$env_config_path = $path + "/dev/config/environment.yml"
+$build_config_path = $path + "/dev/config/build.yml"
+
+$project_config = yaml_parse($project_config_path)
+unless $project_config or ENV['ignore'] == 'config'
+  raise "You need to run $ sudo rake project name=#{$project} to create this project"
+end
+
+$env_config = yaml_parse($env_config_path)
+unless $env_config
+  $env_config = yaml_parse("templates/config/environment.yml")
+end
+
+$build_config = yaml_parse($build_config_path)
+unless $build_config
+  $build_config = yaml_parse("templates/config/build.yml")
+end
+
+###############################################################################################
+# utility methods to manipulate and build various target resources
+###############################################################################################
+
+def tpl_compile(source, target)
+  from = ERB.new(File.read(source))
+  File.open(target, "w") do |to|
+    project = $project_config
+    env = $env_config['local']
+    build = $build_config
+    to.puts from.result(binding)
+  end
+end
+
+def php(target)
+  `php -f #{target}`
+end
+
+def php_eval(code)
+  `php -r '#{code}'`
+end
+
+def php_compile(source, target)
   
-#end
+end
+
+###############################################################################################
+# task actions
+###############################################################################################
+
+desc "ping the project to check its current status"
+task :status do
+  puts "project #{$project} (app version #{$project_config['version'].to_s})"
+  puts "#{$project_config['title']}"
+end
+
+desc "create a new project in the Sites folder"
+task :project => [:local_workspace_install, :local_vhost_create, :local_db_create]
+
+
+desc "create project directory layout"
+task :local_workspace_create do
+  unless Dir.exists?($path)
+    Dir.mkdir $path
+  end
+  for folder in $build_config['workspace']
+    folder = '../' + $project + '/' + folder
+    unless Dir.exists?(folder)
+      puts "creating #{folder}"
+      Dir.mkdir "#{folder}"
+    end
+  end
+end
+
+desc "generates template files for a fresh install"
+task :local_workspace_install => :local_workspace_create do
+  install $build_config['install']['index_tpl'], $path + "/index.php";
+  tpl_compile $build_config['install']['config_tpl'], $path + "/config.php";
+end
+
+desc "installs a new virtual host directive on the localhost"
+task :local_vhost_create do
+  new_host = <<-VIRTUALHOST
+  <VirtualHost #{$project}:80>
+    DocumentRoot /Users/maetl/Sites/#{$project}
+    ServerName #{$project}
+    <Directory \"/Users/maetl/Sites/#{$project}\">
+      AllowOverride All
+      Allow from all
+      Options +Indexes
+    </Directory>
+  </VirtualHost>\n\n
+  VIRTUALHOST
+  File.open("/opt/local/apache2/conf/extra/httpd-vhosts.conf", "a") do |vhosts|
+    vhosts.puts new_host
+  end
+  `niutil -create . /machines/#{$project}`
+  `niutil -createprop . /machines/#{$project} ip_address 127.0.0.1`
+  `niutil -createprop . /machines/#{$project} serves ./local`
+  `apachectl restart`
+end
+
+desc "exports a backup of files from the current workspace"
+task :export do
+  `svn export file://#{$export_path} #{$path}/#{$project_config['version']}`
+end
+
+desc "runs php unit tests for project"
+task :test => [:unit_test, :web_test]
+
+desc "runs bridge to php unit test results"
+task :unit_test do  
+  p PHP.unserialize(`php `)
+end
+
+desc "runs bridge to php web test results"
+task :web_test do  
+  p PHP.unserialize(`php web_tests`)
+end
+
+desc "test of the development tools"
+task :build_test => [:ruby_tools_test]
+
+desc "does a check of the ruby tools"
+Rake::TestTask.new(:ruby_tools_test) do |test|
+  test.pattern = "tests/*_test.rb"
+  test.verbose = true
+  test.warning = true
+end
+
+desc "Create a local MySQL database"
+task :local_db_create do
+  `mysqladmin create #{$project} --default-character-set=utf8`
+end
+
+desc "Remove a local MySQL database"
+task :local_db_drop do
+  `mysqladmin drop #{$project}`
+end
+
+desc "Establish ActiveRecord connection to localhost"
+task :local_db_connect do
+  ActiveRecord::Base.establish_connection($env_config['db']['local'])
+end
+
+desc "deploys the current build to live server"
+task :deploy => :export do
+  live = $env_config['live']['server']
+  Net::FTP.open(live['host']) do |ftp|
+    ftp.login(live['username'], live['password'])
+    ftp.chdir($web_dir)
+    files = ftp.list('*.php')
+    puts files
+  end
+end
+
 
 #Rake.application.top_level
