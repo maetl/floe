@@ -1,3 +1,32 @@
 #!/usr/bin/env ruby
+#
+require 'rubygems'
+require 'commandline'
+require 'rake'
+require 'floe'
 
-puts "Floe is activated"
+
+default_config_format = :yml
+default_config_name = :project
+default_config_file = default_config_name.to_s + "." + default_config_format.to_s
+
+unless File.exists? default_config_file
+  puts "floe -! aborted with no default configuration provided"
+  exit
+else
+  puts "floe --configuration #{default_config_file}"
+end
+
+#Rake.application.init('floe')
+
+#desc "Welcome to Floe!"
+#task :default do
+#  puts "Welcome to Floe!"
+#end
+
+#desc "Show usage information"
+#task :help do
+  
+#end
+
+#Rake.application.top_level

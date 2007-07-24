@@ -1,3 +1,4 @@
 (done) setup required directory structure for gems
 port existing rake tasks to floe task runner
 add framework for testing commands and tasks
+add unit tests for php server package

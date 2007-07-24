@@ -4,15 +4,7 @@ The aim of Floe is to build web applications using the principles of [[http://to
 
 ==== What does Floe do? ====
 
-
-  * Merges Django, Rails, and PHP5 web projects
-  * Provides a task based environment for scripting development tools
+  * Manages web projects using a convenient command interface
+  * Provides a Rake based environment for scripting development tasks
   * Provides a PHP5 architecture for simple web applications
   * Mashes PHP5, Ruby, and Python (and probably Perl soon)
-
-===== Table of Contents =====
-
-  * [[installing|Installing Floe]]
-  * [[reference/commands|Command Reference]]
-  * [[changelog/tests|Command Testing]]
-  * [[changelog/notes|Changes Notes]]
