@@ -11,15 +11,15 @@
  * @package server
  */
 class UriPath {
-	var $_raw;
-	var $_parsed;
-	var $_segments;
-	var $_parameters;
-	var $_resource;
-	var $_identity;
-	var $_extension;
-	var $_query;
-	var $_aspect;
+	private $_raw;
+	private $_parsed;
+	private $_segments;
+	private $_parameters;
+	private $_resource;
+	private $_identity;
+	private $_extension;
+	private $_query;
+	private $_aspect;
 
 	function UriPath($path) {
 		$this->_raw = trim($path);
