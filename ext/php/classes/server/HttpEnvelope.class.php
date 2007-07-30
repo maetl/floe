@@ -3,17 +3,30 @@
  * HTTP protocol components of an active request
  */
 class HttpEnvelope {
-	private headers;
+	private $headers;
 
 	function __construct() {
-		$this->headers = array();
+		if (function_exists('apache_request_headers')) {
+			$this->headers = apache_request_headers();
+		} else {
+			echo "error";
+		}
 	}
-
+	
 	/**
 	 * Returns true if header exists for this request
 	 */
 	function hasHeader($name) {
-		// not implemented
+		return (array_key_exists($name, $this->headers));
+	}
+	
+	/**
+	 * Returns the HTTP header value for given key
+	 */
+	function header($key) {
+		if ($this->hasHeader($key)) {
+			return $this->headers[$key];
+		}
 	}
 	
 	/**
@@ -21,7 +34,7 @@ class HttpEnvelope {
 	 * of key=>value pairs
 	 */
 	function toArray() {
-		// not implemented
+		return $this->headers;
 	}
 	
 	/**

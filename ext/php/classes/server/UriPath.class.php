@@ -1,5 +1,5 @@
 <?php
-// $Id: UriPath.class.php 48 2007-04-30 07:20:21Z maetl_ $
+// $Id$
 /**
  * @package server
  */

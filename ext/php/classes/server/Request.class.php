@@ -4,41 +4,40 @@
  * @package server
  */
 require_once "UriPath.class.php";
+require_once "UserAgent.class.php";
+require_once "HttpEnvelope.class.php";
  
 /**
  * Reads data from an incoming HTTP request.
  *
  * Provides immutable accessors for GET and POST properties 
- * and access to the UriPath from the request
+ * and access to the UriPath and UserAgent for the request instance.
  *
  * @package server
  */ 
 class Request {
-	var $_path;
-	var $_method;
-	var $_get_parameters;
-	var $_post_parameters;
-	var $_cookie_parameters;
-	var $_uploaded_files;
-	var $_http_headers;
+	var $uri;
+	private $method;
+	private $envelope;
 
-	function Request($path=false, $method=false) {
-		if (!$path) $path = $_SERVER['REQUEST_URI'];
-		$this->_path = new UriPath($path);
-		if (!$method) {
-			$this->_method = $_SERVER['REQUEST_METHOD'];
-		} else {
-			$this->_method = $method;
-		}
-		$this->_get_parameters = array();
-		$this->_post_parameters = array();
-		$this->_cookie_parameters = array();
-		$this->_uploaded_files = array();
-		$this->_http_headers = array();
-		switch($this->_method) {
-			case 'GET': $this->addGetParameters(); break;
-			case 'POST': $this->addPostParameters(); break;
-		}
+	function __construct($headers=false) {
+		$this->envelope = ($headers) ? $headers : new HttpEnvelope();
+		$this->uri = new UriPath($_SERVER['REQUEST_URI']);
+		$this->method = $_SERVER['REQUEST_METHOD'];
+	}
+	
+	/**
+	 * represents this request in string format
+	 */
+	function __toString() {
+		return $this->method . " ". $this->uri->getUrl();
+	}
+	
+	/**
+	 * access GET or POST parameters as instance properties
+	 */
+	public function __get($param) {
+		return ($this->isPost()) ? $this->postParameter($param) : $this->getParameter($param);
 	}
 	
 	/**
@@ -96,52 +95,68 @@ class Request {
 		return stripslashes(htmlspecialchars($value));
 	}
 	
-	/** @private */
-	function addGetParameters() {
-		foreach($_GET as $key=>$value) {
-			$this->_get_parameters[$key] = $this->cleanValue($value);
-		}
-	}
-
-	/** @private */
-	function addPostParameters() {
-		foreach($_POST as $key=>$value) {
-			$this->_post_parameters[$key] = $this->cleanValue($value);
-		}
-		foreach($_FILES as $name=>$file) {
-			$this->_submitted[$name] = $file;
+	/**
+	 * Accessor for MIME attachment
+	 */
+	function getAttachment($attachment) {
+		if (isset($_FILE[$attachment])) {
+			return $_FILE[$attachment];
 		}
 	}
 	
-	/** @private */
-	function addCookieParameter($key, $value) {
-		$this->_cookie_parameters[$key] = $value;
+	/**
+	 * Accessor for HTTP GET parameters
+	 */
+	function getParameter($parameter) {
+		if (isset($_GET[$parameter])) {
+			return $this->cleanValue($_GET[$parameter]);
+		}
 	}
 	
-	function getCookies() {
-	}
-
-	function getPosted() {
-		return $this->_post_parameters;
-	}
-
-	function getUploadedFiles() {
-	
+	/**
+	 * Accessor for HTTP POST parameters
+	 */
+	function postParameter($parameter) {
+		if (isset($_POST[$parameter])) {
+			return $this->cleanValue($_POST[$parameter]);
+		}
 	}
 	
-	function getUri() {
-		return $this->_path;
-	}
-	
-	function getParameter($key) {
-		if (isset($this->_post_parameters[$key])) {
-			return $this->_post_parameters[$key];
-		} elseif (isset($this->_get_parameters[$key])) {
-			return $this->_get_parameters[$key];
+	/**
+	 * Accessor for the raw body of the HTTP request
+	 */
+	function entityBody() {
+		$data = "";
+		if ($this->envelope->header('Content-Type') == 'application/x-www-form-urlencoded') {
+			$length = count($_POST); $current = 0;
+			foreach($_POST as $key => $value) {
+				$current++;
+				$data .= $key . "=" . rawurlencode($value);
+				$data .= ($current != $length) ? "&" : "";
+			}
 		} else {
-			return null;
+			$in = fopen("php://input", "r");
+			while ($chunk = fread($in, 1024)) $data .= $chunk;
 		}
+		return $data;
 	}
+	
+	function browser() {
+		return new UserAgent($this->envelope->header("User-Agent"));
+	}
+	
+	function language() {
+		return $this->envelope->header("Accept-Language");
+	}
+
+	function referer() {
+		return $this->envelope->header("Referer");
+	}
+	
+	function charset() {
+		return $this->envelope->header("Accept-Charset");
+	}
+	
 	
 }
 

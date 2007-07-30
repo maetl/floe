@@ -4,6 +4,10 @@
  */
 class Floe { 
 
+	static function inCli() {
+		return (php_sapi_name() == 'cli');
+	}
+
 	static function namespace($default="core") {
 		return $default;
 	}
