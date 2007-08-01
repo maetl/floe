@@ -5,5 +5,7 @@ add framework for testing commands and tasks
 convert php server Request to read-only
 cleanup absolute path links from directory references
 add documentation for php server and doc generation task
-add server tests for php request and response streams
+(done) add server tests for php request and response streams
 create configure task and wrapper to options file in HOME dir
+add server tests for parameter dispatch and URI controller binding
+add install and configure commands

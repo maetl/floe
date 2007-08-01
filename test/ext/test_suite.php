@@ -6,7 +6,6 @@ require_once "simpletest/shell_tester.php";
 require_once 'simpletest/reporter.php';
 require_once 'simpletest/collector.php';
 
-print_r($_SERVER['ARGV']);
 
 $test = new TestSuite('floe.ext.php.tests');
 $fileRole = new SimplePatternCollector('/test\.php$/');
