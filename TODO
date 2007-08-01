@@ -1,6 +1,6 @@
 (done) setup required directory structure for gems
 (done) port existing rake tasks to floe task runner
-add framework for testing commands and tasks
+(done) add framework for testing commands and tasks
 (done) add unit tests for php server package
 convert php server Request to read-only
 cleanup absolute path links from directory references
