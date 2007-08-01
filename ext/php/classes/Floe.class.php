@@ -16,6 +16,14 @@ class Floe {
 		return $default;
 	}
 	
+	static function defaultTestUri() {
+		return "http://floe/ext/php/tests/web/";
+	}
+
+	static function defaultTestDb() {
+		return array("localhost", "floe_test", "default", "launch");
+	}
+	
 	static function import() {
 		
 	}

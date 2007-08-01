@@ -1,13 +1,12 @@
 <?php
 require_once "simpletest/autorun.php";
-require_once "simpletest/mock_objects.php";
-
+require_once "Floe.class.php";
 require_once "server/Response.class.php";
 
 class ResponseTest extends UnitTestCase {
 	
 	function assertResponseHeader($header) {
-		$this->assertTrue(array_key_exists($header, apache_response_headers()));
+		if (!Floe::inCli()) $this->assertTrue(array_key_exists($header, apache_response_headers()));
 	}
 	
 	function testHeadersAlreadySent() {
