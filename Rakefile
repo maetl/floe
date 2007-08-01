@@ -17,7 +17,7 @@ spec = Gem::Specification.new do |s|
     s.author    =   "Mark Rickerby"
     s.email     =   "coretxt @nospan@ gmail.com"
     s.summary   =   "minimalist tool that flattens the effort of building web applications"
-    s.files     =   FileList['lib/*.rb','lib/floe/*.rb','test/*'].to_a
+    s.files     =   FileList['lib/*.rb','ext/*','test/*'].to_a
     s.require_path  =   "lib"
     s.autorequire   =   "project"
     s.test_files = Dir.glob('test/*.rb')
@@ -27,7 +27,7 @@ spec = Gem::Specification.new do |s|
     s.extra_rdoc_files = ["README"]
     s.add_dependency("rake", ">=0.7.3")
     s.add_dependency("commandline",">=0.7.10")
-    s.add_dependency("activrecord",">=1.15.3")
+    s.add_dependency("activerecord",">=1.15.3")
     s.requirements << "MySQL 5.0 or greater"
     s.requirements << "PHP 5.2 or greater"
     s.requirements << "simpletest installed on PHP include_path"
@@ -47,7 +47,7 @@ end
 desc "run all ruby level tests"
 Rake::TestTask.new do |t|
    t.libs << 'test'
-   t.test_files = FileList['test/*.rb']
+   t.test_files = FileList['test/lib/*_test.rb']
    t.verbose = true
    t.warning = true
 end
