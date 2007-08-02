@@ -187,7 +187,7 @@ require_once 'MysqlIterator.class.php';
 		}
 		$sql .= ' VALUES (';
 		for($i=0;$i<$colnum;$i++) {
-			$sql .= '"'.mysql_real_escape_string($values[$i]).'"';
+			$sql .= '"'.mysql_real_escape_string((string)$values[$i]).'"';
 			$i==($colnum-1) ? $sql .= ')' : $sql .= ',';
 		}
 		$this->_connection->execute($sql);
@@ -300,7 +300,7 @@ require_once 'MysqlIterator.class.php';
 				case 'number':
 					return "INT(11)";
 				case 'float':
-					return "FLOAT(10,10) ZEROFILL";
+					return "DOUBLE(16,8) ZEROFILL";
 				case 'text':
 					return"TEXT NOT NULL default ''";
 				case 'date': 
