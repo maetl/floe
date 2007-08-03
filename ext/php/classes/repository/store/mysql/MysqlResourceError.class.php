@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package repository
+ * @subpackage store
+ */
 
 class ResourceError extends Exception {
 

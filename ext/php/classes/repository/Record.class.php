@@ -57,6 +57,10 @@ class Record {
 		$this->_record->$name = null;
 		$this->_fields[$name] = $type;
 	}
+	
+	function properties() {
+		return $this->_fields;
+	}
 
 	function rule($field, $rule) {
 		if (!isset($this->_rules[$field])) {
@@ -164,6 +168,7 @@ class Record {
 				return true;
 			} else {
 				$this->_storage->insert($this->_table, $record);
+				$this->_record->id = $this->_storage->insertId();
 				return true;
 			}
 		} else {

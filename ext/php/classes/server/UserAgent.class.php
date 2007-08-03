@@ -1,9 +1,14 @@
 <?php
 // $Id$
+/**
+ * @package server
+ */
 
 /**
  * Provides access to the capabilities of the browser
  * making the request.
+ * 
+ * @package server
  */
 class UserAgent {
 	var $properties;

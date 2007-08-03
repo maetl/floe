@@ -13,17 +13,15 @@
 //
 /**
  * @package repository
- * @subpackage storage
- * @subpackage db
+ * @subpackage store
  */
 require_once 'MysqlIterator.class.php';
 
 /**
- * <p>Gateway for managing common database operations.</p>
+ * Gateway for managing common database operations.
  *
  * @package repository
- * @subpackage storage
- * @subpackage db
+ * @subpackage store
  */
  class MysqlAdaptor {
 
@@ -40,15 +38,14 @@ require_once 'MysqlIterator.class.php';
 	}
 	
 	/**
-	 * @deprecated
-	 * @todo remove
+	 * Returns the last insert id.
 	 */
 	function insertId() {
 		return mysql_insert_id();
 	}
 	
 	/**
-	 * <p>Returns an object as the result of a select query.</p>
+	 * Returns an object as the result of a select query.
 	 * 
 	 * @return stdClass
 	 */
@@ -77,7 +74,7 @@ require_once 'MysqlIterator.class.php';
 	}
 	
 	/**
-	 * <p>Returns a Record as the result of a select query.</p>
+	 * Returns a Record as the result of a select query.
 	 * 
 	 * @return stdClass
 	 */
@@ -86,7 +83,7 @@ require_once 'MysqlIterator.class.php';
 	}
 	
 	/**
-	 * <p>Returns an array of entity objects as the result of a select query.</p>
+	 * Returns an array of entity objects as the result of a select query.
 	 *
 	 * @return array<Record>
 	 */
@@ -100,9 +97,9 @@ require_once 'MysqlIterator.class.php';
 	}
 
 	/**
-	 * <p>Returns an array of objects as the result of a select query.</p>
+	 * Returns an array of objects as the result of a select query.
 	 *
-	 * @return array<Record>
+	 * @return array<stdClass>
 	 */
 	function getObjects() {
 		$i=0; $list = array();
@@ -113,7 +110,7 @@ require_once 'MysqlIterator.class.php';
 	}
 	
 	/**
-	 * <p>Returns an iterator for traversing the result of a select query.</p>
+	 * Returns an iterator for traversing the result of a select query.
 	 *
 	 * @return Iterator<stdClass>
 	 */
@@ -168,9 +165,8 @@ require_once 'MysqlIterator.class.php';
 	 }
 	
 	/**
-	 * <p>Inserts a row into specified table.</p>
+	 * Inserts a row into specified table.
 	 * 
-	 * @deprecated in favor of create
 	 * @param $table string name of the table to insert into
 	 * @param $columns associative array of column=>value pairs to create
 	 */
@@ -194,7 +190,7 @@ require_once 'MysqlIterator.class.php';
 	}
 	
 	/**
-	 * Create a new record
+	 * Creates a new row in specified table. Synonym for insert.
 	 */
 	function create($table, $columns) {
 		$this->insert($table, $columns);
@@ -289,7 +285,7 @@ require_once 'MysqlIterator.class.php';
 	 }
 	 
 	 /**
-	  * <p>Gets native SQL definition for a column type.</p>
+	  * Gets native SQL definition for a column type.
 	  *
 	  * @return string SQL definition
 	  */

@@ -2,8 +2,7 @@
 // $Id: MysqlConnection.class.php 53 2007-05-06 09:54:15Z maetl_ $
 /**
  * @package repository
- * @subpackage storage
- * @subpackage db
+ * @subpackage store
  */
 require_once 'MysqlResourceError.class.php';
  
@@ -11,7 +10,7 @@ require_once 'MysqlResourceError.class.php';
  * <p>An active connection to a MySql database server.</p>
  *
  * @subpackage storage
- * @subpackage db
+ * @subpackage store
  */
 class MysqlConnection {
 	

@@ -15,12 +15,12 @@ spec = Gem::Specification.new do |s|
     s.name      =   "floe"
     s.version   =   "0.0.1"
     s.author    =   "Mark Rickerby"
-    s.email     =   "coretxt @nospan@ gmail.com"
+    s.email     =   "maetl[at]coretxt.net.nz"
     s.summary   =   "minimalist tool that flattens the effort of building web applications"
-    s.files     =   FileList['lib/*.rb','ext/*','test/*'].to_a
+    s.files     =   FileList['lib/*.rb','ext/**/**','test/**/**'].to_a
     s.require_path  =   "lib"
     s.autorequire   =   "project"
-    s.test_files = Dir.glob('test/*.rb')
+    s.test_files = Dir.glob('test/lib/*.rb')
     s.has_rdoc  =   true
     s.bindir = 'bin'
     s.executables << 'floe'
@@ -34,7 +34,8 @@ spec = Gem::Specification.new do |s|
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
-    pkg.need_tar = true
+    pkg.need_tar_gz = true
+    pkg.need_zip = true
 end
 
 desc "build the gem package to latest specification"

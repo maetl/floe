@@ -2,8 +2,12 @@
 // $Id: MysqlIterator.class.php 36 2007-04-01 04:12:37Z maetl_ $
 /**
  * @package repository
- * @subpackage storage
- * @subpackage db
+ * @subpackage store
+ */
+
+/**
+ * @package repository
+ * @subpackage store
  */
 class MysqlIterator {
 

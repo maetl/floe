@@ -34,7 +34,13 @@ class Request {
 	}
 	
 	/**
-	 * access GET or POST parameters as instance properties
+	 * Shortcut to access GET or POST parameters as instance properties.
+	 * 
+	 * Eg: for <b>http://example.org/?keyName=value</b>
+	 * <code>
+	 * $request->keyName // is the same as
+	 * $request->getParameter('keyName');
+	 * </code>
 	 */
 	public function __get($param) {
 		return ($this->isPost()) ? $this->postParameter($param) : $this->getParameter($param);
@@ -49,14 +55,19 @@ class Request {
 	}
 	
 	/**
-	 * Returns true if request is a non-destructive method (GET or HEAD)
+	 * Returns true if request is a non-destructive method that can
+	 * be called repeatedly without affecting the server state. 
+	 * 
+	 * Usually a GET or HEAD method.
 	 */
 	function isIdempotent() {
-		return in_array(array('get','head'), $this->method);
+		return in_array(array('get','head','options'), $this->method);
 	}
 	
 	/**
 	 * Returns true if request method is GET
+	 * 
+	 * @return boolean
 	 */
 	function isGet() {
 		return ($this->method == 'GET');
@@ -64,6 +75,8 @@ class Request {
 
 	/**
 	 * Returns true if request method is POST
+	 * 
+	 * @return boolean
 	 */
 	function isPost() {
 		return ($this->method == 'POST');
@@ -71,6 +84,8 @@ class Request {
 
 	/**
 	 * Returns true if request method is PUT
+	 * 
+	 * @return boolean
 	 */	
 	function isPut() {
 		return ($this->method == 'PUT');
@@ -78,6 +93,8 @@ class Request {
 
 	/**
 	 * Returns true if request method is DELETE
+	 * 
+	 * @return boolean
 	 */
 	function isDelete() {
 		return ($this->method == 'DELETE');
@@ -85,20 +102,37 @@ class Request {
 	
 	/**
 	 * Returns true if request method is HEAD
+	 * 
+	 * @return boolean
 	 */
 	function isHead() {
 		return ($this->method == 'HEAD');
 	}	
 	
-	/** @private */
-	function cleanValue($value) {
+	/**
+	 * Cleans an input value.
+	 * 
+	 * Uses htmlspecialchars by default.
+	 * 
+	 * @todo pluggable input filtering
+	 * @return string
+	 */
+	private function cleanValue($value) {
 		return stripslashes(htmlspecialchars($value));
 	}
 	
 	/**
 	 * Accessor for MIME attachment
+	 * 
+	 * <code>
+	 * <input type="file" name="docUpload" />
+	 * </code>
+	 * 
+	 * <code>
+	 * $file = $request->attachment('docUpload');
+	 * </code>
 	 */
-	function getAttachment($attachment) {
+	function attachment($attachment) {
 		if (isset($_FILE[$attachment])) {
 			return $_FILE[$attachment];
 		}
@@ -106,6 +140,8 @@ class Request {
 	
 	/**
 	 * Accessor for HTTP GET parameters
+	 * 
+	 * @return mixed
 	 */
 	function getParameter($parameter) {
 		if (isset($_GET[$parameter])) {
@@ -115,6 +151,8 @@ class Request {
 	
 	/**
 	 * Accessor for HTTP POST parameters
+	 * 
+	 * @return mixed
 	 */
 	function postParameter($parameter) {
 		if (isset($_POST[$parameter])) {
@@ -124,6 +162,8 @@ class Request {
 	
 	/**
 	 * Accessor for the raw body of the HTTP request
+	 * 
+	 * @return string
 	 */
 	function entityBody() {
 		$data = "";
@@ -141,18 +181,38 @@ class Request {
 		return $data;
 	}
 	
+	/**
+	 * Client browser making this request.
+	 * 
+	 * @return UserAgent
+	 */
 	function browser() {
 		return new UserAgent($this->envelope->header("User-Agent"));
 	}
 	
+	/**
+	 * Language accepted by the client
+	 * 
+	 * @return string
+	 */
 	function language() {
 		return $this->envelope->header("Accept-Language");
 	}
 
+	/**
+	 * HTTP referer of the current request
+	 * 
+	 * @return string
+	 */
 	function referer() {
 		return $this->envelope->header("Referer");
 	}
 	
+	/**
+	 * Character encodings accepted by the client
+	 * 
+	 * @return string
+	 */
 	function charset() {
 		return $this->envelope->header("Accept-Charset");
 	}

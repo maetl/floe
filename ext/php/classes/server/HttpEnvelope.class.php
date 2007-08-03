@@ -1,6 +1,12 @@
 <?php
 /**
+ * @package server
+ */
+
+/**
  * HTTP protocol components of an active request
+ * 
+ * @package server
  */
 class HttpEnvelope {
 	private $headers;
@@ -15,6 +21,8 @@ class HttpEnvelope {
 	
 	/**
 	 * Returns true if header exists for this request
+	 * 
+	 * @return boolean
 	 */
 	function hasHeader($name) {
 		return (array_key_exists($name, $this->headers));
@@ -22,6 +30,8 @@ class HttpEnvelope {
 	
 	/**
 	 * Returns the HTTP header value for given key
+	 * 
+	 * @return string
 	 */
 	function header($key) {
 		if ($this->hasHeader($key)) {
@@ -32,16 +42,24 @@ class HttpEnvelope {
 	/**
 	 * Returns the requst headers as an associative array
 	 * of key=>value pairs
+	 * 
+	 * @return array
 	 */
 	function toArray() {
 		return $this->headers;
 	}
 	
 	/**
-	 * Serialize headers back into the HTTP line oriented syntax
+	 * Serialize headers back into the HTTP line oriented syntax.
+	 * 
+	 * @return string
 	 */
 	function toHttp() {
-		// not implemented
+		$buffer = '';
+		foreach($this->headers as $name => $value) {
+			$buffer .= $name . ": " . $value . "\r\n";
+		}
+		return $buffer;
 	}
 
 }

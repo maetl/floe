@@ -2,6 +2,7 @@
 /**
 * $Id: StorageAdaptor.class.php 44 2007-04-29 12:00:01Z maetl_ $
 * @package repository
+* @subpackage store
 */
 require_once 'repository/store/mysql/MysqlConnection.class.php';
 require_once 'repository/store/mysql/MysqlAdaptor.class.php';
@@ -10,6 +11,7 @@ require_once 'repository/store/mysql/MysqlAdaptor.class.php';
  * A factory for generating instances of storage adaptors
  *
  * @package repository
+ * @subpackage store
  */
 class StorageAdaptor {
 
