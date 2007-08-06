@@ -89,7 +89,7 @@ class Inflect implements Inflections {
 	 * @param $word string
 	 */
 	static function toConstant($word) {
-		return str_replace(" ", "", ucwords(str_replace("_"," ",$word)));
+		return str_replace(" ", "", ucwords(str_replace("_"," ", $word)));
 	}
 
 	/**
@@ -102,17 +102,8 @@ class Inflect implements Inflections {
 	 * @param $word string
 	 */
 	static function toIdentifier($word) {
-		return str_replace(" ", "", ucwords(str_replace("_"," ",$word)));
-	}	
-	
-	/**
-	 * Transform a word to a program identifier.
-	 * 
-	 * @param $word string
-	 */
-	static function toIdentifier($word) {
-		return str_replace(" ","", ucwords(str_replace("_"," ",$word)));
-	}	
+		return str_replace(" ", "", ucwords(str_replace("_"," ", $word)));
+	}
 	
 	/**
 	 * @param $word string
