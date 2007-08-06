@@ -1,7 +1,7 @@
 <?php
 require_once 'simpletest/autorun.php';
 require_once 'Floe.class.php';
-require_once 'language/en/Inflector.class.php';
+require_once 'language/en/Inflect.class.php';
 require_once 'repository/store/mysql/MysqlAdaptor.class.php';
 require_once 'repository/Record.class.php';
 

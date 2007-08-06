@@ -5,7 +5,7 @@ require_once "language/en/Inflect.class.php";
 class InflectorTest extends UnitTestCase {
 
 	function testUriNameEncoding() {
-		$this->assertEqual("graphic-design", Inflector::encodeUriPart("Graphic Design"));
+		$this->assertEqual("graphic-design", Inflect::encodeUriPart("Graphic Design"));
 		$this->assertEqual("what-is-a-page?", Inflect::encodeUriPart("What Is A Page?"));
 	}
 	

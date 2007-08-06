@@ -135,17 +135,13 @@ class Inflect implements Inflections {
 			return str_replace(" ", "-", strtolower(preg_replace("/([a-z]+)([A-Z])/","$1-$2", $cPart)));
 		}
 		
-		function toIdentifier($id) {
-			return ucfirst(Inflector::camelize(Inflector::singularize($id)));
-		}
-		
 		function propertyToColumn($property_name) {
 			 return str_replace("", "_",
 strtolower(preg_replace("/([A-Z])/","_$1", $property_name)));
 		}
 
 		function columnToProperty($column_name) {
-			$word = Inflector::camelize($column_name);
+			$word = Inflect::camelize($column_name);
 			return strtolower($word[0]).substr($word,1);
 		}
 		
@@ -173,7 +169,7 @@ strtolower(preg_replace("/([A-Z])/","_$1", $property_name)));
 		}
 	
 		function singularize ($word) {
-			$word = Inflector::pluralize($word);
+			$word = Inflect::pluralize($word);
 			$singular_rules = array(
 				'/(x|ch|ss)es$/'		   => '\1',
 				'/movies$/'				   => 'movie',
@@ -211,11 +207,11 @@ strtolower(preg_replace("/([A-Z])/","_$1", $property_name)));
 		}
 		
 		function tableize($class_name) {
-			return Inflector::pluralize(Inflector::underscore($class_name));
+			return Inflect::pluralize(Inflect::underscore($class_name));
 		}
 		
 		function toTableName($field_name) {
-			return Inflector::tableize(str_replace("_id", "", $field_name));
+			return Inflect::tableize(str_replace("_id", "", $field_name));
 		}
 		
 		function toClassName($cPart) {
@@ -227,15 +223,15 @@ strtolower(preg_replace("/([A-Z])/","_$1", $property_name)));
 		}
 		
 		function getter($field_name) {
-			return "get" . ucwords(Inflector::singularize($field_name));
+			return "get" . ucwords(Inflect::singularize($field_name));
 		}
 
 		function setter($field_name) {
-			return "set" . ucwords(Inflector::singularize($field_name));
+			return "set" . ucwords(Inflect::singularize($field_name));
 		}
 		
 		function finder($field_name) {
-			return "findBy" . Inflector::camelize(Inflector::singularize($field_name));
+			return "findBy" . Inflect::camelize(Inflect::singularize($field_name));
 		}
 	
 	}

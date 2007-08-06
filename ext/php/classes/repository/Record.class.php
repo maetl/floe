@@ -17,7 +17,7 @@ class Record {
 
 	function __construct($record = false) {
 		$this->_storage = StorageAdaptor::instance();
-		$this->_table = strtolower(Inflector::tableize(get_class($this)));
+		$this->_table = strtolower(Inflect::tableize(get_class($this)));
 		$this->_fields = array();
 		$this->_relations = array();
 		$this->_rules = array();
@@ -31,7 +31,7 @@ class Record {
 				if ($field == 'id') {
 					$this->_record->id = $value;
 				} else {
-					$property = Inflector::columnToProperty($field);
+					$property = Inflect::columnToProperty($field);
 					if (array_key_exists($property, $this->_fields))
 						$this->_record->$property = $value;
 					}
@@ -127,8 +127,8 @@ class Record {
 
 	function _getLazyAssociation($foreignKey, $adaptor) {
 		if ($this->_record) {
-			$table = Inflector::toTableName($foreignKey);
-			$EntityType = Inflector::toClassName($foreignKey);
+			$table = Inflect::toTableName($foreignKey);
+			$EntityType = Inflect::toClassName($foreignKey);
 			$adaptor->selectById($table, $this->_record->$foreignKey);
 			return new $EntityType($adaptor->getObject(), $this->_scope);
 		} else {
@@ -161,7 +161,7 @@ class Record {
 		if (!$validate || $this->isValid()) {
 			$record = array();
 			foreach(get_object_vars($this->_record) as $key=>$value) {
-				$record[Inflector::propertyToColumn($key)] = $value;
+				$record[Inflect::propertyToColumn($key)] = $value;
 			}
 			if ($this->id != 0) {
 				$this->_storage->update($this->_table, array('id'=>$this->id), $record);

@@ -52,8 +52,8 @@ require_once 'MysqlIterator.class.php';
 	function getRecord() {
 		$object = $this->getObject();
 		if ($object) {
-			$record = Inflector::toIdentifier($this->_currentTable);
-			$record = Inflector::singularize($record);
+			$record = Inflect::toIdentifier($this->_currentTable);
+			$record = Inflect::toSingular($record);
 			if (!class_exists($record)) {
 				$_properties = "";
 				$i = 0;
