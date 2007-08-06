@@ -6,37 +6,17 @@
 require_once 'language/Inflections.class.php';
 
 /**
- * Performs linguistic transformations based on standard English
- * grammar rules.
+ * Performs standard linguistic transformations based on English grammar rules.
  * 
- * Note that this class implements the language.Inflect interface
+ * Inflections are language specific, and correspond roughly to
+ * the strategy outlined in Damian Conway's paper 
+ * {@link http://www.csse.monash.edu.au/~damian/papers/HTML/Plurals.html An Algorithmic Approach to English Pluralization}.
  * 
  * @package language
  * @subpackage en
  */
 class Inflect implements Inflections {
 
-	/**
-	 * @param $word string
-	 */
-	static function toIdentifier($word) {
-		return str_replace(" ","", ucwords(str_replace("_"," ",$word)));
-	}
-	
-	/**
-	 * @param $word string
-	 */
-	static function toWords($word) {
-	
-	}
-
-	/**
-	 * @param $word string
-	 */
-	static function toSentence($word) {
-	
-	}
-	
 	/**
 	 * map of regular plural rules
 	 */
@@ -98,6 +78,54 @@ class Inflect implements Inflections {
 			return $key;
 		}
 		return ($result = Inflect::applyRules($word, Inflect::$SingularRules)) ? $result : $word;
+	}
+
+	/**
+	 * Transform a phrase or urlencoded string to program constant form.
+	 * 
+	 * For example, <b>language plurals</b> transforms to <b>LanguagePlurals</b>
+	 * and <b>test-of-inflector</b> transforms to <b>TestOfInflector</b>.
+	 * 
+	 * @param $word string
+	 */
+	static function toConstant($word) {
+		return str_replace(" ", "", ucwords(str_replace("_"," ",$word)));
+	}
+
+	/**
+	 * Transform a phrase or urlencoded string to program identifier form.
+	 * 
+	 * Currently treats an identifier as a program constant. This may change
+	 * to a standard property or method form, such as <b>testOfInflector</b>
+	 * or <b>test_of_inflector</b>.
+	 * 
+	 * @param $word string
+	 */
+	static function toIdentifier($word) {
+		return str_replace(" ", "", ucwords(str_replace("_"," ",$word)));
+	}	
+	
+	/**
+	 * Transform a word to a program identifier.
+	 * 
+	 * @param $word string
+	 */
+	static function toIdentifier($word) {
+		return str_replace(" ","", ucwords(str_replace("_"," ",$word)));
+	}	
+	
+	/**
+	 * @param $word string
+	 */
+	static function toWords($word) {
+	
+	}
+
+	/**
+	 * @param $word string
+	 */
+	static function toSentence($word) {
+	
 	}
 	
 	/**

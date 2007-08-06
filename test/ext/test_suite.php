@@ -9,7 +9,7 @@ require_once 'simpletest/collector.php';
 
 $test = new TestSuite('floe.ext.php.tests');
 $fileRole = new SimplePatternCollector('/test\.php$/');
-$test->collect('ext/php/tests/', $fileRole);
+$test->collect('/Users/maetl/Sites/floe/ext/php/tests/', $fileRole);
 if ($ARGV['serialize']) {
 	$test->run(new SerializeReporter());
 } else {

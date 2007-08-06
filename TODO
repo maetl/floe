@@ -9,7 +9,7 @@ add documentation for php server and doc generation task
 create configure task and wrapper to options file in HOME dir
 add server tests for parameter dispatch and URI controller binding
 add install and configure commands
-document language.inflector api
+(done) document language.inflector api
 (done) fix float type return in repository.record
 add mysql.test with undefined record class
 document repository.record api
