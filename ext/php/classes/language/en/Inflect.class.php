@@ -124,14 +124,9 @@ class Inflect implements Inflections {
 		return false;
 	}
 	
-}
-	/**
-	 * @todo normalize naming convention
-	 * @package language
-	 * @subpackage en
-	 */
-	class Inflector {
-		
+
+	// ---- old Inflector methods ----
+
 		function decodeUriPart($cPart) {
 			return str_replace(" "," ", ucwords(str_replace("-"," ",$cPart)));
 		}
