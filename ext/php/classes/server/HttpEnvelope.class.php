@@ -15,7 +15,7 @@ class HttpEnvelope {
 		if (function_exists('apache_request_headers')) {
 			$this->headers = apache_request_headers();
 		} else {
-			echo "error";
+			throw new Exception("Apache Unsupported");
 		}
 	}
 	
