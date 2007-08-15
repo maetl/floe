@@ -9,6 +9,8 @@ class UriPathReaderTest extends UnitTestCase {
 		$this->assertTrue($path->isEmpty());
 		$this->assertEqual("/", $path->getPath());
 		$this->assertEqual(0, count($path->segments()));
+		$this->assertEqual("", $path->segment(0));
+		$this->assertEqual("", $path->segment(1));
 		$this->assertEqual("", $path->getIdentity());
 		$this->assertEqual("", $path->getResource());
 	}
@@ -28,6 +30,22 @@ class UriPathReaderTest extends UnitTestCase {
 		$this->assertEqual("title", $parts[2]);
 		$this->assertEqual("entry", $parts[1]);
 		$this->assertEqual("content", $parts[0]);
+	}
+	
+	function testSegmentPathMethod() {
+		$path = new UriPath("/content/entry/subject");
+		$this->assertEqual("content", $path->segment(0));
+		$this->assertEqual("entry", $path->segment(1));
+		$this->assertEqual("subject", $path->segment(2));
+	}
+	
+	function testMultiSegmentPathMethods() {
+		$path = new UriPath("/content/entry/subject/id");
+		$this->assertEqual(array("content", "entry", "subject", "id"), $path->segments());
+		$this->assertEqual(array("content", "entry", "subject", "id"), $path->segmentsFrom(0));
+		$this->assertEqual(array("entry", "subject", "id"), $path->segmentsFrom(1));
+		$this->assertEqual(array("subject", "id"), $path->segmentsFrom(2));
+		$this->assertEqual(array("id"), $path->segmentsFrom(3));
 	}
 	
 	function testFragmentIdentifier() {

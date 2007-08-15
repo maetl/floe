@@ -144,7 +144,7 @@ class UriPath {
 	 * 	  $uri->segment(3) => id
 	 */
 	function segment($index) {
-		return $this->_segments[count($this->_segments)-$index];
+		return $this->_segments[$index];
 	}
 	
 	/**
@@ -162,13 +162,20 @@ class UriPath {
 	}
 	
 	/**
+	 * Returns number of segments in this url path.
+	 */
+	function segmentsCount() {
+		return count($this->_segments);
+	}
+	
+	/**
 	 * Returns array of segments appearing after a given index.
 	 * 
 	 * Eg: /content/topic/id gives:
 	 * 	  $uri->segmentsFrom(0) => array("content", "topic", "id")
 	 */
-	function getSegmentsFrom($index) {
-		return array_slice($this->_segments, $index-1);
+	function segmentsFrom($index) {
+		return array_slice($this->_segments, $index);
 	}
 	
 	function getBaseSegment() {
