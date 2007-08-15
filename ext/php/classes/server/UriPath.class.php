@@ -39,8 +39,9 @@ class UriPath {
 			$path = explode("/", substr($this->_parsed['path'], 1));
 			$this->addResource(array_pop($path));
 			while ($segment = array_pop($path)) {
-				$this->addSegment($segment);
+				$this->_segments[] = urldecode($segment);
 			}
+			$this->_segments = array_reverse($this->_segments);
 		}
 	}
 	
@@ -58,11 +59,6 @@ class UriPath {
 		}
 		$this->_resource = urldecode($resource);
 		$this->_segments[] = urldecode($resource);
-	}
-	
-	/** @private */
-	function addSegment($segment) {
-		$this->_segments[] = urldecode($segment);
 	}
 	
 	/**
@@ -139,8 +135,40 @@ class UriPath {
 		}
 	}
 	
-	function getSegments() {
+	/**
+	 * Returns the given segment of the URL, starting from 1.
+	 * 
+	 * Eg: /content/topic/id gives:
+	 *    $uri->segment(1) => content
+	 *    $uri->segment(2) => topic
+	 * 	  $uri->segment(3) => id
+	 */
+	function segment($index) {
+		return $this->_segments[count($this->_segments)-$index];
+	}
+	
+	/**
+	 * Returns the base segment of the URI path.
+	 * 
+	 * Eg: /content/topic/id gives:
+	 * 	  $uri->baseSegment => content
+	 */
+	function baseSegment() {
+		return $this->_segments[0];
+	}
+	
+	function segments() {
 		return $this->_segments;
+	}
+	
+	/**
+	 * Returns array of segments appearing after a given index.
+	 * 
+	 * Eg: /content/topic/id gives:
+	 * 	  $uri->segmentsFrom(0) => array("content", "topic", "id")
+	 */
+	function getSegmentsFrom($index) {
+		return array_slice($this->_segments, $index-1);
 	}
 	
 	function getBaseSegment() {

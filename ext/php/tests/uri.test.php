@@ -1,4 +1,5 @@
 <?php
+require_once "simpletest/autorun.php";
 require_once 'server/UriPath.class.php';
 
 class UriPathReaderTest extends UnitTestCase {
@@ -7,14 +8,14 @@ class UriPathReaderTest extends UnitTestCase {
 		$path = new UriPath("/");
 		$this->assertTrue($path->isEmpty());
 		$this->assertEqual("/", $path->getPath());
-		$this->assertEqual(0, count($path->getSegments()));
+		$this->assertEqual(0, count($path->segments()));
 		$this->assertEqual("", $path->getIdentity());
 		$this->assertEqual("", $path->getResource());
 	}
 	
 	function testSingleSegmentPath() {
 		$path = new UriPath("/entry");
-		$this->assertEqual(1, count($path->getSegments()));
+		$this->assertEqual(1, count($path->segments()));
 		$this->assertEqual("/entry", $path->getPath());
 		$this->assertEqual("entry", $path->getIdentity());
 		$this->assertEqual("entry", $path->getResource());
@@ -22,11 +23,11 @@ class UriPathReaderTest extends UnitTestCase {
 	
 	function testMultiSegmentPath() {
 		$path = new UriPath("/content/entry/title");
-		$parts = $path->getSegments();
+		$parts = $path->segments();
 		$this->assertEqual(3, count($parts));
-		$this->assertEqual("title", $parts[0]);
+		$this->assertEqual("title", $parts[2]);
 		$this->assertEqual("entry", $parts[1]);
-		$this->assertEqual("content", $parts[2]);
+		$this->assertEqual("content", $parts[0]);
 	}
 	
 	function testFragmentIdentifier() {
@@ -63,7 +64,7 @@ class UriPathReaderTest extends UnitTestCase {
 	
 	function testMultiSegmentPathWithQueryString() {
 		$path = new UriPath("/entries/2005?page=3&tag=design");
-		$this->assertEqual(2, count($path->getSegments()));
+		$this->assertEqual(2, count($path->segments()));
 		$this->assertEqual("2005", $path->getResource());
 		$this->assertEqual("2005", $path->getIdentity());
 		$this->assertEqual("page=3&tag=design", $path->getQuery());
