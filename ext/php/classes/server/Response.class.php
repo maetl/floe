@@ -18,14 +18,15 @@ require_once "HttpEnvelope.class.php";
  * @package server
  */ 
 class Response {
-
 	private $buffer;
 	private $headers;
-
+	private $status;
+	
 	public function __construct() {
 		ob_start();
 		$this->buffer = '';
 		$this->headers = array();
+		$this->status = 200;
 	}
 	
 	/**
@@ -73,6 +74,9 @@ class Response {
 	 * server handler.
 	 */
 	private function sendHeaders() {
+		if (isset($this->status)) {
+			header("HTTP/1.1 {$this->status}");
+		}
 		if (!headers_sent()) {
 			foreach($this->headers as $type => $value) {
 				header($type . ': ' . $value);
@@ -80,6 +84,30 @@ class Response {
 		} else {
 			throw new Exception("Unexpected output sent");
 		}
+	}
+	
+	/**
+	 * Set the HTTP response status.
+	 */
+	public function status($code, $message) {
+		$this->status = $code . " " . $message;
+	}
+	
+	/**
+	 * Raise a runtime exception and handle the appropriate error
+	 * response.
+	 */
+	public function raise(Exception $error) {
+		if (isset($error->status)) $this->status($error->status, $error->getMessage());
+		$this->write("<h1>".$error->getMessage()."</h1>");
+		$this->write("<p>".$error->resource." (".$error->include.")</p>");
+		$this->write("<ul>");
+		foreach($error->getTrace() as $trace) {
+			$method = $trace['class'].$trace['type'].$trace['function'];
+			$fileref = "Line ".$trace['line']." of ".$trace['file'];
+			$this->write("<li>$method ($fileref)</li>");
+		}
+		$this->write("</ul>");
 	}
 	
 	/**
