@@ -59,7 +59,9 @@ class IdentityDispatcher implements Receptor {
 			throw new ResourceNotFound("Controller $classname not defined", $path);
 		}
 		if (method_exists($controller, $identity)) {
-			call_user_func_array(array($controller, $identity), $params);		
+			if (method_exists($controller, 'before')) call_user_func(array($controller, 'before'));
+			call_user_func_array(array($controller, $identity), $params);
+			if (method_exists($controller, 'after')) call_user_func(array($controller, 'after'));
 		} else {
 			require_once 'server/ResourceNotFound.class.php';
 			throw new ResourceNotFound("Method $identity not defined in $classname", $path);
