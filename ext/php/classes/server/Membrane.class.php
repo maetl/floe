@@ -34,6 +34,8 @@ class Membrane {
 	
     /**
     * Atach a servlet style receptor to the outer membrane.
+    * 
+    * @todo allow Array parameter to assign linked list of Interceptors
     */
     function attach($receptor) {
         if (is_object($receptor)) {
@@ -46,13 +48,11 @@ class Membrane {
     */
     function run() {
         foreach ($this->receptors as $r) {
-            if (method_exists($r, 'run')) {
-				try {
-					$r->run($this->request, $this->response);
-				} catch(Exception $error) {
-					$this->response->raise($error);
-				}
-            }
+			try {
+				$r->run($this->request, $this->response);
+			} catch(Exception $error) {
+				$this->response->raise($error);
+			}
         }
 		$this->response->out();
     }

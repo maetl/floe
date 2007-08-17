@@ -53,5 +53,12 @@ class EnglishPluralsTest extends UnitTestCase {
 
 }
 
+class TransformationUtilityTest extends UnitTestCase {
+
+	function testPropertyToColumnFormat() {
+		$this->assertEqual("item_id", Inflect::propertyToColumn("itemId"));	
+	}
+
+}
 
 ?>

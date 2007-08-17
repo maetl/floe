@@ -8,20 +8,12 @@
  * Formalizes the belongsTo/hasOne join, where one class depends on another.
  */
 class DependentRelation {
-	private $owner;
-	private $dependent;
+	var $owner;
+	var $dependent;
 
 	function __construct($owner, $dependent) {
 		$this->owner = $owner;
 		$this->dependent = $dependent;
-	}
-	
-	function getDependent() {
-		return $this->dependent;
-	}
-	
-	function getOwner() {
-		return $this->owner;
 	}
 
 }

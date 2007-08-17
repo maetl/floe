@@ -88,7 +88,7 @@ require_once 'MysqlIterator.class.php';
 	 * @return array<Record>
 	 */
 	function getRecords() {
-		$i=0; $list = array();
+		$i=0; $objects = array();
 		while ($row = mysql_fetch_object($this->_result)) {
 			$table = Inflector::toIdentifier($this->_currentTable);
 			$objects[$i] = new $table($row); $i++;
@@ -102,7 +102,7 @@ require_once 'MysqlIterator.class.php';
 	 * @return array<stdClass>
 	 */
 	function getObjects() {
-		$i=0; $list = array();
+		$i=0; $objects = array();
 		while ($row = mysql_fetch_object($this->_result)) {
 			$objects[$i] = $row; $i++;
 		}
@@ -178,7 +178,7 @@ require_once 'MysqlIterator.class.php';
 		$colnum = count($columns);
 		$sql = 'INSERT INTO '.mysql_real_escape_string($table).' (';
 		for($i=0;$i<$colnum;$i++) {
-			$sql .= $keys[$i];
+			$sql .= Inflect::propertyToColumn($keys[$i]);
 			$i==($colnum-1) ? $sql .= ')' : $sql .= ',';
 		}
 		$sql .= ' VALUES (';
@@ -230,7 +230,8 @@ require_once 'MysqlIterator.class.php';
 		$sql = "\nCREATE TABLE `$table` (";
 		$sql .= "\nid int(11) NOT NULL auto_increment,";
 		foreach($rows as $key=>$val) {
-			$sql .= "\n$key ";
+			$key = Inflect::propertyToColumn($key);
+			$sql .= "\n $key ";
 			$sql .= $this->defineType($val);
 			$sql .= ',';
 		}

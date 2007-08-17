@@ -1,11 +1,19 @@
 <?php
-// $Id: Entity.class.php 64 2007-07-02 15:48:24Z maetl_ $
 /**
  * @package repository
  */
 require_once 'DependentRelation.class.php';
 require_once 'store/StorageAdaptor.class.php';
+require_once 'language/en/Inflect.class.php';
 
+/**
+ * The infamous active record implementation from textme.co.nz
+ * 
+ * Most ideas from Rails ActiveRecord and the Relational Aspect Library,
+ * but with tradeoffs for idiomatic PHP.
+ * 
+ * It is slowly gaining features and growing wings.
+ */
 class Record {
 	var $_table;
 	var $_record;
@@ -14,8 +22,10 @@ class Record {
 	var $_relations;
 	var $_rules;
 	var $_errors;
+	private $_clean;
 
 	function __construct($record = false) {
+		$this->_clean = true;
 		$this->_storage = StorageAdaptor::instance();
 		$this->_table = strtolower(Inflect::tableize(get_class($this)));
 		$this->_fields = array();
@@ -39,29 +49,63 @@ class Record {
 			}
 	}
  
-	
-	function hasRelation($entity) {
-		$this->_relations[get_class($entity)] = $entity;
-	}
-
+	/**
+	 * Add a dependent association to this record.
+	 * 
+	 * This definition will map a foreign key linking to the defined
+	 * record type.
+	 */
 	function belongsTo($entity) {
 		$this->property(strtolower($entity)."Id", "integer");
 		$this->hasRelation(new DependentRelation($this, $entity));
 	}
 
+	function hasRelation($entity) {
+		$this->_relations[get_class($entity)] = $entity;
+	}	
+	
+	/**
+	 * Add a collection assocation to this record.
+	 * 
+	 * Collections are currently implemented as flat arrays, which
+	 * makes the tests pass, but is not a particularly pleasing
+	 * approach.
+	 * 
+	 * @todo clean up the hasRelation method
+	 * @todo provide a more complete set of relationship aspects
+	 */
 	function hasMany($ofCollection) {
-		$this->_relations[$ofCollection] = new $ofCollection();
+		$this->_relations[$ofCollection] = array();
 	}
 
+	/**
+	 * Define a property mapping.
+	 * 
+	 * Allowed types are:
+	 * 	- string
+	 *  - integer
+	 *  - float
+	 *  - datetime 
+	 */
 	function property($name, $type) {
 		$this->_record->$name = null;
 		$this->_fields[$name] = $type;
 	}
 	
+	/**
+	 * Return a list of the property mappings
+	 * defined for this record.
+	 * 
+	 * (a virtual version of get_class_vars)
+	 */
 	function properties() {
 		return $this->_fields;
 	}
 
+	/**
+	 * Add a validation rule to this record.
+	 * 
+	 */
 	function rule($field, $rule) {
 		if (!isset($this->_rules[$field])) {
 			$this->_rules[$field] = array();
@@ -73,7 +117,16 @@ class Record {
 	}
 
 	function __get($key) {
-		if (array_key_exists($key, $this->_fields)) {
+		if (array_key_exists($key, $this->_relations)) {
+			if (is_array($this->_relations[$key])) {
+				if (empty($this->_relations[$key])) {
+					$this->_storage->selectById($key, $this->id);
+					return $this->_storage->getRecords();
+				} else {
+					return $this->_relations[$key];
+				}
+			}
+		} elseif (array_key_exists($key, $this->_fields)) {
 			switch($this->_fields[$key]) {
 				case 'string':
 				case 'text':
@@ -94,10 +147,29 @@ class Record {
 			return (isset($this->_record->id)) ? $this->_record->id : 0;
 		}
 	}
+	
+	/**
+	 * Has the data changed since first load?
+	 */
+	function isDirty() {
+		return (!$this->_clean);
+	}
+	
+	/**
+	 * Is the data clean? (in the same state as first load)
+	 */
+	function isClean() {
+		return $this->_clean;
+	}
 
 	function __set($key, $value) {
-		if (array_key_exists($key, $this->_fields)) {
+		if (array_key_exists($key, $this->_relations)) {
+			if (is_array($this->_relations[$key])) {
+				$this->_relations[$key][] = $value;
+			}
+		} elseif (array_key_exists($key, $this->_fields)) {
 			$this->_record->$key = $value;
+			$this->_clean = false;
 		}
 	}
 
@@ -124,18 +196,14 @@ class Record {
 			return new $Type();
 		}
 	}
-
-	function _getLazyAssociation($foreignKey, $adaptor) {
-		if ($this->_record) {
-			$table = Inflect::toTableName($foreignKey);
-			$EntityType = Inflect::toClassName($foreignKey);
-			$adaptor->selectById($table, $this->_record->$foreignKey);
-			return new $EntityType($adaptor->getObject(), $this->_scope);
-		} else {
-			return new $EntityType();
-		}
-	}
-
+	
+	/**
+	 * Validate the data stored for this record against
+	 * the defined rules.
+	 * 
+	 * Validation is shallow - relationships are not included,
+	 * only the defined properties of the record.
+	 */
 	function validate() {
 		foreach(get_object_vars($this->_record) as $field=>$value) {
 			if (isset($this->_rules[$field])) {
@@ -147,17 +215,34 @@ class Record {
 			}
 		}
 	}
-
+	
+	/**
+	 * Is the data currently set for this record valid according
+	 * to its defined rules?
+	 */
 	function isValid() {
 		$this->validate();
 		return (count($this->_errors) == 0);
 	}
 
+	/**
+	 * Returns the list of errors caught by validation rules.
+	 */
 	function getErrors() {
 		return $this->_errors;
 	}
 
+	/**
+	 * Save this record to the persistent store.
+	 * 
+	 * Runs validation by default, unless overriden in the
+	 * method call. If the validation rules fail, then the object
+	 * is not saved.
+	 * 
+	 * @todo smarter exception handling
+	 */
 	function save($validate=true) {
+		if (!$this->saveRelations()) return false;
 		if (!$validate || $this->isValid()) {
 			$record = array();
 			foreach(get_object_vars($this->_record) as $key=>$value) {
@@ -175,7 +260,28 @@ class Record {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * Recursively save each record implemented in a relationship.
+	 * 
+	 * Probably also need to use transactions here to ensure referential integrity.
+	 */
+	private function saveRelations() {
+		foreach($this->_relations as $association) {
+			if (is_array($association)) {
+				foreach($association as $model) {
+					if ($model->isDirty) {
+						if (!$model->save()) return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Remove a record from the persistent store.
+	 */
 	function delete($id=false) {
 		if (!$id) {
 			$id = $this->_storage->insertId();
