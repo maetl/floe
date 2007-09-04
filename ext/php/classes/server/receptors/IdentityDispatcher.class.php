@@ -46,8 +46,14 @@ class IdentityDispatcher implements Receptor {
 			if ($identity == '') $identity = DefaultMethodBinding;
 			$params = $request->uri->segmentsFrom(3);
 			if (!file_exists($path)) {
-				include_once 'server/ResourceNotFound.class.php';
-				throw new ResourceNotFound("Controller not found", $controllerPath);
+				$base = DefaultMethodBinding;
+				$identity = 'page';
+				$path = APP_DIR ."controllers/$base.controller.php";
+				$params = $request->uri->segmentsFrom(0);
+				if (!$path) {
+					include_once 'server/ResourceNotFound.class.php';
+					throw new ResourceNotFound("Controller not found", $path);
+				}
 			}
 		}
 		include_once $path;
@@ -58,6 +64,7 @@ class IdentityDispatcher implements Receptor {
 			include_once 'server/ResourceNotFound.class.php';
 			throw new ResourceNotFound("Controller $classname not defined", $path);
 		}
+		$identity = strtolower(Inflect::underscore(Inflect::decodeUriPart($identity)));
 		if (method_exists($controller, $identity)) {
 			if (method_exists($controller, 'before')) call_user_func(array($controller, 'before'));
 			call_user_func_array(array($controller, $identity), $params);

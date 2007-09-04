@@ -15,13 +15,15 @@ require_once 'language/en/Inflect.class.php';
  * It is slowly gaining features and growing wings.
  */
 class Record {
-	var $_table;
-	var $_record;
-	var $_storage;
-	var $_fields;
-	var $_relations;
-	var $_rules;
-	var $_errors;
+	private $_table;
+	private $_record;
+	protected $_storage;
+	private $_fields;
+	private $_joins;
+	private $_associations;
+	private $_relations;
+	private $_rules;
+	private $_errors;
 	private $_clean;
 
 	function __construct($record = false) {
@@ -29,6 +31,8 @@ class Record {
 		$this->_storage = StorageAdaptor::instance();
 		$this->_table = strtolower(Inflect::tableize(get_class($this)));
 		$this->_fields = array();
+		$this->_joins = array();
+		$this->_associations = array();
 		$this->_relations = array();
 		$this->_rules = array();
 		$this->_errors = array();
@@ -37,6 +41,9 @@ class Record {
 			$this->__define();
 		}
 		if ($record) {
+			if (is_numeric($record)) {
+				$record = $this->findObjectById($record);
+			}
 			foreach($record as $field=>$value) {
 				if ($field == 'id') {
 					$this->_record->id = $value;
@@ -62,7 +69,7 @@ class Record {
 
 	function hasRelation($entity) {
 		$this->_relations[get_class($entity)] = $entity;
-	}	
+	}
 	
 	/**
 	 * Add a collection assocation to this record.
@@ -71,13 +78,28 @@ class Record {
 	 * makes the tests pass, but is not a particularly pleasing
 	 * approach.
 	 * 
-	 * @todo clean up the hasRelation method
-	 * @todo provide a more complete set of relationship aspects
+	 * @todo clean up the relations and joins attributes
 	 */
 	function hasMany($ofCollection) {
 		$this->_relations[$ofCollection] = array();
 	}
 
+	/**
+	 * Adds a many to many relationship to the model.
+	 * 
+	 * This requires a join table to be set up, using the Rails idiom,
+	 * with the caveat that the tables referenced must be in alphabetical
+	 * order (eg: entries_tags, not tags_entries).
+	 * 
+	 * @todo provide a more complete set of relationship aspects
+	 */
+	function hasManyRelations($relatedTo) {
+		$joins = array(strtolower(Inflect::toPlural(get_class($this))), $relatedTo);
+		sort($joins);
+		$this->_joins[$relatedTo] = $joins[0] . "_" . $joins[1];
+		$this->_associations[$relatedTo] = array();
+	}
+	
 	/**
 	 * Define a property mapping.
 	 * 
@@ -117,11 +139,16 @@ class Record {
 	}
 
 	function __get($key) {
-		if (array_key_exists($key, $this->_relations)) {
+		if (array_key_exists($key, $this->_joins)) {
+			$this->_storage->selectByAssociation($key, $this->_joins[$key]);
+			return $this->_storage->getRecords();
+		} elseif (array_key_exists($key, $this->_relations)) {
 			if (is_array($this->_relations[$key])) {
 				if (empty($this->_relations[$key])) {
-					$this->_storage->selectById($key, $this->id);
-					return $this->_storage->getRecords();
+					$field = strtolower(Inflect::toSingular(get_class($this)))."_id";
+					$this->_storage->selectByKey($key, array($field=>$this->id));
+					$this->_relations[$key] = $this->_storage->getRecords();
+					return $this->_relations[$key];
 				} else {
 					return $this->_relations[$key];
 				}
@@ -148,6 +175,21 @@ class Record {
 		}
 	}
 	
+	function __set($key, $value) {
+		if (array_key_exists($key, $this->_associations)) {
+			$this->_associations[$key][] = $value;
+		} elseif (array_key_exists($key, $this->_relations)) {
+			if (is_array($this->_relations[$key])) {
+				$this->_relations[$key][] = $value;
+			}
+		} elseif (array_key_exists($key, $this->_fields)) {
+			$this->_record->$key = $value;
+			$this->_clean = false;
+		} elseif($key == "id") {
+			$this->_record->id = $value;
+		}
+	}
+
 	/**
 	 * Has the data changed since first load?
 	 */
@@ -160,19 +202,8 @@ class Record {
 	 */
 	function isClean() {
 		return $this->_clean;
-	}
-
-	function __set($key, $value) {
-		if (array_key_exists($key, $this->_relations)) {
-			if (is_array($this->_relations[$key])) {
-				$this->_relations[$key][] = $value;
-			}
-		} elseif (array_key_exists($key, $this->_fields)) {
-			$this->_record->$key = $value;
-			$this->_clean = false;
-		}
-	}
-
+	}	
+	
 	function _getId() {
 		return ($this->_record) ? $this->_record->id : 0;
 	}
@@ -241,8 +272,7 @@ class Record {
 	 * 
 	 * @todo smarter exception handling
 	 */
-	function save($validate=true) {
-		if (!$this->saveRelations()) return false;
+	function save($validate=true, $recursive=true) {
 		if (!$validate || $this->isValid()) {
 			$record = array();
 			foreach(get_object_vars($this->_record) as $key=>$value) {
@@ -250,16 +280,43 @@ class Record {
 			}
 			if ($this->id != 0) {
 				$this->_storage->update($this->_table, array('id'=>$this->id), $record);
-				return true;
 			} else {
 				$this->_storage->insert($this->_table, $record);
 				$this->_record->id = $this->_storage->insertId();
-				return true;
 			}
+			if ($recursive) {
+				if (!$this->saveAssociations()) return false;
+				if (!$this->saveRelations()) return false;
+			}
+			return true;
 		} else {
 			return false;
 		}
 	}
+	
+	/**
+	 * Recursively save associations
+	 */
+	private function saveAssociations() {
+		foreach($this->_associations as $key=>$association) {
+			if (is_array($association)) {
+				$table = $this->_joins[$key];
+				$self_id = $this->id;
+				$self_join = strtolower(get_class($this)) . "_id";
+				$this->_storage->delete($table, array($self_join=>$self_id));			
+				foreach($association as $model) {
+					if ($model->save(true, false)) {
+						$model_id = $model->id;
+						$model_join = strtolower(get_class($model)) . "_id";
+						$this->_storage->insert($table, array($self_join=>$self_id, $model_join=>$model_id));
+					} else {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}	
 	
 	/**
 	 * Recursively save each record implemented in a relationship.
@@ -267,10 +324,10 @@ class Record {
 	 * Probably also need to use transactions here to ensure referential integrity.
 	 */
 	private function saveRelations() {
-		foreach($this->_relations as $association) {
-			if (is_array($association)) {
-				foreach($association as $model) {
-					if ($model->isDirty) {
+		foreach($this->_relations as $relation) {
+			if (is_array($relation)) {
+				foreach($relation as $model) {
+					if ($model->isDirty()) {
 						if (!$model->save()) return false;
 					}
 				}
@@ -288,7 +345,40 @@ class Record {
 		}
 		$this->_storage->delete($this->_table, array('id'=>$id));
 	}
+	
+	function remove() {
+		$this->_storage->delete($this->_table, array('id'=>$this->id));
+	}
 
+	/**
+	 * collection method
+	 */
+	function findAll() {
+		$this->_storage->selectAll(Inflect::toPlural(strtolower(get_class($this))));
+		return $this->_storage->getRecords();
+	}
+	
+	function findById($id) {
+		$this->_storage->selectById(Inflect::toPlural(strtolower(get_class($this))), $id);
+		return $this->_storage->getRecord();
+	}
+	
+	function findObjectById($id) {
+		$this->_storage->selectById(Inflect::toPlural(strtolower(get_class($this))), $id);
+		return $this->_storage->getObject();
+	}
+
+	function findByKey($key, $value) {
+		$this->_storage->selectByKey(Inflect::toPlural(strtolower(get_class($this))), array("name"=>$value));
+		$record = $this->_storage->getRecords();
+		return $record[0];
+	}
+
+	function findAllByKey($key, $value) {
+		$this->_storage->selectByKey(Inflect::toPlural(strtolower(get_class($this))), array($key=>$value));
+		return $this->_storage->getRecords();
+	}
+	
 }
 
 ?>

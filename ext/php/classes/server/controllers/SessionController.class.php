@@ -11,7 +11,7 @@ require_once 'server/SessionState.class.php';
  * @package server
  * @subpackage controllers
  */
-class BaseController {
+class SessionController {
 	protected $request;
 	protected $response;
 	protected $session;

@@ -154,10 +154,32 @@ class Request {
 	 * 
 	 * @return mixed
 	 */
-	function postParameter($parameter) {
+	function postParameter($parameter, $filter=true) {
 		if (isset($_POST[$parameter])) {
-			return $this->cleanValue($_POST[$parameter]);
+			if ($filter) {
+				return $this->cleanValue($_POST[$parameter]);
+			} else {
+				return $_POST[$parameter];
+			}
 		}
+	}
+
+	/**
+	 * Alias for getParameter
+	 */
+	function g($parameter, $filter=true) {
+		return $this->getParameter($parameter, $filter);
+	}
+	
+	/**
+	 * Alias for postParameter
+	 */
+	function p($parameter, $filter=true) {
+		return $this->postParameter($parameter, $filter);
+	}
+	
+	function posted() {
+		return $_POST;
 	}
 	
 	/**

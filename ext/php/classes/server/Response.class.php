@@ -21,12 +21,14 @@ class Response {
 	private $buffer;
 	private $headers;
 	private $status;
+	private $variables;
 	
 	public function __construct() {
 		ob_start();
 		$this->buffer = '';
 		$this->headers = array();
 		$this->status = 200;
+		$this->variables = array();
 	}
 	
 	/**
@@ -55,10 +57,28 @@ class Response {
 	}
 	
 	/**
+	 * Assign a variable to the template
+	 */
+	public function assign($key, $value) {
+		$this->variables[$key] = $value;
+	}
+	
+	/**
 	 * Renders a template object to the response buffer.
+	 * 
+	 * @throws Exception
 	 */
 	public function render($template) {
-		// not implemented
+		extract($this->variables);
+		ob_start();
+		$templatePath = TPL_DIR . $template . ".php"; 
+		if (file_exists($templatePath)) {
+			include $templatePath;                  
+		} else {
+			throw new Exception("Response template not found");
+		}
+		$this->write(ob_get_contents());
+		ob_clean();
 	}
 	
 	/**
@@ -89,7 +109,12 @@ class Response {
 	/**
 	 * Set the HTTP response status.
 	 */
-	public function status($code, $message) {
+	public function status($code, $message=false) {
+		if (!$message) {
+			switch($code) {
+				case 404: $message = "Not Found"; break;
+			}
+		}
 		$this->status = $code . " " . $message;
 	}
 	

@@ -15,11 +15,7 @@ class HttpEnvelope {
 		if (function_exists('apache_request_headers')) {
 			$this->headers = apache_request_headers();
 		} else {
-			if (php_sapi_name() != 'cli') {
-				throw new Exception("Apache Unsupported");
-			} else {
-				$this->headers = array();
-			}
+			throw new Exception("Apache Unsupported");
 		}
 	}
 	

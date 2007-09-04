@@ -52,7 +52,7 @@ require_once 'MysqlIterator.class.php';
 	function getRecord() {
 		$object = $this->getObject();
 		if ($object) {
-			$record = Inflect::toIdentifier($this->_currentTable);
+			$record = Inflect::toClassName($this->_currentTable);
 			$record = Inflect::toSingular($record);
 			if (!class_exists($record)) {
 				$_properties = "";
@@ -90,7 +90,7 @@ require_once 'MysqlIterator.class.php';
 	function getRecords() {
 		$i=0; $objects = array();
 		while ($row = mysql_fetch_object($this->_result)) {
-			$table = Inflector::toIdentifier($this->_currentTable);
+			$table = Inflect::toSingular($this->_currentTable);
 			$objects[$i] = new $table($row); $i++;
 		}
 		return $objects;
@@ -157,10 +157,11 @@ require_once 'MysqlIterator.class.php';
 	/**
 	 *
 	 */
-	 function selectByAssociation($table, $join_table, $target) {
+	 function selectByAssociation($table, $join_table, $target=false) {
+	 	 $this->_currentTable = $table;
 		 $sql = "SELECT * FROM $table,$join_table ";
-		 $sql .= "WHERE $table.".Inflector::singularize($join_table)."_id=$join_table.id ";
-		 $sql .= "AND $join_table.".key($target)."='".current($target)."'";
+		 $sql .= "WHERE $table.id=$join_table.".Inflect::toSingular($table)."_id";
+		 if ($target) $sql .= "AND $join_table.".key($target)."='".current($target)."'";
 		 $this->_result = $this->_connection->execute($sql);
 	 }
 	
@@ -172,7 +173,7 @@ require_once 'MysqlIterator.class.php';
 	 */
 	function insert($table, $columns) {
 		$this->_connection->connect();
-		$this->currentTable = $table;
+		$this->_currentTable = $table;
 		$keys = array_keys($columns);
 		$values = array_values($columns);
 		$colnum = count($columns);
@@ -186,6 +187,7 @@ require_once 'MysqlIterator.class.php';
 			$sql .= '"'.mysql_real_escape_string((string)$values[$i]).'"';
 			$i==($colnum-1) ? $sql .= ')' : $sql .= ',';
 		}
+		echo $sql, "<br>";
 		$this->_connection->execute($sql);
 	}
 	
