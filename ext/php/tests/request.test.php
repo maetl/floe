@@ -59,10 +59,10 @@ class RequestTest extends UnitTestCase {
 	
 	function testUriPathComponents() {
 		$this->mockUri("/controller/action/id");
-	
+
 		$request = new Request();
 		$this->assertEqual("id", $request->uri->getIdentity());
-		$this->assertEqual(3, count($request->uri->getSegments()));
+		$this->assertEqual(3, count($request->uri->segments()));
 	}
 	
 	function testEnvelopeSupportsPlainHeaders() {
