@@ -25,8 +25,14 @@ class Record {
 	private $_rules;
 	private $_errors;
 	private $_clean;
+	
+	private $_dependent_relations;
+	private $_associated_relations;
+	private $_parent_relations;
 
 	function __construct($record = false) {
+		$this->_dependent_relations = array();
+		$this->_associated_relations = array();
 		$this->_clean = true;
 		$this->_storage = StorageAdaptor::instance();
 		$this->_table = strtolower(Inflect::tableize(get_class($this)));
@@ -53,23 +59,16 @@ class Record {
 				}
 			}
 	}
- 
+	
 	/**
 	 * Add a dependent association to this record.
 	 * 
 	 * This definition will map a foreign key linking to the defined
 	 * record type.
 	 */
-	function belongsTo($entity) {
-		$this->property(strtolower($entity)."Id", "integer");
-		$this->hasRelation(new DependentRelation($this, $entity));
-	}
-
-	/**
-	 * Legacy relationship method.
-	 */
-	function hasRelation($entity) {
-		$this->_relations[get_class($entity)] = $entity;
+	function belongsTo($type) {
+		$this->property(strtolower($type)."Id", "integer");
+		$this->_parent_relations[$type] = 0;
 	}
 	
 	/**
@@ -81,8 +80,8 @@ class Record {
 	 * 
 	 * @todo clean up the relations and joins attributes
 	 */
-	function hasMany($ofCollection) {
-		$this->_relations[$ofCollection] = array();
+	function hasMany($ofType) {
+		$this->_dependent_relations[$ofType] = array();
 	}
 
 	/**
@@ -151,15 +150,15 @@ class Record {
 		if (array_key_exists($key, $this->_joins)) {
 			$this->_storage->selectByAssociation($key, $this->_joins[$key]);
 			return $this->_storage->getRecords();
-		} elseif (array_key_exists($key, $this->_relations)) {
-			if (is_array($this->_relations[$key])) {
-				if (empty($this->_relations[$key])) {
+		} elseif (array_key_exists($key, $this->_dependent_relations)) {
+			if (is_array($this->_dependent_relations[$key])) {
+				if (empty($this->_dependent_relations[$key])) {
 					$field = strtolower(Inflect::toSingular(get_class($this)))."_id";
 					$this->_storage->selectByKey($key, array($field=>$this->id));
-					$this->_relations[$key] = $this->_storage->getRecords();
-					return $this->_relations[$key];
+					$this->_dependent_relations[$key] = $this->_storage->getRecords();
+					return $this->_dependent_relations[$key];
 				} else {
-					return $this->_relations[$key];
+					return $this->_dependent_relations[$key];
 				}
 			}
 		} elseif (array_key_exists($key, $this->_properties)) {
@@ -190,15 +189,22 @@ class Record {
 	function __set($key, $value) {
 		if (array_key_exists($key, $this->_associations)) {
 			$this->_associations[$key][] = $value;
-		} elseif (array_key_exists($key, $this->_relations)) {
-			if (is_array($this->_relations[$key])) {
-				$this->_relations[$key][] = $value;
+		} elseif (array_key_exists($key, $this->_dependent_relations)) {
+			if (is_array($this->_dependent_relations[$key])) {
+				$this->_dependent_relations[$key][] = $value;
 			}
 		} elseif (array_key_exists($key, $this->_properties)) {
-			$this->_record->$key = $value;
-			$this->_clean = false;
+			$this->setProperty($key, $value);
 		} elseif($key == "id") {
 			$this->_record->id = $value;
+			$foreignKey = strtolower(get_class($this))."Id";
+			foreach($this->_dependent_relations as $relation) {
+				if (is_array($relation)) {
+					foreach($relation as $model) {
+						$model->setProperty($foreignKey, $value);
+					}
+				}
+			}
 		}
 	}
 
@@ -207,6 +213,14 @@ class Record {
 	 */
 	function isDirty() {
 		return (!$this->_clean);
+	}
+	
+	/**
+	 * Set a property value.
+	 */
+	function setProperty($property, $value) {
+		$this->_record->$property = $value;
+		$this->_clean = false;
 	}
 	
 	/**
@@ -294,7 +308,7 @@ class Record {
 				$this->_storage->update($this->_table, array('id'=>$this->id), $record);
 			} else {
 				$this->_storage->insert($this->_table, $record);
-				$this->_record->id = $this->_storage->insertId();
+				$this->id = $this->_storage->insertId();
 			}
 			if ($recursive) {
 				if (!$this->saveAssociations()) return false;
@@ -315,7 +329,7 @@ class Record {
 				$table = $this->_joins[$key];
 				$self_id = $this->id;
 				$self_join = strtolower(get_class($this)) . "_id";
-				$this->_storage->delete($table, array($self_join=>$self_id));			
+				$this->_storage->delete($table, array($self_join=>$self_id));		
 				foreach($association as $model) {
 					if ($model->save(true, false)) {
 						$model_id = $model->id;
@@ -336,7 +350,7 @@ class Record {
 	 * Probably also need to use transactions here to ensure referential integrity.
 	 */
 	private function saveRelations() {
-		foreach($this->_relations as $relation) {
+		foreach($this->_dependent_relations as $relation) {
 			if (is_array($relation)) {
 				foreach($relation as $model) {
 					if ($model->isDirty()) {
