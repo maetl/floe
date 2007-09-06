@@ -4,24 +4,22 @@
  * @package repository
  * @subpackage store
  */
+require_once 'EventLogger.class.php';
 require_once 'MysqlResourceError.class.php';
- 
+
 /**
  * <p>An active connection to a MySql database server.</p>
  *
- * @subpackage storage
+ * @package repository
  * @subpackage store
  */
 class MysqlConnection {
-	
-	/**
-	 * @private
-	 */
-	var $_connection;
-	var $_db_host;
-	var $_db_name;
-	var $_db_user;
-	var $_db_pass;
+
+	private $_connection;
+	private $_db_host;
+	private $_db_name;
+	private $_db_user;
+	private $_db_pass;
 
 	/**
 	 *  Constructs a Mysql connection that can be obtained upon invocation of the connect method.
@@ -58,10 +56,12 @@ class MysqlConnection {
 				$this->raiseError();
 				return false;
 			}
+			EventLogger::info("Connected to [{$this->_db_host}]");
 			if (!@mysql_select_db($this->_db_name, $this->_connection)) {
 				$this->raiseError();
 				return false;
 			}
+			EventLogger::info("Selected [{$this->_db_name}]");
 		}
 		return true;
 	}
@@ -80,6 +80,7 @@ class MysqlConnection {
 	function execute($sql) {
 		$this->connect();
 		$query = mysql_query($sql, $this->_connection);
+		EventLogger::info("Executed [$sql]");
 		return (mysql_error() != '') ? $this->raiseError() : $query;
 	}
 	
