@@ -19,6 +19,14 @@ class EventLogger {
 	static function handler(LogHandler $observer) {
 		self::$handlers[] = $observer;
 	}
+	
+	static function pop() {
+		return array_pop(self::$handlers);
+	}
+	
+	static function clean() {
+		self::$handlers = array();
+	}
 
 	static function debug($message) {
 		foreach(self::$handlers as $handler) {
