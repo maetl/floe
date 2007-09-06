@@ -8,25 +8,24 @@ require_once 'repository/store/mysql/MysqlConnection.class.php';
 require_once 'repository/store/mysql/MysqlAdaptor.class.php';
 
 /**
- * A factory for generating instances of storage adaptors
+ * A factory for generating a singleton instance of a storage
+ * adaptor. 
  *
  * @package repository
  * @subpackage store
  */
 class StorageAdaptor {
-
+		
+		private static $implementation = null;
+	
 		/**
 		 * Returns a MysqlAdaptor instance
 		 */
         function instance($plugin = false) {
-            return new MysqlAdaptor(new MysqlConnection());
-        }
-		
-		/**
-		 * Returns a StorageAdaptor instance
-		 */
-        function connection($plugin = false) {
-            return new MysqlConnection();
+        	if (!self::$implementation) {
+            	self::$implementation = new MysqlAdaptor(new MysqlConnection());
+        	}
+        	return self::$implementation;
         }
 		
 }
