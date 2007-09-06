@@ -121,9 +121,10 @@ require_once 'MysqlIterator.class.php';
 	/**
 	 *
 	 */
-	function selectById($table, $id) {
+	function selectById($table, $id, $target=false) {
 		$this->_currentTable = $table;
-		$sql = 'SELECT * FROM '.$table.' WHERE id="'.$id.'"';
+		$fields = (!$target) ? '*' : implode(',', array_keys($target));
+		$sql = 'SELECT '.$fields.' FROM '.$table.' WHERE id="'.$id.'"';
 		$this->_result = $this->_connection->execute($sql);
 	}
 	
@@ -187,7 +188,6 @@ require_once 'MysqlIterator.class.php';
 			$sql .= '"'.mysql_real_escape_string((string)$values[$i]).'"';
 			$i==($colnum-1) ? $sql .= ')' : $sql .= ',';
 		}
-		echo $sql, "<br>";
 		$this->_connection->execute($sql);
 	}
 	
