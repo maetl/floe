@@ -18,7 +18,7 @@ class Record {
 	private $_table;
 	private $_record;
 	protected $_storage;
-	private $_fields;
+	private $_properties;
 	private $_joins;
 	private $_associations;
 	private $_relations;
@@ -30,16 +30,14 @@ class Record {
 		$this->_clean = true;
 		$this->_storage = StorageAdaptor::instance();
 		$this->_table = strtolower(Inflect::tableize(get_class($this)));
-		$this->_fields = array();
+		$this->_properties = array();
 		$this->_joins = array();
 		$this->_associations = array();
 		$this->_relations = array();
 		$this->_rules = array();
 		$this->_errors = array();
 		$this->_record = new stdClass();
-		if (method_exists($this, '__define')) {
-			$this->__define();
-		}
+		if (method_exists($this, '__define')) $this->__define();
 		if ($record) {
 			if (is_numeric($record)) {
 				$record = $this->findObjectById($record);
@@ -49,7 +47,7 @@ class Record {
 					$this->_record->id = $value;
 				} else {
 					$property = Inflect::columnToProperty($field);
-					if (array_key_exists($property, $this->_fields))
+					if (array_key_exists($property, $this->_properties))
 						$this->_record->$property = $value;
 					}
 				}
@@ -67,6 +65,9 @@ class Record {
 		$this->hasRelation(new DependentRelation($this, $entity));
 	}
 
+	/**
+	 * Legacy relationship method.
+	 */
 	function hasRelation($entity) {
 		$this->_relations[get_class($entity)] = $entity;
 	}
@@ -111,7 +112,7 @@ class Record {
 	 */
 	function property($name, $type) {
 		$this->_record->$name = null;
-		$this->_fields[$name] = $type;
+		$this->_properties[$name] = $type;
 	}
 	
 	/**
@@ -121,11 +122,16 @@ class Record {
 	 * (a virtual version of get_class_vars)
 	 */
 	function properties() {
-		return $this->_fields;
+		return $this->_properties;
 	}
 
 	/**
 	 * Add a validation rule to this record.
+	 * 
+	 * Validation rules should implement the ValidationRule interface,
+	 * but this is not enforced by the current code, to allow for
+	 * several legacy applications that overload parameters to
+	 * the ValidationRule::validate method.
 	 * 
 	 */
 	function rule($field, $rule) {
@@ -138,6 +144,9 @@ class Record {
 		$this->_rules[$field][] = $rule;
 	}
 
+	/**
+	 * Virtual property accessor
+	 */
 	function __get($key) {
 		if (array_key_exists($key, $this->_joins)) {
 			$this->_storage->selectByAssociation($key, $this->_joins[$key]);
@@ -153,8 +162,8 @@ class Record {
 					return $this->_relations[$key];
 				}
 			}
-		} elseif (array_key_exists($key, $this->_fields)) {
-			switch($this->_fields[$key]) {
+		} elseif (array_key_exists($key, $this->_properties)) {
+			switch($this->_properties[$key]) {
 				case 'string':
 				case 'text':
 					return $this->_getString($key);
@@ -175,6 +184,9 @@ class Record {
 		}
 	}
 	
+	/**
+	 * Virtual property writer.
+	 */
 	function __set($key, $value) {
 		if (array_key_exists($key, $this->_associations)) {
 			$this->_associations[$key][] = $value;
@@ -182,7 +194,7 @@ class Record {
 			if (is_array($this->_relations[$key])) {
 				$this->_relations[$key][] = $value;
 			}
-		} elseif (array_key_exists($key, $this->_fields)) {
+		} elseif (array_key_exists($key, $this->_properties)) {
 			$this->_record->$key = $value;
 			$this->_clean = false;
 		} elseif($key == "id") {

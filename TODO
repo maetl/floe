@@ -1,18 +1,18 @@
-(done) setup required directory structure for gems
-(done) port existing rake tasks to floe task runner
-(done) add framework for testing commands and tasks
-(done) add unit tests for php server package
 clean up naming of UriPath accessor methods
 convert php server Request to read-only
 cleanup absolute path links from directory references
 add documentation for php server and doc generation task
-(done) add server tests for php request and response streams
 add configure task and wrapper to options file in HOME dir
 add server tests for parameter dispatch and URI controller binding
 add install task and wrapper for library downloading and unpackaging
-(done) document language.inflector api
-(done) fix float type return in repository.record
 add mysql.test with undefined record class
-document repository.record api
 add collection capabilities to repository
 review todo.sh implementation of standard file format for todo lists
+(done) document repository.record api
+(done) setup required directory structure for gems
+(done) port existing rake tasks to floe task runner
+(done) add framework for testing commands and tasks
+(done) add unit tests for php server package
+(done) document language.inflector api
+(done) fix float type return in repository.record
+(done) add server tests for php request and response streams
