@@ -1,5 +1,6 @@
 clean up naming of UriPath accessor methods
 convert php server Request to read-only
+clean out properties and hashmap crap from Record class
 cleanup absolute path links from directory references
 add documentation for php server and doc generation task
 add configure task and wrapper to options file in HOME dir
