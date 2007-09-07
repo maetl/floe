@@ -29,7 +29,7 @@ class UriPath {
 	}
 	
 	/** @private */
-	function parse() {
+	private function parse() {
 		$this->_parsed = parse_url($this->_raw);
 		if (strlen($this->_raw) > 1) {
 			if (isset($this->_parsed['query'])) {
@@ -46,7 +46,7 @@ class UriPath {
 	}
 	
 	/** @private */
-	function addResource($resource) {
+	private function addResource($resource) {
 		if (strstr($resource, ";")) {
 			$aspect = explode(";", $resource);
 			$this->_aspect = $aspect[1];
@@ -65,7 +65,7 @@ class UriPath {
 	* <p>Gives the resource name part.</p>
 	* <p>Eg: <code>resource.ext#fragment</code></p>
 	*/
-	function getResource() {
+	function resource() {
 		if (isset($this->_parsed['fragment'])) {
 			return $this->_resource . "#" . $this->_parsed['fragment'];
 		} else {
@@ -77,7 +77,7 @@ class UriPath {
 	* <p>Gives the fragment identifier.</p>
 	* <p>Eg: <code>#fragment</code></p>
 	*/
-	function getFragment() {
+	function fragment() {
 		if (isset($this->_parsed['fragment'])) {
 			return $this->_parsed['fragment'];
 		}
@@ -86,7 +86,7 @@ class UriPath {
 	/**
 	* <p>Gives the identity of the requested resource.</p>
 	*/
-	function getIdentity() {
+	function identity() {
 		if (isset($this->_identity)) {
 			return $this->_identity;
 		} else {
@@ -97,21 +97,34 @@ class UriPath {
 	/**
 	* Gives the file extension part of the requested resource.
 	*/
-	function getExtension() {
+	function ext() {
 		if (isset($this->_extension)) {
 			return $this->_extension;
 		}
 	}
 	
-	function getScheme() {
+	/**
+	 * Alias for ext.
+	 */
+	function extension() {
+		return $this->ext();
+	}
+	
+	/**
+	 * @todo implement multiple schemes
+	 */
+	function scheme() {
 		return 'http';
 	}
 	
-	function getHost() {
+	/**
+	 * Returns the HTTP host of this uri.
+	 */
+	function host() {
 		return $_SERVER['HTTP_HOST'];
 	}
 	
-	function getPath() {
+	function path() {
 		return $this->_parsed['path'];
 	}
 	
@@ -119,17 +132,26 @@ class UriPath {
 		return (strlen($this->_resource) == 0);
 	}
 	
-	function getQuery() {
+	/**
+	 * Returns the raw querystring.
+	 */
+	function query() {
 		if (isset($this->_parsed['query'])) {
 			return $this->_parsed['query'];
 		}
 	}
 	
-	function getParameters() {
+	/**
+	 * Returns a hash of parameters from the querystring.
+	 */
+	function parameters() {
 		return $this->_parameters;
 	}
 	
-	function getParameter($key) {
+	/**
+	 * Returns the value of given parameter.
+	 */
+	function parameter($key) {
 		if (isset($this->_parameters[$key])) {
 			return $this->_parameters[$key];
 		}
@@ -157,6 +179,9 @@ class UriPath {
 		return $this->_segments[0];
 	}
 	
+	/**
+	 * Returns a hash of path segments
+	 */
 	function segments() {
 		return $this->_segments;
 	}
@@ -177,31 +202,22 @@ class UriPath {
 	function segmentsFrom($index) {
 		return array_slice($this->_segments, $index);
 	}
-	
-	function getBaseSegment() {
-		if (count($this->_segments) > 0) {
-			return $this->_segments[count($this->_segments)-1];
-		} else {
-			return '';
-		}
-	}
-	
-	function getSegment($index=1) {
-		return $this->_segments[count($this->_segments)-$index];
-	}	
 
 	/**
 	* Gives the aspect string of the requested URI
 	* Eg: <code>/path/to/resource;aspect</code> returns <code>aspect</code>
 	*/
-	function getAspect() {
+	function aspect() {
 		if (isset($this->_aspect)) {
 			return $this->_aspect;
 		}
 	}
 	
-	function getUrl() {
-		return $this->getHost() . $this->_raw;
+	/**
+	 * Returns the full url.
+	 */
+	function url() {
+		return $this->host() . $this->_raw;
 	}
 	
 }

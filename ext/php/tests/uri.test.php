@@ -7,20 +7,20 @@ class UriPathReaderTest extends UnitTestCase {
 	function testEmptyBasePath() {
 		$path = new UriPath("/");
 		$this->assertTrue($path->isEmpty());
-		$this->assertEqual("/", $path->getPath());
+		$this->assertEqual("/", $path->path());
 		$this->assertEqual(0, count($path->segments()));
 		$this->assertEqual("", $path->segment(0));
 		$this->assertEqual("", $path->segment(1));
-		$this->assertEqual("", $path->getIdentity());
-		$this->assertEqual("", $path->getResource());
+		$this->assertEqual("", $path->identity());
+		$this->assertEqual("", $path->resource());
 	}
 	
 	function testSingleSegmentPath() {
 		$path = new UriPath("/entry");
 		$this->assertEqual(1, count($path->segments()));
-		$this->assertEqual("/entry", $path->getPath());
-		$this->assertEqual("entry", $path->getIdentity());
-		$this->assertEqual("entry", $path->getResource());
+		$this->assertEqual("/entry", $path->path());
+		$this->assertEqual("entry", $path->identity());
+		$this->assertEqual("entry", $path->resource());
 	}
 	
 	function testMultiSegmentPath() {
@@ -50,52 +50,52 @@ class UriPathReaderTest extends UnitTestCase {
 	
 	function testFragmentIdentifier() {
 		$path = new UriPath("/content/entry/title#heading");
-		$this->assertEqual("title#heading", $path->getResource());
-		$this->assertEqual("title", $path->getIdentity());
-		$this->assertEqual("heading", $path->getFragment());
+		$this->assertEqual("title#heading", $path->resource());
+		$this->assertEqual("title", $path->identity());
+		$this->assertEqual("heading", $path->fragment());
 	}
 	
 	function testPlusEncodedPath() {
 		$path = new UriPath("/entries/an+encoded+title");
-		$this->assertEqual("an encoded title", $path->getIdentity());
+		$this->assertEqual("an encoded title", $path->identity());
 	}
 	
 	function testAutoEncodedPath() {
 		$path = new UriPath("/entries/an%20encoded%20title");
-		$this->assertEqual("an encoded title", $path->getIdentity());
+		$this->assertEqual("an encoded title", $path->identity());
 	}	
 	
 	function testQueryString() {
 		$path = new UriPath("/?entry=title&id=123");
 		$this->assertTrue($path->isEmpty());
-		$this->assertEqual(2, count($path->getParameters()));
-		$this->assertEqual("title", $path->getParameter("entry"));
-		$this->assertEqual("123", $path->getParameter("id"));
+		$this->assertEqual(2, count($path->parameters()));
+		$this->assertEqual("title", $path->parameter("entry"));
+		$this->assertEqual("123", $path->parameter("id"));
 	}
 	
 	function testSingleSegmentPathWithQueryString() {
 		$path = new UriPath("/search?q=a+search+phrase");
-		$this->assertEqual("search", $path->getResource());
-		$this->assertEqual("q=a+search+phrase", $path->getQuery());
-		$this->assertEqual("a search phrase", $path->getParameter("q"));
+		$this->assertEqual("search", $path->resource());
+		$this->assertEqual("q=a+search+phrase", $path->query());
+		$this->assertEqual("a search phrase", $path->parameter("q"));
 	}
 	
 	function testMultiSegmentPathWithQueryString() {
 		$path = new UriPath("/entries/2005?page=3&tag=design");
 		$this->assertEqual(2, count($path->segments()));
-		$this->assertEqual("2005", $path->getResource());
-		$this->assertEqual("2005", $path->getIdentity());
-		$this->assertEqual("page=3&tag=design", $path->getQuery());
-		$this->assertEqual(2, count($path->getParameters()));
-		$this->assertEqual("3", $path->getParameter("page"));
-		$this->assertEqual("design", $path->getParameter("tag"));
+		$this->assertEqual("2005", $path->resource());
+		$this->assertEqual("2005", $path->identity());
+		$this->assertEqual("page=3&tag=design", $path->query());
+		$this->assertEqual(2, count($path->parameters()));
+		$this->assertEqual("3", $path->parameter("page"));
+		$this->assertEqual("design", $path->parameter("tag"));
 	}
 	
 	function testQueryParametersAsArray() {
 		$path = new UriPath("/base/object?q[0]=hello&q[1]=world&m[0]=foo&m[1]=bar");
-		$this->assertEqual(2, count($path->getParameters()));
-		$q = $path->getParameter('q');
-		$m = $path->getParameter('m');
+		$this->assertEqual(2, count($path->parameters()));
+		$q = $path->parameter('q');
+		$m = $path->parameter('m');
 		$this->assertIsA($q, 'Array');
 		$this->assertEqual("hello", $q[0]);
 		$this->assertEqual("world", $q[1]);
@@ -105,30 +105,30 @@ class UriPathReaderTest extends UnitTestCase {
 
 	function testMultiSegmentPathWithExtension() {
 		$path = new UriPath("/books/title.txt");
-		$this->assertEqual("txt", $path->getExtension());
-		$this->assertEqual("title.txt", $path->getResource());
-		$this->assertEqual("title", $path->getIdentity());
+		$this->assertEqual("txt", $path->extension());
+		$this->assertEqual("title.txt", $path->resource());
+		$this->assertEqual("title", $path->identity());
 	}
 	
 	function testMultiSegmentPathWithAspect() {
 		$path = new UriPath("/base/object;aspect");
-		$this->assertEqual("aspect", $path->getAspect());
-		$this->assertEqual("object", $path->getResource());
-		$this->assertEqual("object", $path->getIdentity());
+		$this->assertEqual("aspect", $path->aspect());
+		$this->assertEqual("object", $path->resource());
+		$this->assertEqual("object", $path->identity());
 	}
 	
 	function testMultiSegmentPathWithAspectAndExtension() {
 		$path = new UriPath("/base/identity.xml;edit");
-		$this->assertEqual("edit", $path->getAspect());
-		$this->assertEqual("identity.xml", $path->getResource());
-		$this->assertEqual("xml", $path->getExtension());
-		$this->assertEqual("identity", $path->getIdentity());
+		$this->assertEqual("edit", $path->aspect());
+		$this->assertEqual("identity.xml", $path->resource());
+		$this->assertEqual("xml", $path->extension());
+		$this->assertEqual("identity", $path->identity());
 	}
 	
 	function testCanRemoveBadCharacters() {
 		$path = new UriPath('/base/object.php?key=value<?php echo $_REQUEST; ?>');
-		$this->assertEqual("object.php", $path->getResource());
-		$this->assertEqual("value", $path->getParameter("key"));
+		$this->assertEqual("object.php", $path->resource());
+		$this->assertEqual("value", $path->parameter("key"));
 	}
 
 }
