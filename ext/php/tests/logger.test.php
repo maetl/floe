@@ -15,7 +15,16 @@ class EventLoggerTest extends UnitTestCase {
 		$handler->expectAt(2, 'emit', array(Level::Warning, 'two'));
 		$handler->expectAt(3, 'emit', array(Level::Error, 'three'));
 		$handler->expectAt(4, 'emit', array(Level::Critical, 'four'));
+		
 		EventLogger::handler($handler);
+		
+		EventLogger::debug("zero");
+		EventLogger::info("one");
+		EventLogger::warning("two");
+		EventLogger::error("three");
+		EventLogger::critical("four");
+		
+		$this->assertIsA(EventLogger::pop(), 'MockLogHandler');
 		
 		EventLogger::debug("zero");
 		EventLogger::info("one");
