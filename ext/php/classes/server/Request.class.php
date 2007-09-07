@@ -15,8 +15,8 @@ require_once "HttpEnvelope.class.php";
  *
  * @package server
  */ 
-class Request {
-	var $uri;
+final class Request {
+	public $uri;
 	private $method;
 	private $envelope;
 

@@ -1,5 +1,5 @@
 (done) clean up naming of UriPath accessor methods
-convert php server Request to read-only
+(done) convert php server Request to read-only
 clean out properties and hashmap crap from Record class
 cleanup absolute path links from directory references
 add documentation for php server and doc generation task

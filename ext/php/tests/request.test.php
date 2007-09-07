@@ -61,7 +61,7 @@ class RequestTest extends UnitTestCase {
 		$this->mockUri("/controller/action/id");
 
 		$request = new Request();
-		$this->assertEqual("id", $request->uri->getIdentity());
+		$this->assertEqual("id", $request->uri->identity());
 		$this->assertEqual(3, count($request->uri->segments()));
 	}
 	
