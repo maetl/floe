@@ -1,4 +1,11 @@
 <?php
+/**
+ * @package server
+ */
+
+/**
+ * @package server
+ */
 require_once 'HttpError.class.php';
 
 class ResourceNotFound extends HttpError {

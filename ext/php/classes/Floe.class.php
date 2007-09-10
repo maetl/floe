@@ -1,7 +1,12 @@
 <?php
 /**
+ * @package floe
+ */
+
+/**
  * Static class to load tests with default data.
  * 
+ * @package floe
  * @todo flesh out Zend/PEAR import statements, or remove altogether
  */
 class Floe {
