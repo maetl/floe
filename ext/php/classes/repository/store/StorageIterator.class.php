@@ -10,9 +10,7 @@
  * @package repository
  * @subpackage store
  */
-class StorageIterator implements Iterator {
-
-
+interface StorageIterator extends Iterator {
 
 }
 

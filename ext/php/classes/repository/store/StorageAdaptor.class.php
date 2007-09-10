@@ -5,7 +5,7 @@
 * @subpackage store
 */
 require_once 'repository/store/mysql/MysqlConnection.class.php';
-require_once 'repository/store/mysql/MysqlAdaptor.class.php';
+require_once 'repository/store/mysql/MysqlGateway.class.php';
 
 /**
  * A factory for generating a singleton instance of a storage
@@ -23,7 +23,7 @@ class StorageAdaptor {
 		 */
         function instance($plugin = false) {
         	if (!self::$implementation) {
-            	self::$implementation = new MysqlAdaptor(new MysqlConnection());
+            	self::$implementation = new MysqlGateway(new MysqlConnection());
         	}
         	return self::$implementation;
         }

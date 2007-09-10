@@ -4,12 +4,13 @@
  * @package repository
  * @subpackage store
  */
+require_once 'repository/store/StorageIterator.class.php';
 
 /**
  * @package repository
  * @subpackage store
  */
-class MysqlIterator {
+class MysqlIterator implements StorageIterator {
 
 	var $_result;
 	var $_current;
@@ -19,6 +20,22 @@ class MysqlIterator {
 		$this->_result = $result;
 		$this->_current = 1;
 		$this->_count = mysql_num_rows($this->_result);
+	}
+	
+	function current() {
+	
+	}
+	
+	function valid() {
+	
+	}
+	
+	function key() {
+	
+	}
+	
+	function rewind() {
+	
 	}
 
 	function count() {

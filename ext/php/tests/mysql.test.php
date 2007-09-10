@@ -20,13 +20,13 @@ class MysqlQuerySingleTableTest extends MysqlQueryTest {
 	}
 	
 	function testCanCreateTable() {
-		$query = new MysqlAdaptor($this->db);
+		$query = new MysqlGateway($this->db);
 		$query->createTable("people", array('first_name'=>'string'));
 		$this->assertTrue($this->db->execute("DESCRIBE people"));
 	}
 	
 	function testCanInsertIntoAndUpdateTable() {
-		$query = new MysqlAdaptor($this->db);
+		$query = new MysqlGateway($this->db);
 		$query->createTable("people", array('first_name'=>'string', 'age'=>'number'));
 		$query->insert('people', array('id'=>1, 'first_name'=>'mark','age'=>26));
 		$result = mysql_fetch_object($this->db->execute('SELECT * FROM people WHERE id="1"'));
@@ -43,7 +43,7 @@ class MysqlQuerySingleTableTest extends MysqlQueryTest {
 	}
 	
 	function testCanDeleteFromTable() {
-		$query = new MysqlAdaptor($this->db);
+		$query = new MysqlGateway($this->db);
 		$query->createTable("people", array('first_name'=>'string', 'age'=>'number'));
 		$query->insert('people', array('id'=>1, 'first_name'=>'mark','age'=>26));
 		$query->delete('people', array('id'=>1));
@@ -59,7 +59,7 @@ class MysqlQuerySingleTableTest extends MysqlQueryTest {
 	}
 	
 	function testCanSelectFromTable() {
-		$query = new MysqlAdaptor($this->db);
+		$query = new MysqlGateway($this->db);
 		$query->createTable("people", array('first_name'=>'string', 'age'=>'number'));
 		$query->insert('people', array('id'=>1, 'first_name'=>'mark','age'=>26));
 		$query->insert('people', array('id'=>2, 'first_name'=>'markus','age'=>26));
@@ -76,7 +76,7 @@ class MysqlQuerySingleTableTest extends MysqlQueryTest {
 	}
 	
 	function testCanAlterTable() {
-		$query = new MysqlAdaptor($this->db);
+		$query = new MysqlGateway($this->db);
 		$query->createTable("people", array('first_name'=>'string', 'age'=>'number'));
 		$query->insert('people', array('id'=>1, 'first_name'=>'mark','age'=>26));
 		$query->insert('people', array('id'=>2, 'first_name'=>'markus','age'=>26));
@@ -95,19 +95,19 @@ class MysqlQuerySingleTableTest extends MysqlQueryTest {
 class MysqlRecordIteratorTest extends MysqlQueryTest {
 
 	function setUp() {
-		$query = new MysqlAdaptor($this->db);
+		$query = new MysqlGateway($this->db);
 		$query->createTable("books", array('title'=>'string','author_id'=>'int'));
 		$query->createTable("authors", array('name'=>'string'));
 	}
 	
 	function tearDown() {
-		$query = new MysqlAdaptor($this->db);
+		$query = new MysqlGateway($this->db);
 		$query->dropTable("books");
 		$query->dropTable("authors");
 	}
 
 	function testCanIterateFromQuery() {
-		$query = new MysqlAdaptor($this->db);
+		$query = new MysqlGateway($this->db);
 		$query->insert('authors', array('name'=>'James Joyce'));
 		$author_id = $query->insertId();
 		$query->insert('books', array('title'=>'Finnegans Wake','author_id'=>$author_id));
@@ -140,7 +140,7 @@ class Thing extends Record {
 class MysqlRecordFieldTypesTest extends MysqlQueryTest {
 
 	function testCanInsertAllTypes() {
-		$query = new MysqlAdaptor($this->db);
+		$query = new MysqlGateway($this->db);
 		
 		$query->createTable("things", array(
 										'string_field'=>'a string',

@@ -8,7 +8,7 @@ require_once 'EventLogger.class.php';
 require_once 'MysqlResourceError.class.php';
 
 /**
- * <p>An active connection to a MySql database server.</p>
+ * An active connection to a MySql database server.
  *
  * @package repository
  * @subpackage store
@@ -44,7 +44,7 @@ class MysqlConnection {
 	 }
 	
 	/**
-	 * <p>Idempotent method creates the low level connection to the database.</p>
+	 * Idempotent method creates the low level connection to the database.
 	 *
 	 * @public
 	 * @return boolean true on success
