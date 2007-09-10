@@ -1,9 +1,11 @@
 <?php
 /**
- * Stupid package registry stuff
+ * Static class to load tests with default data.
+ * 
+ * @todo flesh out Zend/PEAR import statements, or remove altogether
  */
-class Floe { 
-
+class Floe {
+	
 	static function inCli() {
 		return (php_sapi_name() == 'cli');
 	}
