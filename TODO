@@ -10,7 +10,6 @@ add configure task and wrapper to options file in HOME dir
 add server tests for parameter dispatch and URI controller binding
 add install task and wrapper for library downloading and unpackaging
 add mysql.test with undefined record class
-add collection capabilities to repository
 review todo.sh implementation of standard file format for todo lists
 add route dispatch receptor and route config format
 (done) document repository.record api
