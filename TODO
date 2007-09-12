@@ -5,13 +5,13 @@ add unit tests for file storage
 add stub classes for handling file storage
 clean out properties and hashmap crap from Record class
 cleanup absolute path links from directory references
-add documentation for php server and doc generation task
+(done) add documentation for php server and doc generation task
 add configure task and wrapper to options file in HOME dir
-add server tests for parameter dispatch and URI controller binding
+(done) add server tests for parameter dispatch and URI controller binding
 add install task and wrapper for library downloading and unpackaging
 add mysql.test with undefined record class
-review todo.sh implementation of standard file format for todo lists
 add route dispatch receptor and route config format
+ensure default command runs when floe is called with noargs
 (done) document repository.record api
 (done) setup required directory structure for gems
 (done) port existing rake tasks to floe task runner
