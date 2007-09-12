@@ -1,12 +1,14 @@
 <?php
 /**
- * core.os base include 
- * @package workflow
+ * @package repository
  * @subpackage rules
  */
 
 /**
  * base class for validation rules
+ * 
+ * @package repository
+ * @subpackage rules
  */
 class ValidationRule { 
 	/**

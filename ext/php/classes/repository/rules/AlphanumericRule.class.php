@@ -1,10 +1,14 @@
 <?php
+/**
+ * @package repository
+ * @subpackage rules
+ */
 require_once 'ValidationRule.class.php';
 
 /**
  * checks if the field contains alphanumeric characters only
  * 
- * @package workflow
+ * @package repository
  * @subpackage rules	
  */
 class AlphaNumericRule extends ValidationRule {
