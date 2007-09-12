@@ -4,6 +4,8 @@
  */
 
 /**
+ * HTTP Protocol error.
+ * 
  * @package server
  */
 class HttpError extends Exception { 
