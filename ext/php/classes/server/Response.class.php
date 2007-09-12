@@ -1,6 +1,6 @@
 <?php
-// $Id$
 /**
+ * $Id$
  * @package server
  */
 require_once "UriPath.class.php";

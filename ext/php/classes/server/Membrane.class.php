@@ -1,26 +1,25 @@
 <?php
-
 /**
-* @package server
-*/
+ * $Id$
+ * @package server
+ */
 require_once 'Request.class.php';
 require_once 'Response.class.php';
 require_once 'Receptor.class.php';
 
 /**
-* The main application server, using the metaphor of a cellular membrane.
-* 
-* The Membrane responds to requests by delegating to its chain of receptors for processing.
-* 
-*  
-* Order of filter execution is defined as first-in-first-out. The run method simply iterates
-* down the filter chain, executing each filter in turn.
-* 
-* Because of the shared-nothing nature of PHP, each invocation of the Membrane is stateless. Information
-* that needs to propagate through multiple requests should utilize sessions.
-* 
-* @package server
-*/
+ * The main application server, using the metaphor of a cellular membrane.
+ * 
+ * The Membrane responds to requests by delegating to its chain of receptors for processing.
+ *   
+ * Order of filter execution is defined as first-in-first-out. The run method simply iterates
+ * down the filter chain, executing each filter in turn.
+ * 
+ * Because of the shared-nothing nature of PHP, each invocation of the Membrane is stateless. Information
+ * that needs to propagate through multiple requests should utilize sessions.
+ * 
+ * @package server
+ */
 class Membrane {
 
     private $receptors;

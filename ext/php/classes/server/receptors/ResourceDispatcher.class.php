@@ -1,8 +1,9 @@
 <?php
 /**
-* @package server
-* @subpackage receptors
-*/
+ * $Id$
+ * @package server
+ * @subpackage receptors
+ */
 if (!defined('DefaultMethodBinding')) {
 	define('DefaultMethodBinding', 'index');
 }

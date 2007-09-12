@@ -1,6 +1,6 @@
 <?php
-// $Id: Session.class.php 52 2007-05-06 08:36:41Z maetl_ $
 /**
+ * $Id$
  * @package server
  */
 
