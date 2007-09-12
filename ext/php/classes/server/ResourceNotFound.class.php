@@ -4,6 +4,10 @@
  */
 
 /**
+ * HTTP Status Code 404.
+ * 
+ * Resource not found.
+ * 
  * @package server
  */
 require_once 'HttpError.class.php';

@@ -4,6 +4,10 @@
  */
 
 /**
+ * HTTP Status Code 405.
+ * 
+ * Unsupported method.
+ * 
  * @package server
  */
 require_once 'HttpError.class.php';
