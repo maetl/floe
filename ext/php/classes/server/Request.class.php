@@ -1,6 +1,6 @@
 <?php
-// $Id$
 /**
+ * $Id$
  * @package server
  */
 require_once "UriPath.class.php";
@@ -16,6 +16,9 @@ require_once "HttpEnvelope.class.php";
  * @package server
  */ 
 final class Request {
+	/**
+	 * @var UriPath
+	 */
 	public $uri;
 	private $method;
 	private $envelope;
