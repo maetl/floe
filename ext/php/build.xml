@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="floe" default="info" basedir=".">
+<!-- @reference http://phing.info/docs/guide/2.2.0/ -->
+	
+	<property name="version" value="0.0.4" />
+	<property name="buildpath" value="/Users/maetl/Projects/Floe/Code" />
+	
+	<php function="mktime" returnProperty="timestamp" />
+	
+	<target name="info">
+		<echo msg="Floe PHP packager" />
+	</target>
+	
+	<target name="prepare">
+		<mkdir dir="${buildpath}/packages" />
+		<mkdir dir="${buildpath}/packages/releases" />
+		<mkdir dir="${buildpath}/packages/snapshots" />
+		<mkdir dir="${buildpath}/builds" />
+		<mkdir dir="${buildpath}/builds/.versions" />
+		<mkdir dir="${buildpath}/builds/.versions/floe-${version}" />
+		<mkdir dir="${buildpath}/reports" />
+		<mkdir dir="${buildpath}/documentation/api/${version}" />
+	</target>
+
+	<target name="export" depends="prepare">
+		<exec command="svn export http://floe.googlecode.com/svn/trunk/ext/php/ ${buildpath}/builds/floe-${version}" />
+	</target>	
+	
+	<target name="current_revision" depends="export">
+		<if>
+			<available file="${buildpath}/builds/.versions/floe-${version}/StartRev" />
+			<then>
+				<delete file="${buildpath}/builds/.versions/floe-${version}/EndRev" />
+				<exec command="svn log -r HEAD http://floe.googlecode.com/svn | grep '^r' | perl -p -e 'print m/[r]([0-9]+)\s/g;' | cut -c 1-2 > ${buildpath}/builds/.versions/floe-${version}/EndRev" />
+			</then>
+			<else>
+				<exec command="svn log -r HEAD http://floe.googlecode.com/svn | grep '^r' | perl -p -e 'print m/[r]([0-9]+)\s/g;' | cut -c 1-2 > ${buildpath}/builds/.versions/floe-${version}/StartRev" />
+				<copy file="${buildpath}/builds/.versions/floe-${version}/StartRev" toFile="${buildpath}/builds/.versions/floe-${version}/EndRev" />
+			</else>
+		</if>
+	</target>
+	
+	<target name="source_package" depends="current_revision">
+		<zip destfile="${buildpath}/packages/releases/floe-${version}.zip" basedir="${buildpath}/builds/floe-${version}" />
+		<phpdoc title="Floe API ${version}" destdir="${buildpath}/documentation/api/${version}" output="HTML:Smarty:PHP">
+			<fileset dir="${buildpath}/builds/floe-${version}/classes">
+				<include name="**/*.class.php" />	
+			</fileset>
+		</phpdoc>
+	</target>
+	
+	<target name="zend_package" depends="current_revision">
+		<echo msg="Building package of Zend/PEAR formatted classes" />
+	</target>
+	
+	<target name="simple_package" depends="current_revision">
+		<echo msg="Building package of simple formatted classes" />
+	</target>
+	
+	<target name="snapshot_package">
+		<echo msg="Snapshot of current build" />
+		<copy file="${buildpath}/builds/.versions/floe-${version}/EndRev" toFile="${buildpath}/builds/.versions/floe-${version}/floe-${timestamp}.zip.snapshot" />
+		<zip destfile="/Users/maetl/Projects/Floe/Code/packages/snapshots/floe-${timestamp}.zip" basedir="/Users/maetl/Projects/Floe/Code/builds/floe-${version}" />
+	</target>
+	
+</project>

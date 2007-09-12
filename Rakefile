@@ -108,8 +108,8 @@ end
 
 #
 # get a snapshot log of the current revision
-def revision_snapshot()
-  start_rev = File.read($conf.version_dir + "/StartRev").strip
+def revision_snapshot(snapshot)
+  start_rev = File.read($conf.version_dir + "/" + snapshot + ".snapshot").strip
   end_rev = File.read($conf.version_dir + "/EndRev").strip
   log_rev = (start_rev == end_rev) ? 'HEAD' : end_rev + ":" + start_rev
   txt = `svn log -r #{log_rev} #{$conf.source.svn.host}`
@@ -120,7 +120,7 @@ end
 # Adds a new snapshot build to the project RSS feed
 def make_snapshot_feed(snapshot_file)
   feed_xml = "/Users/maetl/Sites/coretxt-os/pkg/floe/builds.xml"
-  log_txt = revision_snapshot()
+  log_txt = revision_snapshot(File.basename(snapshot_file))
   
   feed = RSS::Parser.parse(File.read(feed_xml)) do |maker|
     maker.channel.about = "http://os.coretxt.net.nz/pkg/floe/builds.xml"
