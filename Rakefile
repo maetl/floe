@@ -11,6 +11,8 @@ require 'rss/2.0'
 require 'rss/maker'
 require 'net/ftp'
 require 'lib/floe.rb'
+require 'lib/floe/format/atom.rb'
+
 
 $conf = Floe::Format::YML.read("buildfile")
 
@@ -83,7 +85,9 @@ end
 
 desc "export a build of the current revision"
 task :phpbuild do
-  rm_r $conf.build_dir
+  if File.exists?($conf.build_dir)
+    rm_r $conf.build_dir
+  end
   phing "ext/php/build.xml", :current_revision
 end
 
@@ -102,10 +106,6 @@ task :phpsnap => :phpbuild do
   end
 end
 
-task :testsnaps do
-  puts revision_snapshot()
-end
-
 #
 # get a snapshot log of the current revision
 def revision_snapshot(snapshot)
@@ -119,28 +119,43 @@ end
 #
 # Adds a new snapshot build to the project RSS feed
 def make_snapshot_feed(snapshot_file)
+  feed_yml = "/Users/maetl/Projects/Floe/Code/packages/snapshots.yml"
   feed_xml = "/Users/maetl/Sites/coretxt-os/pkg/floe/builds.xml"
   log_txt = revision_snapshot(File.basename(snapshot_file))
+    
+  entries = Floe::Format::YML.read(feed_yml)
   
-  feed = RSS::Parser.parse(File.read(feed_xml)) do |maker|
-    maker.channel.about = "http://os.coretxt.net.nz/pkg/floe/builds.xml"
-    maker.channel.title = "Floe::PHP"
-    maker.channel.description = "latest snapshots from floe/trunk/ext/php"
-    maker.channel.language = "en-nz"
-    maker.channel.copyright = "Coretxt (Public Domain)."
-    maker.channel.link = "http://os.coretxt.net.nz/code/floe"
-    maker.channel.date = Time.now
-    maker.channel.generator = "coretxt.os.labs"
-    maker.items.do_sort = true
-    maker.items.new_item do |item|
-      item.link = "http://os.coretxt.net.nz/pkg/floe/#{snapshot_file}"
-      item.title = "Snapshot: #{snapshot_file}"
-      item.date = Time.now
-      item.description = log_txt
-      item.author = "os@coretxt.net.nz"
-    end
+  log_time = Time.new.xmlschema
+  log_ymd = Time.new.strftime("%Y-%m-%d")
+  
+  id_tag = "tag:os.coretxt.net.nz,#{log_ymd}:#{snapshot_file}"
+  
+  entries << { 
+   "title" => "Snapshot: #{snapshot_file}",
+   "atom_id" => id_tag,
+   "published" => log_time,
+   "updated" => log_time,
+   "link" => "http://os.coretxt.net.nz/pkg/floe/#{snapshot_file}",
+   "summary" => log_txt
+  }
+  
+  feed = {
+    "title" => "Floe::PHP",
+    "subtitle" => "latest snapshots from floe/trunk/ext/php",
+    "self" => "http://os.coretxt.net.nz/pkg/floe/builds.xml",
+    "alternate" => "http://os.coretxt.net.nz/code/floe",
+    "atom_id" => "http://os.coretxt.net.nz/pkg/floe/builds.xml",
+    "author" => { "name"=> "maetl"},
+    "updated" => log_time
+  }
+  
+  unless entries.length < 10
+    entries.slice!(entries.length-1)
   end
-  File.open(feed_xml, "w") { |f| f.puts feed.to_s }
+  Floe::Format::YML.write(feed_yml, entries)
+  
+  atom_xml = Floe::Format::Atom.write(entries, feed)
+  File.open(feed_xml, "w") { |f| f.puts atom_xml }
 end
 
 desc "run all php level tests"
