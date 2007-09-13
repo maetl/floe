@@ -13,7 +13,7 @@ module Floe
         atom = doc.feed("xmlns"=>"http://www.w3.org/2005/Atom") do |f|
           doc.title(feed.title)
           doc.subtitle(feed.subtitle)
-          doc.link("rel"=>"self", "type"=>"applicaton/atom+xml", "href"=>feed.self)
+          doc.link("rel"=>"self", "type"=>"application/xml+atom", "href"=>feed.self)
           doc.link("rel"=>"alternate", "type"=>"text/html", "href"=>feed.alternate)
           doc.tag!(:id, feed.atom_id)
           doc.updated(feed.updated)
