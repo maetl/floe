@@ -135,6 +135,9 @@ module Floe
         end
         out
       end
+      def self.write(fname, contents)
+        File.open(fname, "w") { |f| f.puts contents.to_yaml }
+      end
     end
     
   end
