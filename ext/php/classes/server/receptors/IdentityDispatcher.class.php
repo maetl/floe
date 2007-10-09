@@ -52,17 +52,22 @@ class IdentityDispatcher implements Receptor {
 				$path = APP_DIR ."controllers/$base.controller.php";
 				$params = $request->uri->segmentsFrom(0);
 				if (!$path) {
-					include_once 'server/ResourceNotFound.class.php';
+					include_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 					throw new ResourceNotFound("Controller not found", $path);
 				}
 			}
 		}
-		include_once $path;
+		if (file_exists($path)) {
+			include_once $path;
+		} else {
+			include_once dirname(__FILE__).'/../ResourceNotFound.class.php';
+			throw new ResourceNotFound("Controller file not found", $path);
+		}
 		$classname = Inflect::toClassName($base).'Controller';
 		if (class_exists($classname)) {
 			$controller = new $classname($request, $response);
 		} else {
-			include_once 'server/ResourceNotFound.class.php';
+			include_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 			throw new ResourceNotFound("Controller $classname not defined", $path);
 		}
 		$identity = strtolower(Inflect::underscore(Inflect::decodeUriPart($identity)));
@@ -71,7 +76,7 @@ class IdentityDispatcher implements Receptor {
 			call_user_func_array(array($controller, $identity), $params);
 			if (method_exists($controller, 'after')) call_user_func(array($controller, 'after'));
 		} else {
-			require_once 'server/ResourceNotFound.class.php';
+			include_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 			throw new ResourceNotFound("Method $identity not defined in $classname", $path);
 		}
 	}
