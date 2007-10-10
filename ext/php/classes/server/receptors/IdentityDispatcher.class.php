@@ -8,7 +8,8 @@ if (!defined('DefaultMethodBinding')) {
 	define('DefaultMethodBinding', 'index');
 }
 
-require_once 'language/en/Inflect.class.php';
+require_once dirname(__FILE__).'/../../language/en/Inflect.class.php';
+require_once dirname(__FILE__).'/../controllers/IdentityController.class.php';
 
 /**
  * Delegates request binding to a controller based on URI identity.
