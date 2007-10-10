@@ -9,7 +9,7 @@ if (!defined('DefaultMethodBinding')) {
 }
 
 require_once dirname(__FILE__).'/../../language/en/Inflect.class.php';
-require_once dirname(__FILE__).'/../controllers/IdentityController.class.php';
+require_once dirname(__FILE__).'/../controllers/BaseController.class.php';
 
 /**
  * Delegates request binding to a controller based on URI identity.
