@@ -128,6 +128,62 @@ class Inflect implements Inflections {
 	}
 	
 	/**
+	 * Transforms a word to CamelCased form.
+	 * 
+	 * @param $word string
+	 */
+	static public function toClassName($word) {
+		return str_replace(" ","", ucwords(str_replace("-"," ", $word))); 
+	}
+	
+	/**
+	 * Transforms a word to pluralized_underscored form.
+	 * 
+	 * @param $word string
+	 */
+	static public function toTableName($word) {
+		return Inflect::toPlural(Inflect::underscore($word));
+	}
+
+	/**
+	 * Transforms a word to underscore_separated form.
+	 * 
+	 * @param $word string
+	 */
+	function underscore($word) {
+		return str_replace(' ', '_', $word);
+	}
+
+	/**
+	 * Breaks down a URI part into sentence form.
+	 */
+	function decodeUriPart($cPart) {
+		return str_replace(" "," ", ucwords(str_replace("-"," ",$cPart)));
+	}
+	
+	/**
+	 * Encodes a word or sentence into URI form.
+	 */
+	function encodeUriPart($cPart) {
+		return str_replace(" ", "-", strtolower(preg_replace("/([a-z]+)([A-Z])/","$1-$2", $cPart)));
+	}
+		
+	/**
+	 * Transforms from a camelCasedProperty to underscored_property form.
+	 */
+	function propertyToColumn($property_name) {
+			return str_replace("", "_", strtolower(preg_replace("/([A-Z])/","_$1", $property_name)));
+	}
+
+	/**
+	 * Transforms from underscored_property to camelCasedProperty form.
+	 */
+	function columnToProperty($column_name) {
+		$word = Inflect::camelize($column_name);
+		return strtolower($word[0]).substr($word,1);
+	}	
+	
+	/**
 	 * Applies a map of grammar rules to match a given word.
 	 * 
 	 * Returns the transformed word, or false if the word was not matched.
