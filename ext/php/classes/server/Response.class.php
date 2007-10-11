@@ -75,11 +75,7 @@ class Response {
 	 */
 	public function redirect($path, $status=false) {
 		if (!strstr("http://", $path)) $path = WEB_HOST . '/' . $path;
-		if (!$status) {
-			$this->header("Location: $path");
-		} else {
-			$this->header("Location: $path");
-		}
+		$this->header("Location", $path);
 	}
 	
 	/**
