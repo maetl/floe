@@ -59,8 +59,27 @@ class Response {
 	/**
 	 * Assign a variable to the template
 	 */
-	public function assign($key, $value) {
+	public function assign($key, $value=true) {
 		$this->variables[$key] = $value;
+	}
+	
+	/**
+	 * synonym of assign
+	 */
+	public function set($key, $value) {
+		$this->assign($key, $value);
+	}
+	
+	/**
+	 * Handles HTTP location redirect
+	 */
+	public function redirect($path, $status=false) {
+		if (!strstr("http://", $path)) $path = WEB_HOST . '/' . $path;
+		if (!$status) {
+			$this->header("Location: $path");
+		} else {
+			$this->header("Location: $path");
+		}
 	}
 	
 	/**
