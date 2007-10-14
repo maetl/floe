@@ -35,7 +35,7 @@ class Record {
 		$this->_associated_relations = array();
 		$this->_clean = true;
 		$this->_storage = StorageAdaptor::instance();
-		$this->_table = strtolower(Inflect::tableize(get_class($this)));
+		$this->_table = strtolower(Inflect::toTableName(get_class($this)));
 		$this->_properties = array();
 		$this->_joins = array();
 		$this->_associations = array();
