@@ -151,7 +151,7 @@ class Inflect implements Inflections {
 	 * @param $word string
 	 */
 	function underscore($word) {
-		return str_replace(' ', '_', $word);
+		return str_replace(' ', '_', strtolower(preg_replace("/([a-z]+)([A-Z])/","$1 $2", str_replace('-', ' ', $word))));
 	}
 
 	/**

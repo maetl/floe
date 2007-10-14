@@ -53,10 +53,31 @@ class EnglishPluralsTest extends UnitTestCase {
 
 }
 
-class TransformationUtilityTest extends UnitTestCase {
+class StringTransformationUtilityTest extends UnitTestCase {
 
 	function testPropertyToColumnFormat() {
 		$this->assertEqual("item_id", Inflect::propertyToColumn("itemId"));	
+	}
+	
+	function testUriNameEncoding() {
+		$this->assertEqual("graphic-design", Inflect::encodeUriPart("Graphic Design"));
+		$this->assertEqual("what-is-a-page?", Inflect::encodeUriPart("What Is A Page?"));
+	}
+	
+	function testUriNameDecoding() {
+		$this->assertEqual("Graphic Design", Inflect::decodeUriPart("graphic-design"));
+		$this->assertEqual("What Is A Page?", Inflect::decodeUriPart("what-is-a-page?"));
+	}
+	
+	function testUnderscore() {
+		$this->assertEqual('date_field', Inflect::underscore('date field'));
+		$this->assertEqual('date_field', Inflect::underscore('Date Field'));
+		$this->assertEqual('date_field', Inflect::underscore('DateField'));
+		$this->assertEqual('date_field', Inflect::underscore('date-field'));
+		$this->assertEqual('date_time_field', Inflect::underscore('Date time field'));
+		$this->assertEqual('date_time_field', Inflect::underscore('Date Time Field'));
+		$this->assertEqual('date_time_field', Inflect::underscore('DateTimeField'));
+		$this->assertEqual('date_time_field', Inflect::underscore('date-time-field'));
 	}
 
 }
