@@ -133,7 +133,7 @@ class Inflect implements Inflections {
 	 * @param $word string
 	 */
 	static public function toClassName($word) {
-		return str_replace(" ","", ucwords(str_replace("-"," ", $word))); 
+		return str_replace(" ", "", ucwords(str_replace("_"," ", Inflect::underscore($word))));
 	}
 	
 	/**

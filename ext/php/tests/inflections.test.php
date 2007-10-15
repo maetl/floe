@@ -1,6 +1,6 @@
 <?php
 require_once "simpletest/autorun.php";
-require_once "language/en/Inflect.class.php";
+require_once "classes/language/en/Inflect.class.php";
 
 class EnglishPluralsTest extends UnitTestCase {
 
@@ -78,6 +78,18 @@ class StringTransformationUtilityTest extends UnitTestCase {
 		$this->assertEqual('date_time_field', Inflect::underscore('Date Time Field'));
 		$this->assertEqual('date_time_field', Inflect::underscore('DateTimeField'));
 		$this->assertEqual('date_time_field', Inflect::underscore('date-time-field'));
+	}
+	
+	function testCamelizeClassName() {
+		$this->assertEqual("Object", Inflect::toClassName("object"));
+		$this->assertEqual("ObjectIdentifier", Inflect::toClassName("object identifier"));
+		$this->assertEqual("ObjectIdentifier", Inflect::toClassName("Object identifier"));
+		$this->assertEqual("ObjectIdentifier", Inflect::toClassName("object_identifier"));
+		$this->assertEqual("ObjectIdentifier", Inflect::toClassName("object-identifier"));
+		$this->assertEqual("ObjectIdentifierString", Inflect::toClassName("Object identifier_string"));
+		$this->assertEqual("ObjectIdentifierString", Inflect::toClassName("Object Identifier String"));
+		$this->assertEqual("ObjectIdentifierString", Inflect::toClassName("object-identifier-string"));
+		$this->assertEqual("ObjectIdentifierString", Inflect::toClassName("object_identifier_string"));
 	}
 
 }
