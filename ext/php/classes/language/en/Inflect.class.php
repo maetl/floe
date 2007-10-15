@@ -179,7 +179,7 @@ class Inflect implements Inflections {
 	 * Transforms from underscored_property to camelCasedProperty form.
 	 */
 	function columnToProperty($column_name) {
-		$word = Inflect::camelize($column_name);
+		$word = Inflect::toClassName($column_name);
 		return strtolower($word[0]).substr($word,1);
 	}	
 	
