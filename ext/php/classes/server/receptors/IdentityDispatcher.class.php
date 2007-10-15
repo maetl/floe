@@ -26,7 +26,7 @@ require_once dirname(__FILE__).'/../controllers/BaseController.class.php';
  * 
  * @package server
  * @subpackage receptors
- * @todo complete exception handling
+ * @todo document the precedence heirachy and refactor to better communicate what this code does
  */
 class IdentityDispatcher implements Receptor {
 
@@ -45,11 +45,10 @@ class IdentityDispatcher implements Receptor {
 			$path = APP_DIR ."controllers/$base/$identity.controller.php";
 			$base = $identity;
 			$identity = $request->uri->segment(2);
-			if ($identity == '') $identity = DefaultMethodBinding;
+			if ($identity == '') $identity = $base;
 			$params = $request->uri->segmentsFrom(3);
 			if (!file_exists($path)) {
 				$base = DefaultMethodBinding;
-				$identity = DefaultMethodBinding;
 				$path = APP_DIR ."controllers/$base.controller.php";
 				$params = $request->uri->segmentsFrom(0);
 				if (!$path) {
