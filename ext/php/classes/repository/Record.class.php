@@ -30,7 +30,6 @@ class Record {
 	private $_parent_relations;
 
 	function __construct($record = false) {
-		
 		$this->_dependent_relations = array();
 		$this->_associated_relations = array();
 		$this->_clean = true;
@@ -52,7 +51,7 @@ class Record {
 				if ($field == 'id') {
 					$this->_record->id = $value;
 				} else {
-					$this->setProperty($property, $value);
+					$this->setProperty($field, $value);
 				}
 			}
 		}
@@ -191,8 +190,6 @@ class Record {
 			if (is_array($this->_dependent_relations[$key])) {
 				$this->_dependent_relations[$key][] = $value;
 			}
-		} elseif (array_key_exists($key, $this->_properties)) {
-			$this->setProperty($key, $value);
 		} elseif($key == "id") {
 			$this->_record->id = $value;
 			$foreignKey = strtolower(get_class($this))."Id";
@@ -203,6 +200,8 @@ class Record {
 					}
 				}
 			}
+		} else {
+			$this->setProperty($key, $value);
 		}
 	}
 
@@ -217,7 +216,7 @@ class Record {
 	 * Set a property value.
 	 */
 	function setProperty($property, $value) {
-		$property = Inflect::columnToProperty($field);
+		$property = Inflect::columnToProperty($property);
 		if (array_key_exists($property, $this->_properties)) {
 			if (is_a($value, 'DateTime')) {
 				$value = $value->format('Y-n-d H:i:s');
