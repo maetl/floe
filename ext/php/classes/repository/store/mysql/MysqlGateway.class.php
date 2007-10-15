@@ -91,7 +91,7 @@ class MysqlGateway implements TableSchema {
 	function getRecords() {
 		$i=0; $objects = array();
 		while ($row = mysql_fetch_object($this->_result)) {
-			$table = Inflect::toSingular($this->_currentTable);
+			$table = Inflect::toClassName(Inflect::toSingular($this->_currentTable));
 			$objects[$i] = new $table($row); $i++;
 		}
 		return $objects;
