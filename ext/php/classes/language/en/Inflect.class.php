@@ -181,7 +181,7 @@ class Inflect implements Inflections {
 	function columnToProperty($column_name) {
 		$word = Inflect::toClassName($column_name);
 		return strtolower($word[0]).substr($word,1);
-	}	
+	}
 	
 	/**
 	 * Applies a map of grammar rules to match a given word.
