@@ -25,7 +25,6 @@ class Record {
 	private $_rules;
 	private $_errors;
 	private $_clean;
-	
 	private $_dependent_relations;
 	private $_associated_relations;
 	private $_parent_relations;
@@ -56,6 +55,7 @@ class Record {
 					$this->setProperty($property, $value);
 				}
 			}
+		}
 	}
 	
 	/**
