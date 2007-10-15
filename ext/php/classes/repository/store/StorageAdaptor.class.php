@@ -4,8 +4,8 @@
 * @package repository
 * @subpackage store
 */
-require_once 'repository/store/mysql/MysqlConnection.class.php';
-require_once 'repository/store/mysql/MysqlGateway.class.php';
+require_once 'mysql/MysqlConnection.class.php';
+require_once 'mysql/MysqlGateway.class.php';
 
 /**
  * A factory for generating a singleton instance of a storage
@@ -15,7 +15,7 @@ require_once 'repository/store/mysql/MysqlGateway.class.php';
  * @subpackage store
  */
 class StorageAdaptor {
-		
+
 		private static $implementation = null;
 	
 		/**
