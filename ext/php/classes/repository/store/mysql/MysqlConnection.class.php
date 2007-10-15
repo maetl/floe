@@ -4,7 +4,7 @@
  * @package repository
  * @subpackage store
  */
-require_once 'EventLogger.class.php';
+require_once dirname(__FILE__) .'/../../../EventLogger.class.php';
 require_once 'MysqlResourceError.class.php';
 
 /**
@@ -29,12 +29,12 @@ class MysqlConnection {
 	 * @param $user Authorized user name on database
 	 * @param $pass Authorized password for user
 	 */
-	 function MysqlConnection($host=false, $name=false, $user=false, $pass=false) {
-		 if ($host && $name && $user && $pass) {
-			$this->_db_host = $host;
-			$this->_db_name = $name;
-			$this->_db_user = $user;
-			$this->_db_pass = $pass;
+	 function MysqlConnection($environment = false) {
+		 if ($environment) {
+			$this->_db_host = $environment->DB_HOST;
+			$this->_db_name = $environment->DB_NAME;
+			$this->_db_user = $environment->DB_USER;
+			$this->_db_pass = $environment->DB_PASS;
 		 } else {
 			$this->_db_host = DB_HOST;
 			$this->_db_name = DB_NAME;

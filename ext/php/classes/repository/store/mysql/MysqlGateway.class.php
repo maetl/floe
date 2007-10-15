@@ -15,7 +15,7 @@
  * @package repository
  * @subpackage store
  */
-require_once 'repository/store/TableSchema.class.php';
+require_once dirname(__FILE__) .'/../TableSchema.class.php';
 require_once 'MysqlIterator.class.php';
 
 /**

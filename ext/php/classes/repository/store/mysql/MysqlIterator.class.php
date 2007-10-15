@@ -4,7 +4,7 @@
  * @package repository
  * @subpackage store
  */
-require_once 'repository/store/StorageIterator.class.php';
+require_once dirname(__FILE__).'/../StorageIterator.class.php';
 
 /**
  * @package repository
