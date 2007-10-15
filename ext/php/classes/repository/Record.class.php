@@ -4,7 +4,7 @@
  */
 require_once 'DependentRelation.class.php';
 require_once 'store/StorageAdaptor.class.php';
-require_once 'language/en/Inflect.class.php';
+require_once dirname(__FILE__) .'/../language/en/Inflect.class.php';
 
 /**
  * The infamous active record implementation from textme.co.nz
