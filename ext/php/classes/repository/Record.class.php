@@ -31,6 +31,7 @@ class Record {
 	private $_parent_relations;
 
 	function __construct($record = false) {
+		
 		$this->_dependent_relations = array();
 		$this->_associated_relations = array();
 		$this->_clean = true;
@@ -52,10 +53,7 @@ class Record {
 				if ($field == 'id') {
 					$this->_record->id = $value;
 				} else {
-					$property = Inflect::columnToProperty($field);
-					if (array_key_exists($property, $this->_properties))
-						$this->_record->$property = $value;
-					}
+					$this->setProperty($property, $value);
 				}
 			}
 	}
@@ -219,8 +217,14 @@ class Record {
 	 * Set a property value.
 	 */
 	function setProperty($property, $value) {
-		$this->_record->$property = $value;
-		$this->_clean = false;
+		$property = Inflect::columnToProperty($field);
+		if (array_key_exists($property, $this->_properties)) {
+			if (is_a($value, 'DateTime')) {
+				$value = $value->format('Y-n-d H:i:s');
+			}
+			$this->_record->$property = $value;
+			$this->_clean = false;
+		}
 	}
 	
 	/**
@@ -390,7 +394,7 @@ class Record {
 	}
 	
 	function findObjectById($id) {
-		$this->_storage->selectById(Inflect::toPlural(strtolower(get_class($this))), $id);
+		$this->_storage->selectById(Inflect::toTableName(get_class($this)), $id);
 		return $this->_storage->getObject();
 	}
 
