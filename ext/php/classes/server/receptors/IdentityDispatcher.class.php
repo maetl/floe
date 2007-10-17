@@ -72,13 +72,19 @@ class IdentityDispatcher implements Receptor {
 		}
 		$identity = strtolower(Inflect::underscore(Inflect::decodeUriPart($identity)));
 		if (method_exists($controller, $identity)) {
-			if (method_exists($controller, 'before')) call_user_func(array($controller, 'before'));
-			call_user_func_array(array($controller, $identity), $params);
-			if (method_exists($controller, 'after')) call_user_func(array($controller, 'after'));
+			$this->invoke($controller, DefaultMethodBinding, $params);
+		} elseif (method_exists($controller, DefaultMethodBinding)) {
+			$this->invoke($controller, DefaultMethodBinding, $params);
 		} else {
 			include_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 			throw new ResourceNotFound("Method $identity not defined in $classname", $path);
 		}
+	}
+	
+	private function invoke($controller, $identity, $params) {
+		if (method_exists($controller, 'before')) call_user_func(array($controller, 'before'));
+		call_user_func_array(array($controller, $identity), $params);
+		if (method_exists($controller, 'after')) call_user_func(array($controller, 'after'));			
 	}
 	
 }
