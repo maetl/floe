@@ -4,7 +4,7 @@
  * @package server
  * @subpackage controllers
  */
-require_once 'server/SessionState.class.php';
+require_once dirname(__FILE__) .'/../SessionState.class.php';
 
 /** 
  * Provides session state to the controller subclass.
