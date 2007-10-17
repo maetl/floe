@@ -13,7 +13,7 @@ require_once dirname(__FILE__) .'/../SessionState.class.php';
  * @package server
  * @subpackage controllers
  */
-class BaseController {
+class IdentityController {
 	protected $request;
 	protected $response;
 	protected $session;
