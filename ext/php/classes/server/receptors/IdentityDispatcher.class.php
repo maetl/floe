@@ -72,7 +72,7 @@ class IdentityDispatcher implements Receptor {
 		}
 		$identity = strtolower(Inflect::underscore(Inflect::decodeUriPart($identity)));
 		if (method_exists($controller, $identity)) {
-			$this->invoke($controller, DefaultMethodBinding, $params);
+			$this->invoke($controller, $identity, $params);
 		} elseif (method_exists($controller, DefaultMethodBinding)) {
 			$this->invoke($controller, DefaultMethodBinding, $params);
 		} else {
