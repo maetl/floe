@@ -3,6 +3,7 @@
  * @package server
  * @subpackage controllers
  */
+require_once dirname(__FILE__) .'/../SessionState.class.php';
 
 /**
  * Base controller implementation.
