@@ -9,10 +9,7 @@ require_once dirname(__FILE__) .'/../language/en/Inflect.class.php';
 /**
  * The infamous active record implementation from textme.co.nz
  * 
- * Most ideas from Rails ActiveRecord and the Relational Aspect Library,
- * but with tradeoffs for idiomatic PHP.
- * 
- * It is slowly gaining features and growing wings.
+ * <p>It is slowly gaining features and growing wings.</p>
  */
 class Record {
 	private $_table;
@@ -220,6 +217,9 @@ class Record {
 		if (array_key_exists($property, $this->_properties)) {
 			if (is_a($value, 'DateTime')) {
 				$value = $value->format('Y-n-d H:i:s');
+			}
+			if ($this->_properties[$property] == 'date') {
+				$value = date('Y-n-d', strtotime($value));
 			}
 			$this->_record->$property = $value;
 			$this->_clean = false;
