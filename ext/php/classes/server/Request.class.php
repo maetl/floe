@@ -181,8 +181,13 @@ final class Request {
 		return $this->postParameter($parameter, $filter);
 	}
 	
+	/**
+	 * Associative array of POST data fields
+	 * 
+	 * @return array
+	 */
 	function posted() {
-		return $_POST;
+		return array_filter($_POST, array($this, 'cleanValue'));
 	}
 	
 	/**
