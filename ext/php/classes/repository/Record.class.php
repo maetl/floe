@@ -139,6 +139,8 @@ class Record {
 
 	/**
 	 * Virtual property accessor
+	 * 
+	 * @todo separate Date and DateTime types and wrap with value object that supports __toString
 	 */
 	function __get($key) {
 		if (array_key_exists($key, $this->_joins)) {
@@ -168,6 +170,7 @@ class Record {
 				case 'float':
 					return $this->_getFloat($key);
 					break;
+				case 'date':
 				case 'datetime':
 					return $this->_getValue($key, 'DateTime');
 					break;
