@@ -247,6 +247,15 @@ final class Request {
 		return $this->envelope->header("Accept-Charset");
 	}
 	
+	/**
+	 * Accessor for uploaded files
+	 */
+	function getUploadedFile($name) {
+		if (isset($_FILES[$name])) {
+			return $_FILES[$name];
+		}
+	}
+	
 	
 }
 
