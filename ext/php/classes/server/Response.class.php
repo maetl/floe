@@ -88,9 +88,10 @@ class Response {
 		ob_start();
 		$templatePath = TPL_DIR . $template . ".php"; 
 		if (file_exists($templatePath)) {
-			include $templatePath;                  
+			include $templatePath;
 		} else {
-			throw new Exception("Response template not found");
+			require_once 'ResourceNotFound.class.php';
+			throw new ResourceNotFound("Response template not found", $templatePath);
 		}
 		$this->write(ob_get_contents());
 		ob_clean();
