@@ -40,16 +40,16 @@ class IdentityDispatcher implements Receptor {
 		$params = $request->uri->segmentsFrom(2);
 		if ($base == '') $base = DefaultMethodBinding;
 		if ($identity == '') $identity = DefaultMethodBinding;
-		$path = APP_DIR ."controllers/$base.controller.php";
+		$path = CTR_DIR ."/$base.controller.php";
 		if (!file_exists($path)) {
-			$path = APP_DIR ."controllers/$base/$identity.controller.php";
+			$path = CTR_DIR ."/$base/$identity.controller.php";
 			$base = $identity;
 			$identity = $request->uri->segment(2);
 			if ($identity == '') $identity = $base;
 			$params = $request->uri->segmentsFrom(3);
-			if (!file_exists($path)) {
+			if (!file_exists($path) && defined('BindMissingDefault')) {
 				$base = DefaultMethodBinding;
-				$path = APP_DIR ."controllers/$base.controller.php";
+				$path = CTR_DIR ."/$base.controller.php";
 				$params = $request->uri->segmentsFrom(0);
 				if (!$path) {
 					include_once dirname(__FILE__).'/../ResourceNotFound.class.php';

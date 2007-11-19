@@ -162,7 +162,15 @@ class Response {
 		echo $this->buffer;
 		ob_flush();
 	}
-
+	
+	/**
+	 * Access the current output buffer string.
+	 * 
+	 * @return string
+	 */
+	public function body() {
+		return $this->buffer;
+	}
 }
 
 ?>

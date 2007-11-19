@@ -65,6 +65,17 @@ class ControllerDispatchTest extends UnitTestCase {
 		$dispatcher->run($request, $response);
 	}
 	
+	function testBindAllToIndexNoException() {
+		$this->mockUri('/missing/controller');
+		$request = new Request();
+		$response = new Response();
+		
+		define('BindMissingDefault', true);
+		$dispatcher = new IdentityDispatcher();
+		$dispatcher->run($request, $response);
+		$this->assertTrue(class_exists('IndexController'));
+	}
+	
 }
 
 ?>
