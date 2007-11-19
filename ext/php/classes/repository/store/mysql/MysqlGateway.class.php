@@ -15,7 +15,6 @@
  * @package repository
  * @subpackage store
  */
-require_once dirname(__FILE__) .'/../TableSchema.class.php';
 require_once 'MysqlIterator.class.php';
 
 /**
@@ -24,7 +23,7 @@ require_once 'MysqlIterator.class.php';
  * @package repository
  * @subpackage store
  */
-class MysqlGateway implements TableSchema {
+class MysqlGateway {
 
 	var $_connection;
 	var $_result;

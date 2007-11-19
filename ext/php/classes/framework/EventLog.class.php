@@ -12,7 +12,7 @@ require_once 'Level.class.php';
  * Set up the logger by adding observers that implement the LogHandler
  * interface.
  */
-class EventLogger {
+class EventLog {
 	
 	static private $handlers = array();
 	

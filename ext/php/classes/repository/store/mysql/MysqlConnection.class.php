@@ -4,7 +4,7 @@
  * @package repository
  * @subpackage store
  */
-require_once dirname(__FILE__) .'/../../../EventLogger.class.php';
+require_once dirname(__FILE__) .'/../../../framework/EventLog.class.php';
 require_once 'MysqlResourceError.class.php';
 
 /**
@@ -56,12 +56,12 @@ class MysqlConnection {
 				$this->raiseError();
 				return false;
 			}
-			EventLogger::info("Connected to [{$this->_db_host}]");
+			EventLog::info("Connected to [{$this->_db_host}]");
 			if (!@mysql_select_db($this->_db_name, $this->_connection)) {
 				$this->raiseError();
 				return false;
 			}
-			EventLogger::info("Selected [{$this->_db_name}]");
+			EventLog::info("Selected [{$this->_db_name}]");
 		}
 		return true;
 	}
@@ -80,7 +80,7 @@ class MysqlConnection {
 	function execute($sql) {
 		$this->connect();
 		$query = mysql_query($sql, $this->_connection);
-		EventLogger::info("Executed [$sql]");
+		EventLog::info("Executed [$sql]");
 		return (mysql_error() != '') ? $this->raiseError() : $query;
 	}
 	

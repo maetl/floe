@@ -1,15 +1,13 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once 'Floe.class.php';
-require_once 'language/en/Inflect.class.php';
-require_once 'repository/store/mysql/MysqlAdaptor.class.php';
-require_once 'repository/Record.class.php';
+require_once 'classes/language/en/Inflect.class.php';
+require_once 'classes/repository/store/mysql/MysqlAdaptor.class.php';
+require_once 'classes/repository/Record.class.php';
 
 class MysqlQueryTest extends UnitTestCase {
 	function MysqlQueryTest() {
 		parent::UnitTestCase();
-		$config = Floe::defaultTestDb();
-		$this->db = new MysqlConnection($config[0], $config[1], $config[2], $config[3]);
+		$this->db = new MysqlConnection();
 	}
 }
 	

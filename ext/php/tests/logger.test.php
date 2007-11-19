@@ -1,7 +1,7 @@
 <?php
 require_once 'simpletest/autorun.php';
 require_once 'simpletest/mock_objects.php';
-require_once 'EventLogger.class.php';
+require_once 'classes/framework/EventLog.class.php';
 
 Mock::generate('LogHandler');
 
@@ -16,21 +16,21 @@ class EventLoggerTest extends UnitTestCase {
 		$handler->expectAt(3, 'emit', array(Level::Error, 'three'));
 		$handler->expectAt(4, 'emit', array(Level::Critical, 'four'));
 		
-		EventLogger::handler($handler);
+		EventLog::handler($handler);
 		
-		EventLogger::debug("zero");
-		EventLogger::info("one");
-		EventLogger::warning("two");
-		EventLogger::error("three");
-		EventLogger::critical("four");
+		EventLog::debug("zero");
+		EventLog::info("one");
+		EventLog::warning("two");
+		EventLog::error("three");
+		EventLog::critical("four");
 		
-		$this->assertIsA(EventLogger::pop(), 'MockLogHandler');
+		$this->assertIsA(EventLog::pop(), 'MockLogHandler');
 		
-		EventLogger::debug("zero");
-		EventLogger::info("one");
-		EventLogger::warning("two");
-		EventLogger::error("three");
-		EventLogger::critical("four");
+		EventLog::debug("zero");
+		EventLog::info("one");
+		EventLog::warning("two");
+		EventLog::error("three");
+		EventLog::critical("four");
 	}
 	
 }

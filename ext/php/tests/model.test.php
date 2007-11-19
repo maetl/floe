@@ -1,17 +1,16 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once 'Floe.class.php';
-require_once 'repository/Record.class.php';
-require_once 'repository/Collection.class.php';
+require_once 'classes/repository/Record.class.php';
+//require_once 'classes/repository/Collection.class.php';
+
+		define('DB_HOST', 'localhost');
+		define('DB_NAME', 'floe_test');
+		define('DB_USER', 'default');
+		define('DB_PASS', 'launch');
 
 class ActiveModelTest extends UnitTestCase {
 	function ActiveModelTest() {
 		parent::UnitTestCase();
-		$config = Floe::defaultTestDb();
-		define('DB_HOST', $config[0]);
-		define('DB_NAME', $config[1]);
-		define('DB_USER', $config[2]);
-		define('DB_PASS', $config[3]);
 	}
 }
 
@@ -26,7 +25,7 @@ class Dog extends Record {
 	}
 }
 
-class Dogs extends Collection { }
+//class Dogs extends Collection { }
 
 class ModelWithBasicPropertiesTest extends ActiveModelTest {
 
