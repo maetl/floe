@@ -39,7 +39,7 @@ class IdentityDispatcher implements Receptor {
 		$identity = $request->uri->segment(1);
 		$params = $request->uri->segmentsFrom(2);
 		if ($base == '') $base = DefaultMethodBinding;
-		if ($identity == '') $identity = DefaultMethodBinding;
+		if ($identity == '') $identity = $base;
 		$path = CTR_DIR ."/$base.controller.php";
 		if (!file_exists($path)) {
 			$path = CTR_DIR ."/$base/$identity.controller.php";
