@@ -2,8 +2,8 @@
 require_once "simpletest/autorun.php";
 require_once "simpletest/mock_objects.php";
 
-require_once "server/Request.class.php";
-require_once "server/HttpEnvelope.class.php";
+require_once "classes/server/Request.class.php";
+require_once "classes/server/HttpEnvelope.class.php";
 
 Mock::generate("HttpEnvelope");
 
