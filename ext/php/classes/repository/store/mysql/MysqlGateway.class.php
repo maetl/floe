@@ -224,6 +224,13 @@ class MysqlGateway {
 		$sql = 'DELETE FROM '.$table.' WHERE '.key($target).'="'.current($target).'"';
 		$this->_connection->execute($sql);
 	}
+	
+	/**
+	 * Executes an arbitrary SQL query on the connection.
+	 */
+	function query($sql) {
+		$this->_result = $this->_connection->execute($sql);
+	}
 
 	/** 
 	 * Creates a table with specified columns
