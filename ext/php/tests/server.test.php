@@ -7,7 +7,7 @@ require_once "classes/server/receptors/IdentityDispatcher.class.php";
 require_once "classes/server/controllers/BaseController.class.php";
 
 
-class ControllerDispatchTest extends UnitTestCase {
+class ServerTestCase extends UnitTestCase {
 	
 	function setUp() {
 		define('CTR_DIR', dirname(__FILE__).'/resources/server/');
@@ -29,7 +29,11 @@ class ControllerDispatchTest extends UnitTestCase {
 	function mockUri($path) {
 		$_SERVER['REQUEST_URI'] = $path;
 	}
+	
+}
 
+
+class ControllerDispatchTest extends ServerTestCase {
 	
 	function testIndexRouteInvoked() {
 		$this->mockUri('/');
@@ -54,7 +58,45 @@ class ControllerDispatchTest extends UnitTestCase {
 		$this->assertTrue(class_exists('SampleController'));
 		$this->assertEqual("a;b;c;", $response->body());
 	}
+	
+	function testSubFolderBaseRouteInvoked() {
+		$this->mockUri('/sub');
+		$request = new Request();
+		$response = new Response();
 
+		$this->assertFalse(class_exists('SubController'));
+		$this->assertFalse($response->body());
+		$dispatcher = new IdentityDispatcher();
+		$dispatcher->run($request, $response);
+		$this->assertTrue(class_exists('SubController'));
+		$this->assertEqual("sub", $response->body());
+	}
+	
+	function testSubFolderAlternateRouteInvoked() {
+		$this->mockUri('/sub/alternate');
+		$request = new Request();
+		$response = new Response();
+
+		$this->assertFalse(class_exists('AlternateController'));
+		$this->assertFalse($response->body());
+		$dispatcher = new IdentityDispatcher();
+		$dispatcher->run($request, $response);
+		$this->assertTrue(class_exists('AlternateController'));
+		$this->assertEqual("index", $response->body());
+	}
+	
+	function testSubFolderAlternateRouteMethodInvoked() {
+		$this->mockUri('/sub/alternate/action');
+		$request = new Request();
+		$response = new Response();
+
+		$this->assertFalse($response->body());
+		$dispatcher = new IdentityDispatcher();
+		$dispatcher->run($request, $response);
+		$this->assertTrue(class_exists('AlternateController'));
+		$this->assertEqual("alternate", $response->body());
+	}
+	
 	function testMissingResourceException() {
 		$this->mockUri('/missing/controller');
 		$request = new Request();
@@ -77,5 +119,7 @@ class ControllerDispatchTest extends UnitTestCase {
 	}
 	
 }
+
+
 
 ?>
