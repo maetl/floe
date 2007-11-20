@@ -286,6 +286,17 @@ class MysqlGateway {
 		 $sql = "ALTER TABLE $table ADD COLUMN $name " . $this->defineType($type);
 		 $this->_connection->execute($sql);
 	 }
+
+	 
+	 /**
+	  * Checks if given table is defined in database
+	  * 
+	  * @return boolean
+	  */
+	 function hasTable($table) {
+	 	$sql = "SHOW TABLES LIKE '$table'";
+	 	return (boolean)mysql_num_rows($this->_connection->execute($sql));
+	 }	 
 	 
 	 /**
 	  * Returns the mapping to a framework type class
