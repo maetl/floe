@@ -92,6 +92,16 @@ class StringTransformationUtilityTest extends UnitTestCase {
 		$this->assertEqual("ObjectIdentifierString", Inflect::toClassName("object_identifier_string"));
 	}
 	
+	function testUnderscoredPluralizedTableName() {
+		$this->assertEqual("objects", Inflect::toTableName("object"));
+		$this->assertEqual("objects", Inflect::toTableName("Object"));
+		$this->assertEqual("object_identifiers", Inflect::toTableName("ObjectIdentifier"));
+		$this->assertEqual("object_identifier_strings", Inflect::toTableName("ObjectIdentifierString"));
+		$this->assertEqual("object_identifier_strings", Inflect::toTableName("Object Identifier String"));
+		$this->assertEqual("object_identifier_strings", Inflect::toTableName("object-identifier-string"));
+		$this->assertEqual("object_identifier_strings", Inflect::toTableName("object_identifier_string"));
+	}
+	
 	function testColumnToProperty() {
 		$this->assertEqual("property", Inflect::columnToProperty("property"));
 		$this->assertEqual("occurredOn", Inflect::columnToProperty("occurred_on"));

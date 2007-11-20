@@ -40,7 +40,7 @@ class Record {
 		$this->_record = new stdClass();
 		if (get_parent_class($this) == 'Record') {
 			if (method_exists($this, '__define')) $this->__define();
-			$this->_table = strtolower(Inflect::toTableName(get_class($this)));
+			$this->_table = Inflect::toTableName(get_class($this));
 		} else {
 			$ancestors = $this->getDefinedAncestors();
 			if (method_exists($this, '__base')) $this->__base();
@@ -66,7 +66,7 @@ class Record {
 		while ($class != 'Record') {
 			$method = new ReflectionMethod($class, '__define');
 			$method->invoke($this);
-			$this->_table = strtolower(Inflect::toTableName($class));
+			$this->_table = Inflect::toTableName($class);
 			$class = get_parent_class($class);
 		}
 	}
