@@ -180,7 +180,7 @@ class ManyToManyRelationshipTest extends UnitTestCase {
 
 class Player extends Record {
 	
-	function __base() {
+	function __define() {
 		$this->property('name', 'string');
 	}
 	
@@ -205,7 +205,7 @@ class Cricketer extends Player {
 class Bowler extends Cricketer {
 	
 	function __define() {
-		$this->property('wickets', 'int');
+		$this->property('wicketsTaken', 'int');
 	}
 	
 }
@@ -215,7 +215,7 @@ class SingleTableInheritanceTest extends UnitTestCase {
 	
 	function setUp() {
 		$adaptor = StorageAdaptor::instance();
-		$adaptor->createTable("players", array('name'=>'string', 'topScore'=>'int', 'club'=>'string', 'type'=>'string'));
+		$adaptor->createTable("players", array('name'=>'string', 'topScore'=>'int', 'wicketsTaken'=>'int', 'club'=>'string', 'type'=>'string'));
 	}
 	
 	function testCanAccessBaseRecord() {
@@ -243,9 +243,17 @@ class SingleTableInheritanceTest extends UnitTestCase {
 	function testCanAccessMultipleInheritedRecords() {
 		$player = new Cricketer();
 		$player->name = "Ricky Ponting";
-		$player->topScore = 314;
+		$player->topScore = 257;
 		$player->save();
-		$ricky = $player->id;
+		$punter = $player->id;
+		unset($player);
+		
+		$player = new Bowler();
+		$player->name = "Andrew Flintoff";
+		$player->topScore = 167;
+		$player->wicketsTaken = 297;
+		$player->save();
+		$freddie = $player->id;
 		unset($player);
 		
 		$player = new Footballer();
@@ -255,10 +263,16 @@ class SingleTableInheritanceTest extends UnitTestCase {
 		$becks = $player->id;
 		unset($player);
 		
-		$player = new Cricketer($ricky);
+		$player = new Cricketer($punter);
 		$this->assertEqual("Ricky Ponting", $player->name);
-		$this->assertEqual(314, $player->topScore);
+		$this->assertEqual(257, $player->topScore);
 		$this->assertEqual("Cricketer", $player->type);
+		
+		$player = new Bowler($freddie);
+		$this->assertEqual("Andrew Flintoff", $player->name);
+		$this->assertEqual(167, $player->topScore);
+		$this->assertEqual(297, $player->wicketsTaken);
+		$this->assertEqual("Bowler", $player->type);
 		
 		$player = new Footballer($becks);
 		$this->assertEqual("David Beckham", $player->name);

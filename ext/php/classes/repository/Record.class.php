@@ -38,13 +38,11 @@ class Record {
 		$this->_rules = array();
 		$this->_errors = array();
 		$this->_record = new stdClass();
-		if (method_exists($this, '__define')) $this->__define();
-		// hack to deal with PHP's lack of top-down introspection
-		if (method_exists($this, '__base')) $this->__base();
 		if (get_parent_class($this) == 'Record') {
+			if (method_exists($this, '__define')) $this->__define();
 			$this->_table = strtolower(Inflect::toTableName(get_class($this)));
 		} else {
-			$this->_table = strtolower(Inflect::toTableName(get_parent_class($this)));
+			$ancestors = $this->getDefinedAncestors();
 			if (method_exists($this, '__base')) $this->__base();
 			$this->property("type", "string");
 			$this->setProperty("type", get_class($this));
@@ -60,6 +58,16 @@ class Record {
 					$this->setProperty($field, $value);
 				}
 			}
+		}
+	}
+	
+	private function getDefinedAncestors() {
+		$class = get_class($this);
+		while ($class != 'Record') {
+			$method = new ReflectionMethod($class, '__define');
+			$method->invoke($this);
+			$this->_table = strtolower(Inflect::toTableName($class));
+			$class = get_parent_class($class);
 		}
 	}
 	
