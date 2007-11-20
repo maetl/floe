@@ -72,6 +72,15 @@ class Record {
 	}
 	
 	/**
+	 * Returns the name of the storage table that this record maps to.
+	 * 
+	 * @return string
+	 */
+	function getTable() {
+		return $this->_table;
+	}
+	
+	/**
 	 * Add a dependent association to this record.
 	 * 
 	 * This definition will map a foreign key linking to the defined
