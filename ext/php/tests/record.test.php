@@ -1,18 +1,12 @@
 <?php
 require_once 'simpletest/autorun.php';
+require_once 'simpletest/mock_objects.php';
 require_once 'classes/repository/Record.class.php';
-//require_once 'classes/repository/Collection.class.php';
 
-		define('DB_HOST', 'localhost');
-		define('DB_NAME', 'floe_test');
-		define('DB_USER', 'default');
-		define('DB_PASS', 'launch');
-
-class ActiveModelTest extends UnitTestCase {
-	function ActiveModelTest() {
-		parent::UnitTestCase();
-	}
-}
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'floe_test');
+define('DB_USER', 'default');
+define('DB_PASS', 'launch');
 
 class Dog extends Record {
 	function __define() {
@@ -25,9 +19,7 @@ class Dog extends Record {
 	}
 }
 
-//class Dogs extends Collection { }
-
-class ModelWithBasicPropertiesTest extends ActiveModelTest {
+class ModelWithBasicPropertiesTest extends UnitTestCase {
 
 	function setUp() {
 		$dogModel = new Dog();
@@ -51,9 +43,6 @@ class ModelWithBasicPropertiesTest extends ActiveModelTest {
 		$this->assertEqual("Terrier", $dog->breed);
 		$this->assertEqual("Jack", $dog->name);
 		$this->assertTrue($dog->isPuppy());
-		
-		
-		
 	}
 	
 	function tearDown() {
@@ -62,29 +51,6 @@ class ModelWithBasicPropertiesTest extends ActiveModelTest {
 	}
 
 }
-
-/*
-class Cat extends Record {
-	function __define() {
-		$this->property("age", "integer");
-		$this->property("name", "string");
-	}
-}
-
-class MumCat extends Cat {
-	function __define() {
-		parent::__define();
-		$this->hasChildren("kittens");
-	}
-}
-
-class Kitten extends Record {
-	function __define() {
-		parent::__define();
-		$this->hasParent("MumCat");
-	}
-}
-*/
 
 class Project extends Record {
 	function __define() {
@@ -100,25 +66,10 @@ class Task extends Record {
 	}
 }
 
-class QueryLogger implements LogHandler {
-	var $history = array();
-	function emit($level, $message) {
-		if ($level == Level::Info) {
-			$this->history[] = $message;
-		}
-	}
-	function __destruct() {
-		foreach($this->history as $message) {
-			echo $message, "<br>";
-		}
-	}
-}
 
-
-class OneToManyAssociationTest extends ActiveModelTest {
+class OneToManyAssociationTest extends UnitTestCase {
 
 	function setUp() {
-		//EventLogger::handler(new QueryLogger());
 		$projectModel = new Project();
 		$taskModel = new Task();
 		$adaptor = StorageAdaptor::instance();
@@ -159,7 +110,6 @@ class OneToManyAssociationTest extends ActiveModelTest {
 		$adaptor = StorageAdaptor::instance();
 		$adaptor->dropTable("projects");
 		$adaptor->dropTable("tasks");
-		//EventLogger::pop();
 	}
 
 }
@@ -227,5 +177,100 @@ class ManyToManyRelationshipTest extends UnitTestCase {
 	
 }
 
+
+class Player extends Record {
+	
+	function __base() {
+		$this->property('name', 'string');
+	}
+	
+}
+
+class Footballer extends Player {
+	
+	function __define() {
+		$this->property('club', 'string');
+	}
+	
+}
+
+class Cricketer extends Player {
+	
+	function __define() {
+		$this->property('topScore', 'int');
+	}
+	
+}
+
+class Bowler extends Cricketer {
+	
+	function __define() {
+		$this->property('wickets', 'int');
+	}
+	
+}
+
+
+class SingleTableInheritanceTest extends UnitTestCase {
+	
+	function setUp() {
+		$adaptor = StorageAdaptor::instance();
+		$adaptor->createTable("players", array('name'=>'string', 'topScore'=>'int', 'club'=>'string', 'type'=>'string'));
+	}
+	
+	function testCanAccessBaseRecord() {
+		$player = new Player();
+		$player->name = "Ritchie McCaw";
+		$player->save();
+		$id = $player->id;
+		unset($player);
+		$player = new Player($id);
+		$this->assertEqual("Ritchie McCaw", $player->name);
+	}
+	
+	function testCanAccessInheritedRecord() {
+		$player = new Cricketer();
+		$player->name = "Ricky Ponting";
+		$player->topScore = 314;
+		$player->save();
+		$id = $player->id;
+		unset($player);
+		$player = new Cricketer($id);
+		$this->assertEqual("Ricky Ponting", $player->name);
+		$this->assertEqual(314, $player->topScore);
+	}
+	
+	function testCanAccessMultipleInheritedRecords() {
+		$player = new Cricketer();
+		$player->name = "Ricky Ponting";
+		$player->topScore = 314;
+		$player->save();
+		$ricky = $player->id;
+		unset($player);
+		
+		$player = new Footballer();
+		$player->name = "David Beckham";
+		$player->club = "LA Galaxy";
+		$player->save();
+		$becks = $player->id;
+		unset($player);
+		
+		$player = new Cricketer($ricky);
+		$this->assertEqual("Ricky Ponting", $player->name);
+		$this->assertEqual(314, $player->topScore);
+		$this->assertEqual("Cricketer", $player->type);
+		
+		$player = new Footballer($becks);
+		$this->assertEqual("David Beckham", $player->name);
+		$this->assertEqual("LA Galaxy", $player->club);
+		$this->assertEqual("Footballer", $player->type);
+	}
+	
+	function tearDown() {
+		$adaptor = StorageAdaptor::instance();
+		$adaptor->dropTable("players");
+	}
+	
+}
 
 ?>
