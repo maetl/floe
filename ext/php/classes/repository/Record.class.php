@@ -31,7 +31,6 @@ class Record {
 		$this->_associated_relations = array();
 		$this->_clean = true;
 		$this->_storage = StorageAdaptor::instance();
-		$this->_table = strtolower(Inflect::toTableName(get_class($this)));
 		$this->_properties = array();
 		$this->_joins = array();
 		$this->_associations = array();
@@ -40,6 +39,16 @@ class Record {
 		$this->_errors = array();
 		$this->_record = new stdClass();
 		if (method_exists($this, '__define')) $this->__define();
+		// hack to deal with PHP's lack of top-down introspection
+		if (method_exists($this, '__base')) $this->__base();
+		if (get_parent_class($this) == 'Record') {
+			$this->_table = strtolower(Inflect::toTableName(get_class($this)));
+		} else {
+			$this->_table = strtolower(Inflect::toTableName(get_parent_class($this)));
+			if (method_exists($this, '__base')) $this->__base();
+			$this->property("type", "string");
+			$this->setProperty("type", get_class($this));
+		}
 		if ($record) {
 			if (is_numeric($record)) {
 				$record = $this->findObjectById($record);
@@ -386,28 +395,28 @@ class Record {
 	 * collection method
 	 */
 	function findAll() {
-		$this->_storage->selectAll(Inflect::toPlural(strtolower(get_class($this))));
+		$this->_storage->selectAll($this->_table);
 		return $this->_storage->getRecords();
 	}
 	
 	function findById($id) {
-		$this->_storage->selectById(Inflect::toPlural(strtolower(get_class($this))), $id);
+		$this->_storage->selectById($this->_table, $id);
 		return $this->_storage->getRecord();
 	}
 	
 	function findObjectById($id) {
-		$this->_storage->selectById(Inflect::toTableName(get_class($this)), $id);
+		$this->_storage->selectById($this->_table, $id);
 		return $this->_storage->getObject();
 	}
 
 	function findByKey($key, $value) {
-		$this->_storage->selectByKey(Inflect::toPlural(strtolower(get_class($this))), array("name"=>$value));
+		$this->_storage->selectByKey($this->_table, array("name"=>$value));
 		$record = $this->_storage->getRecords();
 		return $record[0];
 	}
 
 	function findAllByKey($key, $value) {
-		$this->_storage->selectByKey(Inflect::toPlural(strtolower(get_class($this))), array($key=>$value));
+		$this->_storage->selectByKey($this->_table, array($key=>$value));
 		return $this->_storage->getRecords();
 	}
 	
