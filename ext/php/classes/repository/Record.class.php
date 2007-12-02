@@ -29,6 +29,7 @@ class Record {
 	function __construct($record = false) {
 		$this->_dependent_relations = array();
 		$this->_associated_relations = array();
+		$this->_parent_relations = array();
 		$this->_clean = true;
 		$this->_storage = StorageAdaptor::instance();
 		$this->_properties = array();
@@ -50,6 +51,11 @@ class Record {
 		if ($record) {
 			if (is_numeric($record)) {
 				$record = $this->findObjectById($record);
+				foreach ($this->_parent_relations as $key => $val) {
+					$nameProperty = $key."_id";
+					$this->_storage->selectById(Inflect::toTableName($key), $record->$nameProperty);
+					$this->_parent_relations[$key] = $this->_storage->getRecord();
+				}
 			}
 			foreach($record as $field=>$value) {
 				if ($field == 'id') {
@@ -88,7 +94,14 @@ class Record {
 	 */
 	function belongsTo($type) {
 		$this->property(strtolower($type)."Id", "integer");
-		$this->_parent_relations[$type] = 0;
+		$this->_parent_relations[$type] = null;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	private function hasParentRelation($key) {
+		return array_key_exists($key, $this->_parent_relations);
 	}
 	
 	/**
@@ -169,7 +182,9 @@ class Record {
 	 * @todo separate Date and DateTime types and wrap with value object that supports __toString
 	 */
 	function __get($key) {
-		if (array_key_exists($key, $this->_joins)) {
+		if ($this->hasParentRelation($key)) {
+			return $this->_parent_relations[$key];
+		} elseif (array_key_exists($key, $this->_joins)) {
 			$this->_storage->selectByAssociation($key, $this->_joins[$key]);
 			return $this->_storage->getRecords();
 		} elseif (array_key_exists($key, $this->_dependent_relations)) {
@@ -183,26 +198,44 @@ class Record {
 					return $this->_dependent_relations[$key];
 				}
 			}
-		} elseif (array_key_exists($key, $this->_properties)) {
-			switch($this->_properties[$key]) {
-				case 'string':
-				case 'text':
-					return $this->_getString($key);
-					break;
-				case 'int':
-				case 'integer':
-					return $this->_getInteger($key);
-					break;
-				case 'float':
-					return $this->_getFloat($key);
-					break;
-				case 'date':
-				case 'datetime':
-					return $this->_getValue($key, 'DateTime');
-					break;
-			}
+		} elseif ($this->hasProperty($key)) {
+			return $this->_castPropertyType($key);
 		} elseif ($key == 'id') {
 			return (isset($this->_record->id)) ? $this->_record->id : 0;
+		}
+	}
+	
+	/**
+	 * Does this record have the given property
+	 * 
+	 * @return boolean
+	 */
+	private function hasProperty($key) {
+		return array_key_exists($key, $this->_properties);
+	}
+	
+	/**
+	 * Cast string from storage source to native type in accessor
+	 * 
+	 * @return mixed
+	 */
+	private function _castPropertyType($key) {
+		switch($this->_properties[$key]) {
+			case 'string':
+			case 'text':
+				return $this->_getString($key);
+				break;
+			case 'int':
+			case 'integer':
+				return $this->_getInteger($key);
+				break;
+			case 'float':
+				return $this->_getFloat($key);
+				break;
+			case 'date':
+			case 'datetime':
+				return $this->_getValue($key, 'DateTime');
+				break;
 		}
 	}
 	
@@ -210,7 +243,9 @@ class Record {
 	 * Virtual property writer.
 	 */
 	function __set($key, $value) {
-		if (array_key_exists($key, $this->_associations)) {
+		if ($this->hasParentRelation($key)) {
+			$this->_parent_relations[$key] = $value;
+		} elseif (array_key_exists($key, $this->_associations)) {
 			$this->_associations[$key][] = $value;
 		} elseif (array_key_exists($key, $this->_dependent_relations)) {
 			if (is_array($this->_dependent_relations[$key])) {
@@ -253,6 +288,10 @@ class Record {
 			$this->_record->$property = $value;
 			$this->_clean = false;
 		}
+	}
+	
+	function getProperty($property) {
+		return $this->_record->$property;
 	}
 	
 	/**
@@ -332,6 +371,12 @@ class Record {
 	 */
 	function save($validate=true, $recursive=true) {
 		if (!$validate || $this->isValid()) {
+			foreach($this->_parent_relations as $key => $owner) {
+				if (is_object($owner)) {
+					if ($owner->id == 0) $owner->save();
+					$this->setProperty($key."Id", $owner->id);
+				}
+			}
 			$record = array();
 			foreach(get_object_vars($this->_record) as $key=>$value) {
 				$record[Inflect::propertyToColumn($key)] = $value;

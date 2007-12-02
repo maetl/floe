@@ -3,10 +3,12 @@ require_once 'simpletest/autorun.php';
 require_once 'simpletest/mock_objects.php';
 require_once 'classes/repository/Record.class.php';
 
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'floe_test');
-define('DB_USER', 'default');
-define('DB_PASS', 'launch');
+if (!defined('DB_HOST')) {
+	define('DB_HOST', 'localhost');
+	define('DB_NAME', 'floe_test');
+	define('DB_USER', 'default');
+	define('DB_PASS', 'launch');
+}
 
 class Dog extends Record {
 	function __define() {
