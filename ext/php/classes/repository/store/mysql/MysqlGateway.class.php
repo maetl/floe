@@ -283,6 +283,7 @@ class MysqlGateway {
 	 * Add a new table column
 	 */
 	 function addColumn($table, $name, $type) {
+	 	 $name = Inflect::propertyToColumn($name);
 		 $sql = "ALTER TABLE $table ADD COLUMN $name " . $this->defineType($type);
 		 $this->_connection->execute($sql);
 	 }
