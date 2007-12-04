@@ -175,6 +175,21 @@ class Record {
 		}
 		$this->_rules[$field][] = $rule;
 	}
+	
+	/**
+	 * Accesses a parent object, going to the database if
+	 * it doesn't exist in the raw property map.
+	 * 
+	 * @todo use identity map to hold objects
+	 */
+	private function getParentRelation($key) {
+		if ($this->_parent_relations[$key] == null) {
+			$recordType = Inflect::toClassName($key);
+			$recordKey = $key . "Id";
+			$this->_parent_relations[$key] = new $recordType($this->$recordKey);
+		}
+		return $this->_parent_relations[$key];
+	}
 
 	/**
 	 * Virtual property accessor
@@ -183,7 +198,7 @@ class Record {
 	 */
 	function __get($key) {
 		if ($this->hasParentRelation($key)) {
-			return $this->_parent_relations[$key];
+			return $this->getParentRelation($key);
 		} elseif (array_key_exists($key, $this->_joins)) {
 			$this->_storage->selectByAssociation($key, $this->_joins[$key]);
 			return $this->_storage->getRecords();
