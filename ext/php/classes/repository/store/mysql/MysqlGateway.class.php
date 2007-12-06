@@ -231,6 +231,15 @@ class MysqlGateway {
 	function query($sql) {
 		$this->_result = $this->_connection->execute($sql);
 	}
+	
+	/**
+	 * Executes an arbitrary SELECT query on the connection.
+	 */
+	function select($table, $clauses) {
+		$this->_tableName = $table;
+		$sql = "SELECT * FROM `$table` $clauses";
+		$this->_result = $this->_connection->execute($sql);
+	}	
 
 	/** 
 	 * Creates a table with specified columns
