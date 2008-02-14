@@ -304,7 +304,7 @@ class MysqlGateway {
 	  * @return boolean
 	  */
 	 function hasTable($table) {
-	 	$sql = "SHOW TABLES LIKE `$table`";
+	 	$sql = "SHOW TABLES LIKE '$table'";
 	 	return (boolean)mysql_num_rows($this->_connection->execute($sql));
 	 }	 
 	 
