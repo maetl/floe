@@ -124,7 +124,7 @@ class MysqlGateway {
 	function selectById($table, $id, $target=false) {
 		$this->_currentTable = $table;
 		$fields = (!$target) ? '*' : implode(',', array_keys($target));
-		$sql = 'SELECT '.$fields.' FROM '.$table.' WHERE id="'.$id.'"';
+		$sql = 'SELECT '.$fields.' FROM `'.$table.'` WHERE id="'.$id.'"';
 		$this->_result = $this->_connection->execute($sql);
 	}
 	
@@ -133,7 +133,7 @@ class MysqlGateway {
 	 */
 	function selectAll($table) {
 		$this->_currentTable = $table;
-		$sql = 'SELECT * FROM '.$table;
+		$sql = 'SELECT * FROM `'.$table.'`';
 		$this->_result = $this->_connection->execute($sql);
 	}
 
@@ -143,7 +143,7 @@ class MysqlGateway {
 	function selectByKey($table, $target) {
 		$this->_connection->connect();
 		$this->_currentTable = $table;
-		$sql = 'SELECT * FROM '.$table.' WHERE ';
+		$sql = 'SELECT * FROM `'.$table.'` WHERE ';
 		$where = '';
 		foreach ($target as $key => $value) {
 			if($where != "") {
@@ -160,7 +160,7 @@ class MysqlGateway {
 	 */
 	 function selectByAssociation($table, $join_table, $target=false) {
 	 	 $this->_currentTable = $table;
-		 $sql = "SELECT * FROM $table,$join_table ";
+		 $sql = "SELECT * FROM `$table`,`$join_table`` ";
 		 $sql .= "WHERE $table.id=$join_table.".Inflect::toSingular($table)."_id";
 		 if ($target) $sql .= "AND $join_table.".key($target)."='".current($target)."'";
 		 $this->_result = $this->_connection->execute($sql);
@@ -178,7 +178,7 @@ class MysqlGateway {
 		$keys = array_keys($columns);
 		$values = array_values($columns);
 		$colnum = count($columns);
-		$sql = 'INSERT INTO '.mysql_real_escape_string($table).' (';
+		$sql = 'INSERT INTO `'.mysql_real_escape_string($table).'` (';
 		for($i=0;$i<$colnum;$i++) {
 			$sql .= Inflect::propertyToColumn($keys[$i]);
 			$i==($colnum-1) ? $sql .= ')' : $sql .= ',';
@@ -205,7 +205,7 @@ class MysqlGateway {
 		$this->_connection->connect();
 		$colnum = count($columns);
 		$i = 1;
-		$sql = 'UPDATE '.mysql_real_escape_string($table).' SET ';
+		$sql = 'UPDATE `'.mysql_real_escape_string($table).'` SET ';
 		foreach($columns as $field=>$val) {
 			$sql .= $field.'="'.$val.'"';
 			$i==$colnum ? $sql .= ' ' : $sql .= ',';
@@ -221,7 +221,7 @@ class MysqlGateway {
 	 */
 	function delete($table, $target) {
 		if (!is_array($target)) return;
-		$sql = 'DELETE FROM '.$table.' WHERE '.key($target).'="'.current($target).'"';
+		$sql = 'DELETE FROM `'.$table.'` WHERE '.key($target).'="'.current($target).'"';
 		$this->_connection->execute($sql);
 	}
 	
@@ -262,14 +262,14 @@ class MysqlGateway {
 	 * Destroys an existing table and all its data
 	 */
 	 function dropTable($table) {
-		 $this->_connection->execute("DROP TABLE $table");
+		 $this->_connection->execute("DROP TABLE `$table`");
 	 }
 
  	/**
 	 * Checks if a table exists
 	 */
 	 function tableExists($table) {
-		 $this->_connection->execute("DROP TABLE IF EXISTS $table");
+		 $this->_connection->execute("DROP TABLE IF EXISTS `$table``");
 	 }
 	 
 	/**
@@ -277,14 +277,14 @@ class MysqlGateway {
 	 */
 	function changeColumn($table, $oldCol, $newCol, $type=false) {
 		if (!$type) {
-			$sql = "SHOW FIELDS FROM $table LIKE '$oldCol'";
+			$sql = "SHOW FIELDS FROM `$table` LIKE '$oldCol'";
 			$this->_result = $this->_connection->execute($sql);
 			$field = $this->getObject();
 			$definition = $field->Type;
 		} else {
 			$definition = $this->defineType($type);
 		}
-		$sql = "ALTER TABLE $table CHANGE COLUMN $oldCol $newCol ". $definition;
+		$sql = "ALTER TABLE `$table` CHANGE COLUMN $oldCol $newCol ". $definition;
 		$this->_connection->execute($sql);
 	}
 	
@@ -293,7 +293,7 @@ class MysqlGateway {
 	 */
 	 function addColumn($table, $name, $type) {
 	 	 $name = Inflect::propertyToColumn($name);
-		 $sql = "ALTER TABLE $table ADD COLUMN $name " . $this->defineType($type);
+		 $sql = "ALTER TABLE `$table` ADD COLUMN $name " . $this->defineType($type);
 		 $this->_connection->execute($sql);
 	 }
 
@@ -304,7 +304,7 @@ class MysqlGateway {
 	  * @return boolean
 	  */
 	 function hasTable($table) {
-	 	$sql = "SHOW TABLES LIKE '$table'";
+	 	$sql = "SHOW TABLES LIKE `$table`";
 	 	return (boolean)mysql_num_rows($this->_connection->execute($sql));
 	 }	 
 	 
