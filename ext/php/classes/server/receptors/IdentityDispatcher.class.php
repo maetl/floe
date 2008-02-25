@@ -62,6 +62,7 @@ class IdentityDispatcher implements Receptor {
 		} else {
 			if (file_exists(TPL_DIR.'/'.$base.'.php')) {
 				$response->render($base);
+				return;
 			} else {
 				include_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 				throw new ResourceNotFound("Controller file not found", $path);
