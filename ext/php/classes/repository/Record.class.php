@@ -197,6 +197,10 @@ class Record {
 	 * @todo separate Date and DateTime types and wrap with value object that supports __toString
 	 */
 	function __get($key) {
+		$getter =  'get'. Inflect::toClassName($key);
+		if (method_exists($this, $getter)) {
+			return $this->$getter();
+		}
 		if ($this->hasParentRelation($key)) {
 			return $this->getParentRelation($key);
 		} elseif (array_key_exists($key, $this->_joins)) {
@@ -258,6 +262,11 @@ class Record {
 	 * Virtual property writer.
 	 */
 	function __set($key, $value) {
+		$setter =  'set'. Inflect::toClassName($key);
+		if (method_exists($this, $setter)) {
+			$this->$setter($value);
+			return;
+		}
 		if ($this->hasParentRelation($key)) {
 			$this->_parent_relations[$key] = $value;
 		} elseif (array_key_exists($key, $this->_associations)) {

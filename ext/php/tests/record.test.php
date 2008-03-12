@@ -159,6 +159,7 @@ class ManyToManyRelationshipTest extends UnitTestCase {
 		$post->topics = $topic2;
 		
 		$this->assertTrue($post->save());
+		
 		$id = $post->id;
 		unset($post);
 		$adaptor = StorageAdaptor::instance();
@@ -285,6 +286,46 @@ class SingleTableInheritanceTest extends UnitTestCase {
 	function tearDown() {
 		$adaptor = StorageAdaptor::instance();
 		$adaptor->dropTable("players");
+	}
+	
+}
+
+class OverloadedPropertyAccess extends Record {
+	
+	function __define() {
+		$this->property('name', 'string');
+		$this->property('title', 'string');
+		$this->property('rawField', 'string');
+		$this->property('wrappingValue', 'string');
+	}
+	
+	function setTitle($title) {
+		$this->name = $title;
+		$this->setProperty('title', $title);
+	}
+	
+	function setWrappingValue($value) {
+		$this->rawField = $value;
+		$this->setProperty('wrappingValue', $value);
+	}
+	
+	function getWrappingValue() {
+		return strtolower($this->getProperty('wrappingValue'));
+	}
+	
+}
+
+class OverloadedPropertyAcessorsTest extends UnitTestCase {
+	
+	function testCanOverloadPropertyAccessors() {
+		$model = new OverloadedPropertyAccess();
+		$model->title = "The Lion Roared";
+		$this->assertEqual($model->name, $model->title);
+		$input = "The Fox Jumped";
+		$model->wrappingValue = $input;
+		$this->assertEqual($input, $model->rawField);
+		$result = $model->wrappingValue;
+		$this->assertEqual(strtolower($input), $result);
 	}
 	
 }
