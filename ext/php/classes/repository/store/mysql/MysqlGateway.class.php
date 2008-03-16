@@ -249,7 +249,7 @@ class MysqlGateway {
 		$sql .= "\nid int(11) NOT NULL auto_increment,";
 		foreach($rows as $key=>$val) {
 			$key = Inflect::propertyToColumn($key);
-			$sql .= "\n $key ";
+			$sql .= "\n `$key` ";
 			$sql .= $this->defineType($val);
 			$sql .= ',';
 		}
