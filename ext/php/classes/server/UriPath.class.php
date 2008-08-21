@@ -152,9 +152,7 @@ class UriPath {
 	 * Returns the value of given parameter.
 	 */
 	function parameter($key) {
-		if (isset($this->_parameters[$key])) {
-			return $this->_parameters[$key];
-		}
+		if (isset($this->_parameters[$key])) return $this->_parameters[$key];
 	}
 	
 	/**
@@ -166,7 +164,7 @@ class UriPath {
 	 * 	  $uri->segment(3) => id
 	 */
 	function segment($index) {
-		return $this->_segments[$index];
+		if (isset($this->_segments[$index])) return $this->_segments[$index];
 	}
 	
 	/**
@@ -208,9 +206,7 @@ class UriPath {
 	* Eg: <code>/path/to/resource;aspect</code> returns <code>aspect</code>
 	*/
 	function aspect() {
-		if (isset($this->_aspect)) {
-			return $this->_aspect;
-		}
+		if (isset($this->_aspect)) return $this->_aspect;
 	}
 	
 	/**
