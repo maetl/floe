@@ -1,0 +1,15 @@
+
+Floe - tools for building web applications
+
+   Usage: $ floe <command> <options>
+
+   Commands:
+
+		configure - generate application configuration
+		project   - create a project
+		help      - you're looking at it
+		set       - set a global configuration option
+
+		
+Skating on thin ice.
+(c) Mark Rickerby, 2007-2008

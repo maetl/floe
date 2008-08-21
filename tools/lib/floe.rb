@@ -13,6 +13,16 @@ class Hash #:nodoc:
   end
 end
 
+def colorize(text, color_code)
+  "#{color_code}#{text}\e[0m"
+end
+
+def red(text); colorize(text, "\e[31m"); end
+def green(text); colorize(text, "\e[32m"); end
+def white(text); colorize(text, "\e[37m"); end
+def yellow(text); colorize(text, "\e[33m"); end
+def cyan(text); colorize(text, "\e[36m"); end
+
 # This package is a command line tool and component library
 # for rapid prototyping web applications. For more information,
 # see the Introduction[http://code.google.com/p/floe/]
@@ -22,6 +32,7 @@ module Floe
   # Runs the command invocation
   class Application
     def self.run(cmd, args='')
+      unless cmd then cmd = :help; end
       begin
         CommandIndex.send(cmd, args)
         true
@@ -48,17 +59,25 @@ module Floe
     # install something (what?)
     def self.install(event)
       event
-    end    
+    end
     
-    # delegate to other insanity or thow a MissingCommand error
+    def self.help(event)
+      Raise::message(File.read('HELP'))
+    end
+    
+    # the command doesn't exist... we could delegate to something smarter here perhaps
     def self.method_missing(method, args)
-      Raise::building(method)
+      Raise::no_command(method)
     end
     
   end
   
   # Raise a console event
   module Raise
+    
+    def self.message(msg)
+      puts green(msg)
+    end
     
     # Raised when the user specific configuration file is not used 
     def self.not_installed
@@ -78,9 +97,9 @@ module Floe
       exit    
     end
 
-    # Raised when a required resource or asset file is missing
-    def self.missing_resource(cmd)
-      puts white(@@prefix) + white("no command target for: ") + red(path)
+    # Raised when a non-existent command is given
+    def self.no_command(cmd)
+      puts white(@@prefix) + white("no command target for: ") + red(cmd)
       exit
     end
     

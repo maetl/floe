@@ -3,10 +3,4 @@
 require 'rubygems'
 require 'rake'
 
-
-# Floe aborted with no default configuration provided
-
-puts ARGV[0]
-
-floe = Floe::Application.new
-floe.run("configure")
+Floe::Application.run(ARGV[0])

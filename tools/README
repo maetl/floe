@@ -4,7 +4,5 @@ The aim of Floe is to build web applications using the principles of [[http://to
 
 ==== What does Floe do? ====
 
-  * Manages web projects using a convenient command interface
-  * Provides a Rake based environment for scripting development tasks
-  * Provides a PHP5 architecture for simple web applications
-  * Mashes PHP5, Ruby, and Python (and probably Perl soon)
+  * Provides a PHP5 architecture for MVC web applications
+  * Provides a Rake based environment for managing web projects using a convenient command interface
