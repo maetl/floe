@@ -29,7 +29,7 @@ class MysqlConnection {
 	 * @param $user Authorized user name on database
 	 * @param $pass Authorized password for user
 	 */
-	 function MysqlConnection($environment = false) {
+	 function __construct($environment = false) {
 		 if ($environment) {
 			$this->_db_host = $environment->DB_HOST;
 			$this->_db_name = $environment->DB_NAME;
