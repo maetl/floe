@@ -5,7 +5,7 @@
  * @subpackage store
  */
 require_once dirname(__FILE__) .'/../../../framework/EventLog.class.php';
-require_once 'MysqlResourceError.class.php';
+require_once '../ResourceError.class.php';
 
 /**
  * An active connection to a MySql database server.
@@ -71,7 +71,7 @@ class MysqlConnection {
 	 */
 	function raiseError() {
 		$message = mysql_error();
-		throw new MysqlResourceError($message);
+		throw new ResourceError($message);
 	}
 	
 	/**
