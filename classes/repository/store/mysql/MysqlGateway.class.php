@@ -160,7 +160,7 @@ class MysqlGateway {
 	 */
 	 function selectByAssociation($table, $join_table, $target=false) {
 	 	 $this->_currentTable = $table;
-		 $sql = "SELECT * FROM `$table`,`$join_table`` ";
+		 $sql = "SELECT * FROM `$table`,`$join_table` ";
 		 $sql .= "WHERE $table.id=$join_table.".Inflect::toSingular($table)."_id";
 		 if ($target) $sql .= "AND $join_table.".key($target)."='".current($target)."'";
 		 $this->_result = $this->_connection->execute($sql);

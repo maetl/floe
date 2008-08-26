@@ -1,7 +1,7 @@
 <?php
 require_once 'simpletest/autorun.php';
 require_once 'simpletest/mock_objects.php';
-require_once 'classes/repository/Record.class.php';
+require_once '../repository/Record.class.php';
 
 if (!defined('DB_HOST')) {
 	define('DB_HOST', 'localhost');

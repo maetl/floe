@@ -1,13 +1,27 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once 'classes/language/en/Inflect.class.php';
-require_once 'classes/repository/store/mysql/MysqlAdaptor.class.php';
-require_once 'classes/repository/Record.class.php';
+require_once '../language/en/Inflect.class.php';
+require_once '../repository/store/mysql/MysqlGateway.class.php';
+require_once '../repository/Record.class.php';
+
+if (!defined('DB_HOST')) {
+	define('DB_HOST', 'localhost');
+	define('DB_NAME', 'floe_test');
+	define('DB_USER', 'default');
+	define('DB_PASS', 'launch');
+}
 
 class MysqlQueryTest extends UnitTestCase {
-	function MysqlQueryTest() {
-		parent::UnitTestCase();
-		$this->db = new MysqlConnection();
+	protected $db;
+	
+	function __construct() {
+		parent::__construct();
+		$env = new stdClass;
+		$env->DB_HOST = 'localhost';
+		$env->DB_NAME = 'floe_test';
+		$env->DB_USER = 'default';
+		$env->DB_PASS = 'launch';
+		$this->db = new MysqlConnection($env);
 	}
 }
 	

@@ -7,9 +7,9 @@ require_once 'store/StorageAdaptor.class.php';
 require_once dirname(__FILE__) .'/../language/en/Inflect.class.php';
 
 /**
- * The infamous active record implementation from textme.co.nz
+ * Active record base class.
  * 
- * <p>It is slowly gaining features and growing wings.</p>
+ * @package repository
  */
 class Record {
 	private $_table;
@@ -105,7 +105,7 @@ class Record {
 	}
 	
 	/**
-	 * Add a collection assocation to this record.
+	 * Add a collection association to this record.
 	 * 
 	 * Collections are currently implemented as flat arrays, which
 	 * makes the tests pass, but is not a particularly pleasing
@@ -239,7 +239,8 @@ class Record {
 	 * @return mixed
 	 */
 	private function _castPropertyType($key) {
-		switch($this->_properties[$key]) {
+		$type = $this->_properties[$key];
+		switch($type) {
 			case 'string':
 			case 'text':
 				return $this->_getString($key);
@@ -254,6 +255,9 @@ class Record {
 			case 'date':
 			case 'datetime':
 				return $this->_getValue($key, 'DateTime');
+				break;
+			default:
+				if (class_exists($type)) return $this->_getValue($key, $type);
 				break;
 		}
 	}
