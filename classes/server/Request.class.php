@@ -248,6 +248,15 @@ final class Request {
 	}
 	
 	/**
+	 * Accessor for a request header
+	 *
+	 * @return string
+	 */
+	function header($name) {
+		return $this->envelope->header($name);
+	}
+	
+	/**
 	 * Accessor for uploaded files
 	 */
 	function getUploadedFile($name) {
