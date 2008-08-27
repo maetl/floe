@@ -253,7 +253,7 @@ final class Request {
 	 * @return string
 	 */
 	function header($name) {
-		return $this->envelope->header($name);
+		return ($result = $this->envelope->header($name)) ? $result : false;
 	}
 	
 	/**
