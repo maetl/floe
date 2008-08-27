@@ -1,7 +1,7 @@
 <?php
 require_once 'simpletest/autorun.php';
 require_once 'simpletest/mock_objects.php';
-require_once '../repository/Record.class.php';
+require_once dirname(__FILE__).'/../repository/Record.class.php';
 
 if (!defined('DB_HOST')) {
 	define('DB_HOST', 'localhost');
@@ -326,6 +326,43 @@ class OverloadedPropertyAcessorsTest extends UnitTestCase {
 		$this->assertEqual($input, $model->rawField);
 		$result = $model->wrappingValue;
 		$this->assertEqual(strtolower($input), $result);
+	}
+	
+}
+
+class Pencil extends Record {
+	
+	function __define() {
+		$this->property('lead', 'PencilLead');
+	}
+	
+}
+
+class PencilLead {
+	private $value;
+	
+	function __construct($value=false) {
+		if ($value) $this->value = $value;
+	}
+	
+	function sharpen() {
+		$this->value = true;
+	}
+	
+	function isSharp() {
+		return $this->value;
+	}
+	
+}
+
+class PropertyCastToCustomValueObject extends UnitTestCase {
+	
+	function testValueObjectCastFromDefinedField() {
+		$pencil = new Pencil();
+		$this->assertFalse($pencil->lead->isSharp());
+		$pencil->lead->sharpen();
+		//$this->assertTrue($pencil->lead->isSharp());
+		//todo support dependent types with state, as well as value objects
 	}
 	
 }
