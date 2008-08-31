@@ -142,11 +142,17 @@ class Response {
 		if (isset($error->status)) $this->status($error->status, $error->getMessage());
 		$this->write("<h1>".$error->getMessage()."</h1>");
 		$this->write("<p>".$error->resource." (".$error->include.")</p>");
-		$this->write("<ul>");
+		$this->write("<ul>");		
 		foreach($error->getTrace() as $trace) {
-			$method = $trace['class'].$trace['type'].$trace['function'];
-			$fileref = "Line ".$trace['line']." of ".$trace['file'];
-			$this->write("<li>$method ($fileref)</li>");
+			if (isset($trace['class'])) {
+				$method = $trace['class'].$trace['type'].$trace['function'];
+			} else {
+				$method = $trace['function'];
+			}
+			if (isset($trace['line'])) {
+				$method .= " (Line ".$trace['line']." of ".$trace['file'] . ")";	
+			}
+			$this->write("<li>$method</li>");
 		}
 		$this->write("</ul>");
 	}
