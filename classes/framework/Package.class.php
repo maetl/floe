@@ -1,4 +1,7 @@
 <?php
+
+if (!defined('LIB_DIR')) define('LIB_DIR', dirname(__FILE__).'/../../');
+
 /**
  * Package based class loader, used in lieu of
  * having real namespaces.
@@ -8,12 +11,12 @@
 class Package {
 	
 	/**
-	 * Load a Floe class specified by package path.
+	 * Load a library class specified by package path.
 	 *
 	 * @param $class
 	 */
 	public static function import($class) {
-		require_once LIB_DIR . '/floe' . str_replace(".", "/", $class) . ".class.php";
+		require_once LIB_DIR . str_replace(".", "/", $class) . ".class.php";
 	}
 	
 }
