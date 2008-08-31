@@ -86,7 +86,7 @@ class Response {
 	public function render($template) {
 		extract($this->variables);
 		ob_start();
-		$templatePath = TPL_DIR . $template . ".php"; 
+		$templatePath = TPL_DIR . "/" . $template . ".php";
 		if (file_exists($templatePath)) {
 			include $templatePath;
 		} else {
