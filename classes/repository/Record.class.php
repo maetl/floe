@@ -75,7 +75,7 @@ class Record {
 			if ($field == 'id') {
 				$this->_record->id = $value;
 			} else {
-				$this->setProperty($field, $value);
+				$this->$field = $value;
 			}
 		}		
 	}
