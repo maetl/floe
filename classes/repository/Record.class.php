@@ -67,6 +67,19 @@ class Record {
 		}
 	}
 	
+	/**
+	 * Update the record with values given from supplied object or hash.
+	 */
+	public function populate($record) {
+		foreach($record as $field=>$value) {
+			if ($field == 'id') {
+				$this->_record->id = $value;
+			} else {
+				$this->setProperty($field, $value);
+			}
+		}		
+	}
+	
 	private function getDefinedAncestors() {
 		$class = get_class($this);
 		while ($class != 'Record') {
