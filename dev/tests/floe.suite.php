@@ -6,6 +6,6 @@ require_once 'simpletest/extensions/treemap_reporter.php';
 $test = new TestSuite('floe.ext.php.tests');
 $fileRole = new SimplePatternCollector('/test\.php$/');
 $test->collect(dirname(__FILE__), $fileRole);
-$test->run(new TreemapReporter());
+$test->run(new TextReporter());
 
 ?>

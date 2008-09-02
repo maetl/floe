@@ -1,6 +1,6 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once 'classes/repository/store/StorageAdaptor.class.php';
+require_once dirname(__FILE__).'/../../src/repository/store/StorageAdaptor.class.php';
 
 class StorageAdaptorSingletonTest extends UnitTestCase {
 	

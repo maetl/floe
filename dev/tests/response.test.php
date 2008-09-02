@@ -1,6 +1,6 @@
 <?php
-require_once "simpletest/autorun.php";
-require_once "classes/server/Response.class.php";
+require_once 'simpletest/autorun.php';
+require_once dirname(__FILE__).'/../../src/server/Response.class.php';
 
 class ResponseTest extends UnitTestCase {
 	

@@ -2,9 +2,9 @@
 require_once "simpletest/autorun.php";
 require_once "simpletest/mock_objects.php";
 
-require_once "classes/server/Membrane.class.php";
-require_once "classes/server/receptors/IdentityDispatcher.class.php";
-require_once "classes/server/controllers/BaseController.class.php";
+require_once dirname(__FILE__).'/../../src/server/Membrane.class.php';
+require_once dirname(__FILE__).'/../../src/server/receptors/IdentityDispatcher.class.php';
+require_once dirname(__FILE__).'/../../src/server/controllers/BaseController.class.php';
 
 
 class ServerTestCase extends UnitTestCase {

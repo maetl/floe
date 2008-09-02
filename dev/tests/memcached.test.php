@@ -1,6 +1,6 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once '../repository/store/memcached/MemcachedAdaptor.class.php';
+require_once dirname(__FILE__).'/../../src/repository/store/memcached/MemcachedAdaptor.class.php';
 
 class MemcachedExtensionTest extends UnitTestCase {
 

@@ -1,7 +1,7 @@
 <?php
 require_once 'simpletest/autorun.php';
 require_once 'simpletest/mock_objects.php';
-require_once 'classes/framework/EventLog.class.php';
+require_once dirname(__FILE__).'/../../src/framework/EventLog.class.php';
 
 Mock::generate('LogHandler');
 

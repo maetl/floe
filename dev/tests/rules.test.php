@@ -1,10 +1,10 @@
 <?php
 require_once 'simpletest/autorun.php';
 
-require_once 'classes/repository/rules/EmailRule.class.php';
-require_once 'classes/repository/rules/AlphanumericRule.class.php';
-require_once 'classes/repository/rules/MatchingRule.class.php';
-require_once 'classes/repository/rules/NumericRule.class.php';
+require_once dirname(__FILE__).'/../../src/repository/rules/EmailRule.class.php';
+require_once dirname(__FILE__).'/../../src/repository/rules/AlphanumericRule.class.php';
+require_once dirname(__FILE__).'/../../src/repository/rules/MatchingRule.class.php';
+require_once dirname(__FILE__).'/../../src/repository/rules/NumericRule.class.php';
 
 class EmailRuleTest extends UnitTestCase {
 

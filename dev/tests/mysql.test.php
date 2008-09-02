@@ -1,8 +1,8 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once '../language/en/Inflect.class.php';
-require_once '../repository/store/mysql/MysqlGateway.class.php';
-require_once '../repository/Record.class.php';
+require_once dirname(__FILE__).'/../../src/language/en/Inflect.class.php';
+require_once dirname(__FILE__).'/../../src/repository/store/mysql/MysqlGateway.class.php';
+require_once dirname(__FILE__).'/../../src/repository/Record.class.php';
 
 if (!defined('DB_HOST')) {
 	define('DB_HOST', 'localhost');
