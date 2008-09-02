@@ -265,6 +265,9 @@ class Record {
 			case 'float':
 				return $this->_getFloat($key);
 				break;
+			case 'boolean':
+				return $this->_getBoolean($key);
+				break;
 			case 'date':
 			case 'datetime':
 				return $this->_getValue($key, 'DateTime');
@@ -356,6 +359,10 @@ class Record {
 
 	function _getFloat($property) {
 		return ($this->_record) ? (float)$this->_record->$property : null;
+	}
+	
+	function _getBoolean($property) {
+		return ($this->_record) ? (boolean)$this->_record->$property : null;
 	}
 
 	function _getValue($property, $type) {

@@ -54,6 +54,60 @@ class ModelWithBasicPropertiesTest extends UnitTestCase {
 
 }
 
+class Thing extends Record {
+	function __define() {
+		$this->property('stringField', 'string');
+		$this->property('integerField', 'integer');
+		$this->property('floatField', 'float');
+		$this->property('dateField', 'datetime');
+		$this->property('booleanFieldOn', 'boolean');
+		$this->property('booleanFieldOff', 'boolean');
+	}
+}
+
+class RecordPropertyTypesTest extends UnitTestCase {
+
+	function setUp() {
+		$model = new Thing();
+		$adaptor = StorageAdaptor::instance();
+		$adaptor->createTable("things", $model->properties());
+	}
+
+	function testCanManipulateAllPrimitiveTypes() {
+		$query = StorageAdaptor::instance();
+	
+		$typeValues = array(
+			'string_field' => 'a string',
+			'integer_field' => 33,
+			'float_field' => 2.567,
+			'date_field' => '2006-09-09',
+			'boolean_field_on' => true,
+			'boolean_field_off' => false
+		);
+		
+		$query->insert("things", $typeValues);
+		
+		$query->selectById('things', $query->insertId());
+		$object = $query->getRecord();
+		$this->assertTrue(is_string($object->stringField));
+		$this->assertTrue(is_integer($object->integerField));
+		$this->assertEqual(33, $object->integerField);
+		$this->assertTrue(is_float($object->floatField));
+		$this->assertIdentical(2.567, $object->floatField);
+		$this->assertIsA($object->dateField, 'DateTime');
+		$this->assertEqual('2006-09-09', $object->dateField->format('Y-m-d'));
+		$this->assertEqual(true, $object->booleanFieldOn);
+		$this->assertEqual(false, $object->booleanFieldOff);
+
+	}
+	
+	function tearDown() {
+		$adaptor = StorageAdaptor::instance();	
+		$adaptor->dropTable("things");
+	}
+
+}
+
 class Project extends Record {
 	function __define() {
 		$this->property("name", "string");
