@@ -78,6 +78,12 @@ module Floe
       Raise::message(File.read('HELP'))
     end
     
+    def self.project(event)
+      Project.create_app_skeleton
+      Project.create_config_file
+      Project.create_index_controller
+    end
+    
     # the command doesn't exist... we could delegate to something smarter here perhaps
     def self.method_missing(method, args)
       Raise::no_command(method)
@@ -130,6 +136,20 @@ module Floe
     
   end
   
+  # New project builder
+  class Project
+    
+    def self.create_app_skeleton
+      skel = Format::YML.read(File.dirname(__FILE__) + "/../ext/project/skeleton.yml");
+      p skel
+    end
+    
+    def self.method_missing(method, *args)
+      puts "not implemented"
+    end
+    
+  end
+  
   # Read-only map of properties from a build configuration file
   class BuildEnvironment < Hash
     attr_reader :name, :version
@@ -163,7 +183,7 @@ module Floe
         begin
           out = YAML::load_file(fname)
         rescue ArgumentError => e
-          Floe::Raise.parse_error(fname)
+          Floe::Raise.parse_error(e)
         end
         out
       end
