@@ -53,7 +53,12 @@ class ResponseTest extends UnitTestCase {
 	}
 	
 	function testTemplateRenderWrappedLayout() {
-		
+		$response = new Response();
+		$response->wrap('wrapper');
+		$response->assign('foo', 'bar');
+		$response->render('hello');
+		$this->assertPattern("/<span>bar<\/span>/", $response->body());
+		$this->assertPattern("/<div><h1>Hello World<\/h1><\/div>/", $response->body());
 	}
 	
 }

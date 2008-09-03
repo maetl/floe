@@ -6,7 +6,9 @@
 require_once "UriPath.class.php";
 require_once "UserAgent.class.php";
 require_once "HttpEnvelope.class.php";
- 
+
+if (!defined('OUTPUT_VAR')) define('OUTPUT_VAR', 'output');
+
 /**
  * Renders data output from server process.
  *
@@ -35,6 +37,9 @@ class Response {
 	 * Writes the given HTTP Header to the response. If a
 	 * header of the same type already exists, this
 	 * header will overwrite the existing line.
+	 *
+	 * @param string $type header name
+	 * @param string $value header value
 	 */
 	public function header($type, $value) {
 		$this->headers[$type] = $value;
@@ -42,6 +47,8 @@ class Response {
 	
 	/**
 	 * Writes the given string to the response
+	 *
+	 * @param string $output
 	 */
 	public function write($output) {
 		$this->buffer .= $output;
@@ -49,6 +56,8 @@ class Response {
 	
 	/**
 	 * Dumps a variable to HTML format
+	 *
+	 * @param mixed $variable
 	 */
 	public function dump($variable) {
 		$this->write('<pre>');
@@ -58,6 +67,9 @@ class Response {
 	
 	/**
 	 * Assign a variable to the template
+	 *
+	 * @param string $key name of the variable
+	 * @param mixed  $value the object to assign
 	 */
 	public function assign($key, $value=true) {
 		$this->variables[$key] = $value;
@@ -65,6 +77,8 @@ class Response {
 	
 	/**
 	 * synonym of assign
+	 *
+	 * @see Response::assign
 	 */
 	public function set($key, $value) {
 		$this->assign($key, $value);
@@ -72,6 +86,9 @@ class Response {
 	
 	/**
 	 * Handles HTTP location redirect
+	 *
+	 * @param string $path path to redirect to
+	 * @param int $status optional HTTP status (defaults to 301?)
 	 */
 	public function redirect($path, $status=false) {
 		if (!strstr("http://", $path)) $path = WEB_HOST . '/' . $path;
@@ -82,6 +99,7 @@ class Response {
 	 * Renders a template object to the response buffer.
 	 * 
 	 * @throws Exception
+	 * @param string $template path to PHP template
 	 */
 	public function render($template) {
 		extract($this->variables);
@@ -93,10 +111,27 @@ class Response {
 			require_once 'ResourceNotFound.class.php';
 			throw new ResourceNotFound("Response template not found", $templatePath);
 		}
+		if ($this->wrappedTemplate) {
+			$output = ob_get_contents();
+			ob_clean();
+			include TPL_DIR . "/" . $this->wrappedTemplate . ".php";
+		}
 		$this->write(ob_get_contents());
 		ob_clean();
 	}
 	
+	/** @ignore */
+	private $wrappedTemplate;
+	
+	/**
+	 * Wraps a main layout template around the render call.
+	 *
+	 * @throws Exception
+	 * @param string $template path to wrapping template
+	 */
+	function wrap($template) {
+		$this->wrappedTemplate = $template;
+	}
 	/**
 	 * Send cookie headers.
 	 */
@@ -106,14 +141,16 @@ class Response {
 	}
 	
 	/**
-	 * Maps the registered HTTP Headers to the PHP
+	 * Sends the registered HTTP Headers to the PHP
 	 * server handler.
+	 *
+	 * @throws Exception
 	 */
 	private function sendHeaders() {
-		if (isset($this->status)) {
-			header("HTTP/1.1 {$this->status}");
-		}
 		if (!headers_sent()) {
+			if (isset($this->status)) {
+				header("HTTP/1.1 {$this->status}");
+			}
 			foreach($this->headers as $type => $value) {
 				header($type . ': ' . $value);
 			}
@@ -123,7 +160,11 @@ class Response {
 	}
 	
 	/**
-	 * Set the HTTP response status.
+	 * Set the HTTP response status. 
+	 * (see: http://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+	 *
+	 * @param int $code HTTP status code
+	 * @param string $message HTTP status message
 	 */
 	public function status($code, $message=false) {
 		if (!$message) {
