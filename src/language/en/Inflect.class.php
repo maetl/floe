@@ -114,10 +114,14 @@ class Inflect implements Inflections {
 	}
 
 	/**
+	 * Converts a string from camel cased identifier format to sentence case,
+	 * adding space breaks between words where necessary and capitalizing
+	 * the first word.
+	 *
 	 * @param $word string
 	 */
 	static function toSentence($word) {
-	
+		return ucfirst(strtolower(preg_replace("/([a-z]+)([A-Z])/","$1 $2", $word)));
 	}
 	
 	/**
