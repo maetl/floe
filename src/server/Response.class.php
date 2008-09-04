@@ -96,25 +96,18 @@ class Response {
 	}
 	
 	/**
-	 * Renders a template object to the response buffer.
+	 * Renders a template to the response buffer.
 	 * 
 	 * @throws Exception
 	 * @param string $template path to PHP template
 	 */
 	public function render($template) {
-		extract($this->variables);
 		ob_start();
-		$templatePath = TPL_DIR . "/" . $template . ".php";
-		if (file_exists($templatePath)) {
-			include $templatePath;
-		} else {
-			require_once 'ResourceNotFound.class.php';
-			throw new ResourceNotFound("Response template not found", $templatePath);
-		}
+		$this->writeTemplate($template);
 		if ($this->wrappedTemplate) {
-			$output = ob_get_contents();
+			$this->assign(OUTPUT_VAR, ob_get_contents());
 			ob_clean();
-			include TPL_DIR . "/" . $this->wrappedTemplate . ".php";
+			$this->writeTemplate($this->wrappedTemplate);
 		}
 		$this->write(ob_get_contents());
 		ob_clean();
@@ -132,6 +125,24 @@ class Response {
 	function wrap($template) {
 		$this->wrappedTemplate = $template;
 	}
+	
+	/**
+	 * Write a PHP template to the render buffer, applying any
+	 * assigned variables to the current scope.
+	 * 
+	 * @param string $template template name
+	 */
+	private function writeTemplate($template) {
+		extract($this->variables);
+		$templatePath = TPL_DIR . "/" . $template . ".php";
+		if (file_exists($templatePath)) {
+			include $templatePath;
+		} else {
+			require_once 'ResourceNotFound.class.php';
+			throw new ResourceNotFound("Response template not found", $templatePath);
+		}
+	}
+	
 	/**
 	 * Send cookie headers.
 	 */
