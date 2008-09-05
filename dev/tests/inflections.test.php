@@ -61,7 +61,12 @@ class StringTransformationUtilityTest extends UnitTestCase {
 	
 	function testUriNameEncoding() {
 		$this->assertEqual("graphic-design", Inflect::encodeUriPart("Graphic Design"));
-		$this->assertEqual("what-is-a-page?", Inflect::encodeUriPart("What Is A Page?"));
+		$this->assertEqual("what-is-a-page", Inflect::encodeUriPart("What Is a Page?"));
+		$this->assertEqual("what-is-a-page", Inflect::encodeUriPart("what is a page?"));
+		$this->assertEqual("what-is-a-page", Inflect::encodeUriPart("What Is A Page?"));
+		$this->assertEqual("remove-brackets", Inflect::encodeUriPart("Remove (brackets)"));
+		$this->assertEqual("crunchx", Inflect::encodeUriPart("CRUNCH^*%&^&&*^*^*&^*X"));
+		$this->assertEqual("this-is-umpossible", Inflect::encodeUriPart("THIS IS UMPOSSIBLE"));
 	}
 	
 	function testUriNameDecoding() {
@@ -108,6 +113,12 @@ class StringTransformationUtilityTest extends UnitTestCase {
 		$this->assertEqual("occurredOn", Inflect::columnToProperty("OccurredOn"));
 		$this->assertEqual("propertyAttribute", Inflect::columnToProperty("property_attribute"));
 		$this->assertEqual("dereferencePropertyAttribute", Inflect::columnToProperty("dereference_property_attribute"));
+	}
+	
+	function testIdentifierToSentence() {
+		$this->assertEqual("Property", Inflect::toSentence("property"));
+		$this->assertEqual("Property name", Inflect::toSentence("propertyName"));
+		$this->assertEqual("Property of an object", Inflect::toSentence("propertyOfAnObject"));
 	}
 
 }

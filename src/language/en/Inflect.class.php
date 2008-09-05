@@ -167,9 +167,13 @@ class Inflect implements Inflections {
 	
 	/**
 	 * Encodes a word or sentence into URI form.
+	 *
+	 * @param string $part
+	 * @return string
 	 */
-	function encodeUriPart($cPart) {
-		return str_replace(" ", "-", strtolower(preg_replace("/([a-z]+)([A-Z])/","$1-$2", $cPart)));
+	function encodeUriPart($part) {
+		$part = preg_replace("/([^\w\s]+)/", "",  ucwords($part));
+		return str_replace(' ', '-', strtolower(preg_replace("/([a-z]+)([A-Z])/","$1-$2", $part)));
 	}
 		
 	/**
