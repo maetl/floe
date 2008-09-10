@@ -16,6 +16,10 @@ class RequestTest extends UnitTestCase {
 		$this->getRequest = $_GET;
 		$this->postRequest = $_POST;
 		$this->serverEnv = $_SERVER;
+		if (SimpleReporter::inCli()) {
+			$this->mockMethodVerb('GET');
+			$this->mockUri('/');
+		}
 	}
 	
 	function tearDown() {
@@ -55,6 +59,17 @@ class RequestTest extends UnitTestCase {
 		$this->assertEqual('bar', $request->postParameter('foo'));
 		$this->assertEqual('bar', $request->foo);
 		$this->assertEqual("hello=world&foo=bar", $request->entityBody());
+	}
+	
+	function testArrayAsPostParameter() {
+		$_POST = array("hello"=>array("hello", "world"));
+		$this->mockMethodVerb('POST');
+		$http = new MockHttpEnvelope();
+		$http->setReturnValue('header', 'application/x-www-form-urlencoded', array('Content-Type'));
+		
+		$request = new Request($http);
+		$this->assertEqual(array("hello", "world"), $request->hello);
+		$this->assertEqual("hello", $request->hello[0]);
 	}
 	
 	function testUriPathComponents() {

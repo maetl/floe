@@ -118,10 +118,14 @@ final class Request {
 	 * Uses htmlspecialchars by default.
 	 * 
 	 * @todo pluggable input filtering
-	 * @return string
+	 * @return string|array
 	 */
 	private function cleanValue($value) {
-		return stripslashes(htmlspecialchars($value));
+		if (is_array($value)) {
+			return array_map('stripslashes', array_map('htmlspecialchars', $value));
+		} else {
+			return stripslashes(htmlspecialchars($value));			
+		}
 	}
 	
 	/**
