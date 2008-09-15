@@ -223,7 +223,7 @@ class Record {
 			if (is_array($this->_dependent_relations[$key])) {
 				if (empty($this->_dependent_relations[$key])) {
 					$field = strtolower(Inflect::toSingular(get_class($this)))."_id";
-					$this->_storage->selectByKey($key, array($field=>$this->id));
+					$this->_storage->selectByKey(Inflect::underscore($key), array($field=>$this->id));
 					$this->_dependent_relations[$key] = $this->_storage->getRecords();
 					return $this->_dependent_relations[$key];
 				} else {
