@@ -52,7 +52,7 @@ class Record {
 			if (is_numeric($record)) {
 				$record = $this->findObjectById($record);
 				foreach ($this->_parent_relations as $key => $val) {
-					$nameProperty = $key."_id";
+					$nameProperty = $key."Id";
 					$this->_storage->selectById(Inflect::toTableName($key), $record->$nameProperty);
 					$this->_parent_relations[$key] = $this->_storage->getRecord();
 				}
@@ -168,6 +168,14 @@ class Record {
 	 */
 	function properties() {
 		return $this->_properties;
+	}
+	
+	/**
+	 * Return a list of the many to many
+	 * relationship mappings for this record.
+	 */
+	function relations() {
+		return $this->_joins;
 	}
 
 	/**
