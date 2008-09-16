@@ -177,6 +177,14 @@ class Record {
 	function relations() {
 		return $this->_joins;
 	}
+	
+	/**
+	 * Return a list of the owner
+	 * mappings for this record (belongsTo)
+	 */
+	function parents() {
+		return $this->_parent_relations;
+	}
 
 	/**
 	 * Add a validation rule to this record.
