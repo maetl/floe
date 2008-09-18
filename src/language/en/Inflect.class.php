@@ -26,6 +26,7 @@ class Inflect implements Inflections {
 		'/([^aeiouy]|qu)y$/' => '\1ies',
 		'/([o])$/' => '\1es',
 		'/(?:([^f])fe|([lr])f)$/' => '\1\2ves',
+		'/(analy|ba|diagno|parenthe|progno|synop|the)sis$/' => '\1ses',
 		'/man$/' => '\1men',
 		'/$/' => 's'
 	);
@@ -34,10 +35,10 @@ class Inflect implements Inflections {
 	 * map of irregular plural rules
 	 */
 	static private $IrregularPluralRules = array(
+		'movie' => 'movies',
 		'person' => 'people',
 		'child' => 'children',
 		'octopus' => 'octopi',
-		'movie' => 'movies',
 		'news' => 'news',
 		'status' => 'status',
 		'series' => 'series'
@@ -56,6 +57,40 @@ class Inflect implements Inflections {
 		'/men$/' => '\1man',
 		'/s$/' => ''
 	);
+
+	/**
+	 * Applies a map of grammar rules to match a given word.
+	 * 
+	 * Returns the transformed word, or false if the word was not matched.
+	 * 
+	 * @param $word string
+	 * @param $rules array of grammar rules
+	 */
+	static private function applyRules($word, $rules) {
+		foreach($rules as $rule => $replace) {
+			if (preg_match($rule, $word)) {
+				return preg_replace($rule.'i', $replace, $word);
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Because we can't compare array key case with an insensitive match,
+	 * we need to use this to normalize the transformed word back to its original
+	 * case.
+	 *
+	 * This currently only supports words in ASCII characters.
+	 *
+	 * @param $word string given word
+	 * @param $result string transformed result
+	 */
+	static private function normalizeCase($word, $result) {
+		if (ord($word[0]) > 64 && ord($word[0]) < 91) {
+			return (ord($word[1]) > 64 && ord($word[1]) < 91) ? strtoupper($result) : ucfirst($result);
+		}
+		return $result;
+	}
 	
 	/**
 	 * Converts a singular word to plural form.
@@ -63,8 +98,8 @@ class Inflect implements Inflections {
 	 * @param $word string
 	 */
 	static function toPlural($word) {
-		if (array_key_exists($word, Inflect::$IrregularPluralRules)) {
-			return Inflect::$IrregularPluralRules[$word];
+		if (isset(Inflect::$IrregularPluralRules[strtolower($word)])) {
+			return Inflect::normalizeCase($word, Inflect::$IrregularPluralRules[strtolower($word)]);
 		}
 		return ($result = Inflect::applyRules($word, Inflect::$RegularPluralRules)) ? $result : $word;
 	}
@@ -75,8 +110,8 @@ class Inflect implements Inflections {
 	 * @param $word string
 	 */
 	static function toSingular($word) {
-		if ($key = array_search($word, Inflect::$IrregularPluralRules)) {
-			return $key;
+		if ($key = array_search(strtolower($word), Inflect::$IrregularPluralRules)) {
+			return Inflect::normalizeCase($word, $key);
 		}
 		return ($result = Inflect::applyRules($word, Inflect::$SingularRules)) ? $result : $word;
 	}
@@ -189,23 +224,6 @@ class Inflect implements Inflections {
 	function columnToProperty($column_name) {
 		$word = Inflect::toClassName($column_name);
 		return strtolower($word[0]).substr($word,1);
-	}
-	
-	/**
-	 * Applies a map of grammar rules to match a given word.
-	 * 
-	 * Returns the transformed word, or false if the word was not matched.
-	 * 
-	 * @param $word string
-	 * @param $rules array of grammar rules
-	 */
-	static private function applyRules($word, $rules) {
-		foreach($rules as $rule => $replace) {
-			if (preg_match($rule, $word)) {
-				return preg_replace($rule, $replace, $word);
-			}
-		}
-		return false;
 	}
 	
 }

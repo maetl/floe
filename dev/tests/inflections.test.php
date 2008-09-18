@@ -27,11 +27,6 @@ class EnglishPluralsTest extends UnitTestCase {
 		$this->assertEqual('searches', Inflect::toPlural('search'));
 	}
 	
-	function testNounsEndingInIes() {
-		$this->assertEqual('movies', Inflect::toPlural('movie'));
-		$this->assertEqual('movie', Inflect::toSingular('movies'));
-	}
-	
 	function testNounsEndingInYIe() {
 		$this->assertEqual('ladies', Inflect::toPlural('lady'));
 		$this->assertEqual('lady', Inflect::toSingular('ladies'));
@@ -39,11 +34,44 @@ class EnglishPluralsTest extends UnitTestCase {
 		$this->assertEqual('canary', Inflect::toSingular('canaries'));
 	}
 	
-	function testIrregularNouns() {
+	function testIrregularPluralNouns() {
+		$this->assertEqual('parentheses', Inflect::toPlural('parenthesis'));
 		$this->assertEqual('people', Inflect::toPlural('person'));
 		$this->assertEqual('children', Inflect::toPlural('child'));
 		$this->assertEqual('octopi', Inflect::toPlural('octopus'));
 		$this->assertEqual('halves', Inflect::toPlural('half'));
+		$this->assertEqual('movies', Inflect::toPlural('movie'));
+	}
+
+	function testIrregularSingularNouns() {
+		$this->assertEqual('parenthesis', Inflect::toSingular('parentheses'));
+		$this->assertEqual('movie', Inflect::toSingular('movies'));
+		$this->assertEqual('person', Inflect::toSingular('people'));
+		$this->assertEqual('child', Inflect::toSingular('children'));
+		$this->assertEqual('octopus', Inflect::toSingular('octopi'));
+		$this->assertEqual('half', Inflect::toSingular('halves'));			
+	}
+	
+	function testCaseSensitiveSingularNouns() {
+		$this->assertEqual('Movie', Inflect::toSingular('Movies'));
+		$this->assertEqual('MOVIE', Inflect::toSingular('MOVIES'));
+		$this->assertEqual('People', Inflect::toPlural('Person'));
+		$this->assertEqual('PEOPLE', Inflect::toPlural('PERSON'));
+		$this->assertEqual('Book', Inflect::toSingular('Books'));
+		//$this->assertEqual('BOOK', Inflect::toSingular('BOOKS'));
+		$this->assertEqual('Lady', Inflect::toSingular('Ladies'));
+		//$this->assertEqual('LADY', Inflect::toSingular('LADIES'));		
+	}
+	
+	function testCaseSensitivePluralNouns() {
+		$this->assertEqual('Movies', Inflect::toPlural('Movie'));
+		$this->assertEqual('MOVIES', Inflect::toPlural('MOVIE'));
+		$this->assertEqual('People', Inflect::toPlural('Person'));
+		$this->assertEqual('PEOPLE', Inflect::toPlural('PERSON'));
+		$this->assertEqual('Books', Inflect::toPlural('Book'));
+		//$this->assertEqual('BOOKS', Inflect::toPlural('BOOK'));
+		$this->assertEqual('Ladies', Inflect::toPlural('Lady'));
+		//$this->assertEqual('LADIES', Inflect::toPlural('LADY'));		
 	}
 	
 	function testRegularSingularNouns() {
@@ -52,10 +80,6 @@ class EnglishPluralsTest extends UnitTestCase {
 		$this->assertEqual('cat', Inflect::toSingular('cats'));
 		$this->assertEqual('dog', Inflect::toSingular('dogs'));
 		$this->assertEqual('book', Inflect::toSingular('books'));	
-	}
-	
-	function testIrregularSingularNouns() {
-		$this->assertEqual('parenthesis', Inflect::toSingular('parentheses'));
 	}
 
 }
