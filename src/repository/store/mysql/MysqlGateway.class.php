@@ -52,8 +52,8 @@ class MysqlGateway {
 	function getRecord() {
 		$object = $this->getObject();
 		if ($object) {
-			$record = Inflect::toClassName($this->_currentTable);
-			$record = Inflect::toSingular($record);
+			$record = Inflect::toSingular($this->_currentTable);
+			$record = Inflect::toClassName($record);
 			if (!class_exists($record)) {
 				$_properties = "";
 				$i = 0;
