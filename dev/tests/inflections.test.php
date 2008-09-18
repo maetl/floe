@@ -27,9 +27,16 @@ class EnglishPluralsTest extends UnitTestCase {
 		$this->assertEqual('searches', Inflect::toPlural('search'));
 	}
 	
+	function testNounsEndingInIes() {
+		$this->assertEqual('movies', Inflect::toPlural('movie'));
+		$this->assertEqual('movie', Inflect::toSingular('movies'));
+	}
+	
 	function testNounsEndingInYIe() {
 		$this->assertEqual('ladies', Inflect::toPlural('lady'));
+		$this->assertEqual('lady', Inflect::toSingular('ladies'));
 		$this->assertEqual('canaries', Inflect::toPlural('canary'));
+		$this->assertEqual('canary', Inflect::toSingular('canaries'));
 	}
 	
 	function testIrregularNouns() {
