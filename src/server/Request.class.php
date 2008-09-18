@@ -122,9 +122,9 @@ final class Request {
 	 */
 	private function cleanValue($value) {
 		if (is_array($value)) {
-			return array_map('stripslashes', array_map('htmlspecialchars', $value));
+			return array_map(array($this, 'cleanValue'), $value);
 		} else {
-			return stripslashes(htmlspecialchars($value));			
+			return stripslashes(htmlspecialchars($value));
 		}
 	}
 	
