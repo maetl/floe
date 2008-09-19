@@ -1,8 +1,10 @@
 <?php
 /**
- * An identity map containing objects blown up out of the
- * current request. If an object already exists in scope then
- * no round trip is required to retrieve it.
+ * An identity map containing objects in the scope of the
+ * current request.
+ * 
+ * If an object already exists in scope then no round trip is
+ * required to retrieve it.
  */
 class LocalScope {
 	

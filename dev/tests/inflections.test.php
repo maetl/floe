@@ -60,7 +60,7 @@ class EnglishPluralsTest extends UnitTestCase {
 		$this->assertEqual('Book', Inflect::toSingular('Books'));
 		//$this->assertEqual('BOOK', Inflect::toSingular('BOOKS'));
 		$this->assertEqual('Lady', Inflect::toSingular('Ladies'));
-		//$this->assertEqual('LADY', Inflect::toSingular('LADIES'));		
+		//$this->assertEqual('LADY', Inflect::toSingular('LADIES'));
 	}
 	
 	function testCaseSensitivePluralNouns() {
