@@ -13,5 +13,4 @@ class StorageAdaptorSingletonTest extends UnitTestCase {
 	
 }
 
-
 ?>
