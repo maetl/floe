@@ -3,7 +3,7 @@ require_once 'simpletest/autorun.php';
 require_once 'simpletest/mock_objects.php';
 require_once dirname(__FILE__).'/../../src/repository/store/mysql/MysqlQuery.class.php';
 
-class MysqlQueryTest extends UnitTestCase {
+class MysqlQueryCriteriaTest extends UnitTestCase {
 	
 	function testSingleWhereClause() {
 		$query = new MysqlQuery();
