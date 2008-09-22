@@ -15,7 +15,7 @@ class Record {
 	private $tableName;
 	private $_record;
 	protected $storage;
-	private $_properties;
+	private $properties;
 	private $_joins;
 	private $_associations;
 	private $_rules;
@@ -29,7 +29,7 @@ class Record {
 		$this->_parent_relations = array();
 		$this->_clean = true;
 		$this->storage = StorageAdaptor::instance();
-		$this->_properties = array();
+		$this->properties = array();
 		$this->_joins = array();
 		$this->_associations = array();
 		$this->_rules = array();
@@ -158,7 +158,7 @@ class Record {
 	 */
 	function property($name, $type) {
 		$this->_record->$name = null;
-		$this->_properties[$name] = $type;
+		$this->properties[$name] = $type;
 	}
 	
 	/**
@@ -168,7 +168,7 @@ class Record {
 	 * (a virtual version of get_class_vars)
 	 */
 	function properties() {
-		return $this->_properties;
+		return $this->properties;
 	}
 	
 	/**
@@ -260,7 +260,7 @@ class Record {
 	 * @return boolean
 	 */
 	private function hasProperty($key) {
-		return array_key_exists($key, $this->_properties);
+		return array_key_exists($key, $this->properties);
 	}
 	
 	/**
@@ -269,7 +269,7 @@ class Record {
 	 * @return mixed
 	 */
 	private function _castPropertyType($key) {
-		$type = $this->_properties[$key];
+		$type = $this->properties[$key];
 		switch($type) {
 			case 'string':
 			case 'text':
@@ -339,11 +339,11 @@ class Record {
 	 */
 	function setProperty($property, $value) {
 		$property = Inflect::columnToProperty($property);
-		if (array_key_exists($property, $this->_properties)) {
+		if (array_key_exists($property, $this->properties)) {
 			if (is_a($value, 'DateTime')) {
 				$value = $value->format('Y-n-d H:i:s');
 			}
-			if ($this->_properties[$property] == 'date') {
+			if ($this->properties[$property] == 'date') {
 				$value = date('Y-n-d', strtotime($value));
 			}
 			$this->_record->$property = $value;
