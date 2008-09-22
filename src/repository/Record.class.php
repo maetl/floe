@@ -39,8 +39,7 @@ class Record {
 			if (method_exists($this, '__define')) $this->__define();
 			$this->tableName = Inflect::toTableName(get_class($this));
 		} else {
-			$ancestors = $this->getDefinedAncestors();
-			if (method_exists($this, '__base')) $this->__base();
+			$this->initializeDefinedAncestors();
 			$this->property("type", "string");
 			$this->setProperty("type", get_class($this));
 		}
@@ -65,6 +64,8 @@ class Record {
 	
 	/**
 	 * Update the record with values given from supplied object or hash.
+	 *
+	 * @return void
 	 */
 	public function populate($record) {
 		foreach($record as $field=>$value) {
@@ -77,10 +78,10 @@ class Record {
 	}
 	
 	/**
-	 * Traverse the inheritance chain to find the parent record
-	 * that maps to a concrete table.
+	 * Traverse the inheritance chain to define parent properties
+	 * of a single table inheritance mapping.
 	 */
-	private function getDefinedAncestors() {
+	private function initializeDefinedAncestors() {
 		$class = get_class($this);
 		while ($class != 'Record') {
 			$method = new ReflectionMethod($class, '__define');
