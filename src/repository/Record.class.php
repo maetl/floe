@@ -12,29 +12,29 @@ require_once dirname(__FILE__) .'/../language/en/Inflect.class.php';
  * @package repository
  */
 class Record {
-	private $tableName;
-	private $_record;
 	protected $storage;
+	private $tableName;
+	private $recordInstance;
 	private $properties;
-	private $_joins;
-	private $_associations;
-	private $_rules;
-	private $_errors;
-	private $_clean;
-	private $_dependent_relations;
-	private $_parent_relations;
+	private $joins;
+	private $associations;
+	private $rules;
+	private $errors;
+	private $clean;
+	private $dependentRelations;
+	private $parentRelations;
 
 	function __construct($record = false) {
-		$this->_dependent_relations = array();
-		$this->_parent_relations = array();
-		$this->_clean = true;
+		$this->dependentRelations = array();
+		$this->parentRelations = array();
+		$this->clean = true;
 		$this->storage = StorageAdaptor::instance();
 		$this->properties = array();
-		$this->_joins = array();
-		$this->_associations = array();
-		$this->_rules = array();
-		$this->_errors = array();
-		$this->_record = new stdClass();
+		$this->joins = array();
+		$this->associations = array();
+		$this->rules = array();
+		$this->errors = array();
+		$this->recordInstance = new stdClass();
 		if (get_parent_class($this) == 'Record') {
 			if (method_exists($this, '__define')) $this->__define();
 			$this->tableName = Inflect::toTableName(get_class($this));
@@ -46,15 +46,15 @@ class Record {
 		if ($record) {
 			if (is_numeric($record)) {
 				$record = $this->findObjectById($record);
-				foreach ($this->_parent_relations as $key => $val) {
+				foreach ($this->parentRelations as $key => $val) {
 					$nameProperty = $key."Id";
 					$this->storage->selectById(Inflect::toTableName($key), $record->$nameProperty);
-					$this->_parent_relations[$key] = $this->storage->getRecord();
+					$this->parentRelations[$key] = $this->storage->getRecord();
 				}
 			}
 			foreach($record as $field=>$value) {
 				if ($field == 'id') {
-					$this->_record->id = $value;
+					$this->recordInstance->id = $value;
 				} else {
 					$this->setProperty($field, $value);
 				}
@@ -70,7 +70,7 @@ class Record {
 	public function populate($record) {
 		foreach($record as $field=>$value) {
 			if ($field == 'id') {
-				$this->_record->id = $value;
+				$this->recordInstance->id = $value;
 			} else {
 				$this->$field = $value;
 			}
@@ -108,14 +108,14 @@ class Record {
 	 */
 	function belongsTo($type) {
 		$this->property(strtolower($type)."Id", "integer");
-		$this->_parent_relations[$type] = null;
+		$this->parentRelations[$type] = null;
 	}
 	
 	/**
 	 * @return boolean
 	 */
 	private function hasParentRelation($key) {
-		return array_key_exists($key, $this->_parent_relations);
+		return array_key_exists($key, $this->parentRelations);
 	}
 	
 	/**
@@ -128,7 +128,7 @@ class Record {
 	 * @todo clean up the relations and joins attributes
 	 */
 	function hasMany($ofType) {
-		$this->_dependent_relations[$ofType] = array();
+		$this->dependentRelations[$ofType] = array();
 	}
 
 	/**
@@ -143,8 +143,8 @@ class Record {
 	function hasManyRelations($relatedTo) {
 		$joins = array(strtolower(Inflect::toPlural(get_class($this))), $relatedTo);
 		sort($joins);
-		$this->_joins[$relatedTo] = $joins[0] . "_" . $joins[1];
-		$this->_associations[$relatedTo] = array();
+		$this->joins[$relatedTo] = $joins[0] . "_" . $joins[1];
+		$this->associations[$relatedTo] = array();
 	}
 	
 	/**
@@ -157,7 +157,7 @@ class Record {
 	 *  - datetime 
 	 */
 	function property($name, $type) {
-		$this->_record->$name = null;
+		$this->recordInstance->$name = null;
 		$this->properties[$name] = $type;
 	}
 	
@@ -176,7 +176,7 @@ class Record {
 	 * relationship mappings for this record.
 	 */
 	function relations() {
-		return $this->_joins;
+		return $this->joins;
 	}
 	
 	/**
@@ -184,7 +184,7 @@ class Record {
 	 * mappings for this record (belongsTo)
 	 */
 	function parents() {
-		return $this->_parent_relations;
+		return $this->parentRelations;
 	}
 
 	/**
@@ -197,13 +197,13 @@ class Record {
 	 * 
 	 */
 	function rule($field, $rule) {
-		if (!isset($this->_rules[$field])) {
-			$this->_rules[$field] = array();
+		if (!isset($this->rules[$field])) {
+			$this->rules[$field] = array();
 		}
 		if (is_string($rule)) {
 			$rule = new $rule;
 		}
-		$this->_rules[$field][] = $rule;
+		$this->rules[$field][] = $rule;
 	}
 	
 	/**
@@ -213,12 +213,12 @@ class Record {
 	 * @todo use identity map to hold objects
 	 */
 	private function getParentRelation($key) {
-		if ($this->_parent_relations[$key] == null) {
+		if ($this->parentRelations[$key] == null) {
 			$recordType = Inflect::toClassName($key);
 			$recordKey = $key . "Id";
-			$this->_parent_relations[$key] = new $recordType($this->$recordKey);
+			$this->parentRelations[$key] = new $recordType($this->$recordKey);
 		}
-		return $this->_parent_relations[$key];
+		return $this->parentRelations[$key];
 	}
 
 	/**
@@ -233,24 +233,24 @@ class Record {
 		}
 		if ($this->hasParentRelation($key)) {
 			return $this->getParentRelation($key);
-		} elseif (array_key_exists($key, $this->_joins)) {
-			$this->storage->selectByAssociation($key, $this->_joins[$key]);
+		} elseif (array_key_exists($key, $this->joins)) {
+			$this->storage->selectByAssociation($key, $this->joins[$key]);
 			return $this->storage->getRecords();
-		} elseif (array_key_exists($key, $this->_dependent_relations)) {
-			if (is_array($this->_dependent_relations[$key])) {
-				if (empty($this->_dependent_relations[$key])) {
+		} elseif (array_key_exists($key, $this->dependentRelations)) {
+			if (is_array($this->dependentRelations[$key])) {
+				if (empty($this->dependentRelations[$key])) {
 					$field = strtolower(Inflect::toSingular(get_class($this)))."_id";
 					$this->storage->selectByKey(Inflect::underscore($key), array($field=>$this->id));
-					$this->_dependent_relations[$key] = $this->storage->getRecords();
-					return $this->_dependent_relations[$key];
+					$this->dependentRelations[$key] = $this->storage->getRecords();
+					return $this->dependentRelations[$key];
 				} else {
-					return $this->_dependent_relations[$key];
+					return $this->dependentRelations[$key];
 				}
 			}
 		} elseif ($this->hasProperty($key)) {
 			return $this->_castPropertyType($key);
 		} elseif ($key == 'id') {
-			return (isset($this->_record->id)) ? $this->_record->id : 0;
+			return (isset($this->recordInstance->id)) ? $this->recordInstance->id : 0;
 		}
 	}
 	
@@ -305,17 +305,17 @@ class Record {
 			return;
 		}
 		if ($this->hasParentRelation($key)) {
-			$this->_parent_relations[$key] = $value;
-		} elseif (array_key_exists($key, $this->_associations)) {
-			$this->_associations[$key][] = $value;
-		} elseif (array_key_exists($key, $this->_dependent_relations)) {
-			if (is_array($this->_dependent_relations[$key])) {
-				$this->_dependent_relations[$key][] = $value;
+			$this->parentRelations[$key] = $value;
+		} elseif (array_key_exists($key, $this->associations)) {
+			$this->associations[$key][] = $value;
+		} elseif (array_key_exists($key, $this->dependentRelations)) {
+			if (is_array($this->dependentRelations[$key])) {
+				$this->dependentRelations[$key][] = $value;
 			}
 		} elseif($key == "id") {
-			$this->_record->id = $value;
+			$this->recordInstance->id = $value;
 			$foreignKey = strtolower(get_class($this))."Id";
-			foreach($this->_dependent_relations as $relation) {
+			foreach($this->dependentRelations as $relation) {
 				if (is_array($relation)) {
 					foreach($relation as $model) {
 						$model->setProperty($foreignKey, $value);
@@ -331,7 +331,7 @@ class Record {
 	 * Has the data changed since first load?
 	 */
 	function isDirty() {
-		return (!$this->_clean);
+		return (!$this->clean);
 	}
 	
 	/**
@@ -346,45 +346,45 @@ class Record {
 			if ($this->properties[$property] == 'date') {
 				$value = date('Y-n-d', strtotime($value));
 			}
-			$this->_record->$property = $value;
-			$this->_clean = false;
+			$this->recordInstance->$property = $value;
+			$this->clean = false;
 		}
 	}
 	
 	function getProperty($property) {
-		return $this->_record->$property;
+		return $this->recordInstance->$property;
 	}
 	
 	/**
 	 * Is the data clean? (in the same state as first load)
 	 */
 	function isClean() {
-		return $this->_clean;
+		return $this->clean;
 	}	
 	
 	function _getId() {
-		return ($this->_record) ? $this->_record->id : 0;
+		return ($this->recordInstance) ? $this->recordInstance->id : 0;
 	}
 
 	function _getString($property) {
-		return ($this->_record) ? $this->_record->$property : null;
+		return ($this->recordInstance) ? $this->recordInstance->$property : null;
 	}
 
 	function _getInteger($property) {
-		return ($this->_record) ? (int)$this->_record->$property : null;
+		return ($this->recordInstance) ? (int)$this->recordInstance->$property : null;
 	}
 
 	function _getFloat($property) {
-		return ($this->_record) ? (float)$this->_record->$property : null;
+		return ($this->recordInstance) ? (float)$this->recordInstance->$property : null;
 	}
 	
 	function _getBoolean($property) {
-		return ($this->_record) ? (boolean)$this->_record->$property : null;
+		return ($this->recordInstance) ? (boolean)$this->recordInstance->$property : null;
 	}
 
 	function _getValue($property, $type) {
-		if ($this->_record) {
-			return new $type($this->_record->$property);
+		if ($this->recordInstance) {
+			return new $type($this->recordInstance->$property);
 		} else {
 			return new $Type();
 		}
@@ -398,11 +398,11 @@ class Record {
 	 * only the defined properties of the record.
 	 */
 	function validate() {
-		foreach(get_object_vars($this->_record) as $field=>$value) {
-			if (isset($this->_rules[$field])) {
-				foreach($this->_rules[$field] as $rule) {
+		foreach(get_object_vars($this->recordInstance) as $field=>$value) {
+			if (isset($this->rules[$field])) {
+				foreach($this->rules[$field] as $rule) {
 					if (!$rule->validate($value, $this)) {
-						$this->_errors[$field] = $rule->message;
+						$this->errors[$field] = $rule->message;
 					}
 				}
 			}
@@ -415,14 +415,14 @@ class Record {
 	 */
 	function isValid() {
 		$this->validate();
-		return (count($this->_errors) == 0);
+		return (count($this->errors) == 0);
 	}
 
 	/**
 	 * Returns the list of errors caught by validation rules.
 	 */
 	function getErrors() {
-		return $this->_errors;
+		return $this->errors;
 	}
 
 	/**
@@ -436,14 +436,14 @@ class Record {
 	 */
 	function save($validate=true, $recursive=true) {
 		if (!$validate || $this->isValid()) {
-			foreach($this->_parent_relations as $key => $owner) {
+			foreach($this->parentRelations as $key => $owner) {
 				if (is_object($owner)) {
 					if ($owner->id == 0) $owner->save();
 					$this->setProperty($key."Id", $owner->id);
 				}
 			}
 			$record = array();
-			foreach(get_object_vars($this->_record) as $key=>$value) {
+			foreach(get_object_vars($this->recordInstance) as $key=>$value) {
 				$record[Inflect::propertyToColumn($key)] = $value;
 			}
 			if ($this->id != 0) {
@@ -466,9 +466,9 @@ class Record {
 	 * Recursively save associations
 	 */
 	private function saveAssociations() {
-		foreach($this->_associations as $key=>$association) {
+		foreach($this->associations as $key=>$association) {
 			if (is_array($association)) {
-				$table = $this->_joins[$key];
+				$table = $this->joins[$key];
 				$self_id = $this->id;
 				$self_join = strtolower(get_class($this)) . "_id";
 				$this->storage->delete($table, array($self_join=>$self_id));		
@@ -492,7 +492,7 @@ class Record {
 	 * Probably also need to use transactions here to ensure referential integrity.
 	 */
 	private function saveRelations() {
-		foreach($this->_dependent_relations as $relation) {
+		foreach($this->dependentRelations as $relation) {
 			if (is_array($relation)) {
 				foreach($relation as $model) {
 					if ($model->isDirty()) {
