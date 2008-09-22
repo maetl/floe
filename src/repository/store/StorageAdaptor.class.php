@@ -6,6 +6,7 @@
 */
 require_once 'mysql/MysqlConnection.class.php';
 require_once 'mysql/MysqlGateway.class.php';
+require_once 'mysql/MysqlQuery.class.php';
 
 /**
  * A factory for generating a singleton instance of a storage
@@ -27,6 +28,15 @@ class StorageAdaptor {
         	}
         	return self::$implementation;
         }
+
+		/**
+		 * Factory method for returning a Query object.
+		 *
+		 * @return Query
+		 */
+		function query() {
+			return new MysqlQuery();
+		}
 		
 }
 
