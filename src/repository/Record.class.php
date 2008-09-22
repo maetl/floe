@@ -12,36 +12,32 @@ require_once dirname(__FILE__) .'/../language/en/Inflect.class.php';
  * @package repository
  */
 class Record {
-	private $_table;
+	private $tableName;
 	private $_record;
-	protected $_storage;
+	protected $storage;
 	private $_properties;
 	private $_joins;
 	private $_associations;
-	private $_relations;
 	private $_rules;
 	private $_errors;
 	private $_clean;
 	private $_dependent_relations;
-	private $_associated_relations;
 	private $_parent_relations;
 
 	function __construct($record = false) {
 		$this->_dependent_relations = array();
-		$this->_associated_relations = array();
 		$this->_parent_relations = array();
 		$this->_clean = true;
-		$this->_storage = StorageAdaptor::instance();
+		$this->storage = StorageAdaptor::instance();
 		$this->_properties = array();
 		$this->_joins = array();
 		$this->_associations = array();
-		$this->_relations = array();
 		$this->_rules = array();
 		$this->_errors = array();
 		$this->_record = new stdClass();
 		if (get_parent_class($this) == 'Record') {
 			if (method_exists($this, '__define')) $this->__define();
-			$this->_table = Inflect::toTableName(get_class($this));
+			$this->tableName = Inflect::toTableName(get_class($this));
 		} else {
 			$ancestors = $this->getDefinedAncestors();
 			if (method_exists($this, '__base')) $this->__base();
@@ -53,8 +49,8 @@ class Record {
 				$record = $this->findObjectById($record);
 				foreach ($this->_parent_relations as $key => $val) {
 					$nameProperty = $key."Id";
-					$this->_storage->selectById(Inflect::toTableName($key), $record->$nameProperty);
-					$this->_parent_relations[$key] = $this->_storage->getRecord();
+					$this->storage->selectById(Inflect::toTableName($key), $record->$nameProperty);
+					$this->_parent_relations[$key] = $this->storage->getRecord();
 				}
 			}
 			foreach($record as $field=>$value) {
@@ -80,12 +76,16 @@ class Record {
 		}		
 	}
 	
+	/**
+	 * Traverse the inheritance chain to find the parent record
+	 * that maps to a concrete table.
+	 */
 	private function getDefinedAncestors() {
 		$class = get_class($this);
 		while ($class != 'Record') {
 			$method = new ReflectionMethod($class, '__define');
 			$method->invoke($this);
-			$this->_table = Inflect::toTableName($class);
+			$this->tableName = Inflect::toTableName($class);
 			$class = get_parent_class($class);
 		}
 	}
@@ -96,7 +96,7 @@ class Record {
 	 * @return string
 	 */
 	function getTable() {
-		return $this->_table;
+		return $this->tableName;
 	}
 	
 	/**
@@ -233,14 +233,14 @@ class Record {
 		if ($this->hasParentRelation($key)) {
 			return $this->getParentRelation($key);
 		} elseif (array_key_exists($key, $this->_joins)) {
-			$this->_storage->selectByAssociation($key, $this->_joins[$key]);
-			return $this->_storage->getRecords();
+			$this->storage->selectByAssociation($key, $this->_joins[$key]);
+			return $this->storage->getRecords();
 		} elseif (array_key_exists($key, $this->_dependent_relations)) {
 			if (is_array($this->_dependent_relations[$key])) {
 				if (empty($this->_dependent_relations[$key])) {
 					$field = strtolower(Inflect::toSingular(get_class($this)))."_id";
-					$this->_storage->selectByKey(Inflect::underscore($key), array($field=>$this->id));
-					$this->_dependent_relations[$key] = $this->_storage->getRecords();
+					$this->storage->selectByKey(Inflect::underscore($key), array($field=>$this->id));
+					$this->_dependent_relations[$key] = $this->storage->getRecords();
 					return $this->_dependent_relations[$key];
 				} else {
 					return $this->_dependent_relations[$key];
@@ -446,10 +446,10 @@ class Record {
 				$record[Inflect::propertyToColumn($key)] = $value;
 			}
 			if ($this->id != 0) {
-				$this->_storage->update($this->_table, array('id'=>$this->id), $record);
+				$this->storage->update($this->tableName, array('id'=>$this->id), $record);
 			} else {
-				$this->_storage->insert($this->_table, $record);
-				$this->id = $this->_storage->insertId();
+				$this->storage->insert($this->tableName, $record);
+				$this->id = $this->storage->insertId();
 			}
 			if ($recursive) {
 				if (!$this->saveAssociations()) return false;
@@ -470,12 +470,12 @@ class Record {
 				$table = $this->_joins[$key];
 				$self_id = $this->id;
 				$self_join = strtolower(get_class($this)) . "_id";
-				$this->_storage->delete($table, array($self_join=>$self_id));		
+				$this->storage->delete($table, array($self_join=>$self_id));		
 				foreach($association as $model) {
 					if ($model->save(true, false)) {
 						$model_id = $model->id;
 						$model_join = strtolower(get_class($model)) . "_id";
-						$this->_storage->insert($table, array($self_join=>$self_id, $model_join=>$model_id));
+						$this->storage->insert($table, array($self_join=>$self_id, $model_join=>$model_id));
 					} else {
 						return false;
 					}
@@ -508,42 +508,42 @@ class Record {
 	 */
 	function delete($id=false) {
 		if (!$id) {
-			$id = $this->_storage->insertId();
+			$id = $this->storage->insertId();
 		}
-		$this->_storage->delete($this->_table, array('id'=>$id));
+		$this->storage->delete($this->tableName, array('id'=>$id));
 	}
 	
 	function remove() {
-		$this->_storage->delete($this->_table, array('id'=>$this->id));
+		$this->storage->delete($this->tableName, array('id'=>$this->id));
 	}
 
 	/**
 	 * collection method
 	 */
 	function findAll() {
-		$this->_storage->selectAll($this->_table);
-		return $this->_storage->getRecords();
+		$this->storage->selectAll($this->tableName);
+		return $this->storage->getRecords();
 	}
 	
 	function findById($id) {
-		$this->_storage->selectById($this->_table, $id);
-		return $this->_storage->getRecord();
+		$this->storage->selectById($this->tableName, $id);
+		return $this->storage->getRecord();
 	}
 	
 	function findObjectById($id) {
-		$this->_storage->selectById($this->_table, $id);
-		return $this->_storage->getObject();
+		$this->storage->selectById($this->tableName, $id);
+		return $this->storage->getObject();
 	}
 
 	function findByKey($key, $value) {
-		$this->_storage->selectByKey($this->_table, array("name"=>$value));
-		$record = $this->_storage->getRecords();
+		$this->storage->selectByKey($this->tableName, array("name"=>$value));
+		$record = $this->storage->getRecords();
 		return $record[0];
 	}
 
 	function findAllByKey($key, $value) {
-		$this->_storage->selectByKey($this->_table, array($key=>$value));
-		return $this->_storage->getRecords();
+		$this->storage->selectByKey($this->tableName, array($key=>$value));
+		return $this->storage->getRecords();
 	}
 	
 }
