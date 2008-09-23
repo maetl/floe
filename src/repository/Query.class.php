@@ -1,4 +1,6 @@
 <?php
+require_once dirname(__FILE__).'/../language/en/Inflect.class.php';
+
 /**
  * Criteria based query interface.
  */
@@ -20,7 +22,7 @@ class Query {
 	
 	static function criteria($field, $operator, $value) {
 		$criteria = new stdClass;
-		$criteria->field = $field;
+		$criteria->field = Inflect::underscore($field);
 		$criteria->operator = $operator;
 		$criteria->value = $value;
 		return $criteria;
@@ -62,7 +64,7 @@ class Query {
 	}	
 	
 	function orderBy($field) {
-		$this->orderBy = $field;
+		$this->orderBy = Inflect::underscore($field);
 		return $this;
 	}
 	
