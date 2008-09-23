@@ -83,6 +83,16 @@ class MysqlGateway {
 	}
 	
 	/**
+	 * Returns a single value from the select query result.
+	 *
+	 * @return mixed value
+	 */
+	function getValue() {
+		$result = mysql_fetch_array($this->_result);
+		return $result[0];
+	}
+	
+	/**
 	 * Returns an array of entity objects as the result of a select query.
 	 *
 	 * @return array<Record>
