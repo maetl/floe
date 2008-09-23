@@ -25,7 +25,7 @@ class MysqlQuery extends Query {
 			$sql .= " ORDER BY {$this->orderBy} ";
 			$sql .= ($this->orderDir) ? $this->orderDir : 'DESC';
 		}
-		if ($this->limitLower && $this->limitUpper) {
+		if ($this->limitLower >= 0 && $this->limitUpper != null) {
 			$sql .= " LIMIT {$this->limitLower},{$this->limitUpper}";
 		}
 		return $sql;

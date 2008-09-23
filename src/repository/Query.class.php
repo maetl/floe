@@ -67,8 +67,8 @@ class Query {
 	}
 	
 	function limit($lower, $upper) {
-		$this->limitLower = $lower;
-		$this->limitUpper = $upper;
+		$this->limitLower = (integer)$lower;
+		$this->limitUpper = (integer)$upper;
 		return $this;
 	}
 	
