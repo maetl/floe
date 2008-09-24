@@ -47,7 +47,7 @@ class Record {
 			if (is_numeric($record)) {
 				$record = $this->findObjectById($record);
 				foreach ($this->parentRelations as $key => $val) {
-					$nameProperty = $key."Id";
+					$nameProperty = Inflect::underscore($key."Id");
 					$this->storage->selectById(Inflect::toTableName($key), $record->$nameProperty);
 					$this->parentRelations[$key] = $this->storage->getRecord();
 				}
