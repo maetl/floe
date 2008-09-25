@@ -336,6 +336,9 @@ class MysqlGateway {
 				case 'integer':
 				case 'number':
 					return "INT(11)";
+				case 'bool':
+				case 'boolean':
+					return "TINYINT(1)";					
 				case 'float':
 					return "DOUBLE(16,8) ZEROFILL";
 				case 'text':
