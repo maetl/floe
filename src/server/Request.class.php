@@ -121,6 +121,7 @@ final class Request {
 	 * @return string|array
 	 */
 	private function cleanValue($value) {
+		if (!$value) return true;
 		if (is_array($value)) {
 			return array_map(array($this, 'cleanValue'), $value);
 		} else {
@@ -173,6 +174,8 @@ final class Request {
 
 	/**
 	 * Alias for getParameter
+	 *
+	 * @deprecated	
 	 */
 	function g($parameter, $filter=true) {
 		return $this->getParameter($parameter, $filter);
@@ -180,6 +183,8 @@ final class Request {
 	
 	/**
 	 * Alias for postParameter
+	 *
+	 * @deprecated
 	 */
 	function p($parameter, $filter=true) {
 		return $this->postParameter($parameter, $filter);

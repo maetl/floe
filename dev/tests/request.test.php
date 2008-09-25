@@ -72,6 +72,18 @@ class RequestTest extends UnitTestCase {
 		$this->assertEqual("hello", $request->hello[0]);
 	}
 	
+	function testNonExistingAndEmptyPostParametersReturned() {
+		$_POST = array("hello"=>"world", "foo"=>"");
+		$this->mockMethodVerb('POST');
+		$http = new MockHttpEnvelope();
+		$http->setReturnValue('header', 'application/x-www-form-urlencoded', array('Content-Type'));
+		
+		$request = new Request($http);
+		$this->assertEqual("world", $request->hello);
+		$this->assertFalse($request->world);
+		$this->assertEqual(array("hello"=>"world", "foo"=>""), $request->posted());
+	}
+	
 	function testUriPathComponents() {
 		$this->mockUri("/controller/action/id");
 
