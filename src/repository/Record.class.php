@@ -346,7 +346,11 @@ class Record {
 			if ($this->properties[$property] == 'date') {
 				$value = date('Y-n-d', strtotime($value));
 			}
-			$this->recordInstance->$property = $value;
+			if (is_bool($this->properties[$property])) {
+				$this->recordInstance->$property = (boolean)$value;
+			} else {
+				$this->recordInstance->$property = $value;
+			}
 			$this->clean = false;
 		}
 	}

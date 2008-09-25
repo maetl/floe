@@ -390,6 +390,7 @@ class Toggle extends Record {
 		$this->property("state1", "boolean");
 		$this->property("state2", "boolean");
 		$this->property("state3", "boolean");
+		$this->property("state4", "boolean");
 	}
 	
 }
@@ -407,34 +408,30 @@ class BooleanCastingTest extends UnitTestCase {
 		$t->state1 = false;
 		$t->state2 = 0;
 		$t->state3 = "0";
+		$t->state4 = null;
 		$this->assertFalse($t->state1);
 		$this->assertFalse($t->state2);
 		$this->assertFalse($t->state3);
+		$this->assertFalse($t->state4);
 		$t->state1 = true;
 		$t->state2 = 1;
 		$t->state3 = "1";
+		$t->state4 = "true";
 		$this->assertTrue($t->state1);
 		$this->assertTrue($t->state2);
-		$this->assertTrue($t->state3);		
+		$this->assertTrue($t->state3);
+		$this->assertTrue($t->state4);
 		$t->save();
+		$this->assertTrue($t->state1);
+		$this->assertTrue($t->state2);
+		$this->assertTrue($t->state3);
+		$this->assertTrue($t->state4);
 		$t = new Toggle($t->id);
-		$t->state1 = false;
-		$t->state2 = 0;
-		$t->state3 = "0";
-		$t->save();
-		$t = new Toggle($t->id);
+		$t->populate(array("state1"=>false, "state2"=>0, "state3"=>"0", "state4"=>null));
 		$this->assertFalse($t->state1);
 		$this->assertFalse($t->state2);
 		$this->assertFalse($t->state3);
-		$t->populate(array("state1"=>true, "state2"=>1, "state3"=>"1"));
-		$this->assertTrue($t->state1);
-		$this->assertTrue($t->state2);
-		$this->assertTrue($t->state3);
-		$t->save();
-		$t = new Toggle($t->id);
-		$this->assertTrue($t->state1);
-		$this->assertTrue($t->state2);
-		$this->assertTrue($t->state3);
+		$this->assertFalse($t->state4);
 	}
 	
 	function tearDown() {
