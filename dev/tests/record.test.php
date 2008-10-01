@@ -37,14 +37,17 @@ class ModelWithBasicPropertiesTest extends UnitTestCase {
 		$this->assertTrue($dog->save());
 		$id = $dog->id;
 		unset($dog);
-		$adaptor = StorageAdaptor::instance();
-		$adaptor->selectById("dogs", $id);
-		$dog = $adaptor->getRecord();
+		$dog = new Dog(1);
 		$this->assertIsA($dog, 'Dog');
 		$this->assertEqual(2, $dog->age);
 		$this->assertEqual("Terrier", $dog->breed);
 		$this->assertEqual("Jack", $dog->name);
 		$this->assertTrue($dog->isPuppy());
+	}
+	
+	function testErrorWhenInvalidIdGiven() {
+		$this->expectException('RecordNotFound');
+		$dog = new Dog(999);
 	}
 	
 	function tearDown() {

@@ -46,21 +46,21 @@ class Record {
 		if ($record) {
 			if (is_numeric($record)) {
 				$record = $this->findObjectById($record);
+				if (!$record) {
+					require_once dirname(__FILE__).'/RecordNotFound.class.php';
+					throw new RecordNotFound(get_class($this), dirname(__FILE__));
+				}
 				foreach ($this->parentRelations as $key => $val) {
 					$nameProperty = Inflect::underscore($key."Id");
 					$this->storage->selectById(Inflect::toTableName($key), $record->$nameProperty);
 					$this->parentRelations[$key] = $this->storage->getRecord();
 				}
 			}
-			foreach($record as $field=>$value) {
-				if ($field == 'id') {
-					$this->recordInstance->id = $value;
-				} else {
-					$this->setProperty($field, $value);
-				}
-			}
+			$this->populate($record);
 		}
 	}
+	
+	
 	
 	/**
 	 * Update the record with values given from supplied object or hash.
