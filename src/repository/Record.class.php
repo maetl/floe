@@ -135,9 +135,12 @@ class Record {
 	 * 
 	 * This definition will map a foreign key linking to the defined
 	 * record type.
+	 *
+	 * @param $type string reference to bind to as parent
 	 */
 	function belongsTo($type) {
 		$this->property(strtolower($type)."Id", "integer");
+		$this->column(strtolower($type)."Id", "integer");
 		$this->parentRelations[$type] = null;
 	}
 	
@@ -189,16 +192,27 @@ class Record {
 	function property($name, $type) {
 		$this->recordInstance->$name = null;
 		$this->properties[$name] = $type;
+		$this->column($name, $type);
 	}
 	
 	/**
 	 * Return a list of the property mappings
 	 * defined for this record.
 	 * 
-	 * (a virtual version of get_class_vars)
+	 * Doesn't include primary key or foreign keys.
 	 */
 	function properties() {
 		return $this->properties;
+	}
+
+	/**
+	 * Return a list of the column mappings
+	 * defined for this record.
+	 *
+	 * Includes primary key and foreign keys.
+	 */
+	function columns() {
+		return $this->columns;
 	}
 	
 	/**
@@ -548,37 +562,19 @@ class Record {
 		$this->storage->delete($this->tableName, array('id'=>$id));
 	}
 	
+	/**
+	 * @todo cleanup tests
+	 */
 	function remove() {
 		$this->storage->delete($this->tableName, array('id'=>$this->id));
 	}
-
+	
 	/**
-	 * collection method
+	 * @deprecated
 	 */
-	function findAll() {
-		$this->storage->selectAll($this->tableName);
-		return $this->storage->getRecords();
-	}
-	
-	function findById($id) {
-		$this->storage->selectById($this->tableName, $id);
-		return $this->storage->getRecord();
-	}
-	
 	function findObjectById($id) {
 		$this->storage->selectById($this->tableName, $id);
 		return $this->storage->getObject();
-	}
-
-	function findByKey($key, $value) {
-		$this->storage->selectByKey($this->tableName, array("name"=>$value));
-		$record = $this->storage->getRecords();
-		return $record[0];
-	}
-
-	function findAllByKey($key, $value) {
-		$this->storage->selectByKey($this->tableName, array($key=>$value));
-		return $this->storage->getRecords();
 	}
 	
 }
