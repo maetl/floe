@@ -60,8 +60,6 @@ class Record {
 		}
 	}
 	
-	
-	
 	/**
 	 * Update the record with values given from supplied object or hash.
 	 *
@@ -78,12 +76,44 @@ class Record {
 	}
 	
 	/**
+	 * Concrete data columns that this record maps to.
+	 */
+	private $columns = array();
+	
+	/**
+	 * Add a column field mapping to this record.
+	 */
+	protected function column($name, $type) {
+		$this->columns[$name] = $type;
+	}
+	
+	/**
+	 * @ignore
+	 */
+	private static $baseAncestor = 'Record';
+	
+	/**
+	 * Set the default ancestor class for Record inheritance.
+	 *
+	 * If not explicitly defined, all table mappings inherit from the Record
+	 * class itself.
+	 */
+	public static function baseAncestor($class) {
+		if (class_exists($class)) {
+			self::$baseAncestor = $class;
+		} else {
+			require_once dirname(__FILE__).'/../framework/MissingDependency.class.php';
+			throw new MissingDependency();
+		}
+	}
+	
+	/**
 	 * Traverse the inheritance chain to define parent properties
 	 * of a single table inheritance mapping.
 	 */
 	private function initializeDefinedAncestors() {
 		$class = get_class($this);
-		while ($class != 'Record') {
+		while ($class != self::$baseAncestor) {
 			$method = new ReflectionMethod($class, '__define');
 			$method->invoke($this);
 			$this->tableName = Inflect::toTableName($class);
