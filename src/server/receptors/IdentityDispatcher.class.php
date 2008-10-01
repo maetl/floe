@@ -79,7 +79,7 @@ class IdentityDispatcher implements Receptor {
 		if (method_exists($controller, $identity)) {
 			$this->invoke($controller, $identity, $params);
 		} elseif (method_exists($controller, DefaultMethodBinding)) {
-			$this->invoke($controller, DefaultMethodBinding, $params);
+			$this->invoke($controller, DefaultMethodBinding, $request->uri->segmentsFrom(1));
 		} else {
 			include_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 			throw new ResourceNotFound("Method $identity not defined in $classname", $path);
