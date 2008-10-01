@@ -27,9 +27,9 @@ class MemcachedAdaptor {
 	}
 
 	/**
-	 * Fetch a record from the data store.
+	 * Read an object from the data store.
 	 */
-	function fetch($namespace, $key) {
+	function read($namespace, $key) {
 		return $this->connection->execute("get", $this->generateCacheKey($namespace, $key));
 	}
 	
@@ -41,10 +41,10 @@ class MemcachedAdaptor {
 	}
 	
 	/**
-	 * Update a record in the cache based on its key.
+	 * Write an object to the data store.
 	 */
-	function store($namespace, $key, $data) {
-		return $this->connection->execute("set", $this->generateCacheKey($namespace, $key), $data);
+	function write($namespace, $key, $data, $expire=30) {
+		return $this->connection->execute("set", $this->generateCacheKey($namespace, $key), $data, $expire);
 	}
 	
 	/**
@@ -52,6 +52,20 @@ class MemcachedAdaptor {
 	 */
 	function delete($namespace, $key) {
 		return $this->connection->execute("delete", $this->generateCacheKey($namespace, $key));
+	}
+	
+	/**
+	 * Return current profile stats from the memcached instance.
+	 */
+	function getStats($type) {
+		return $this->connection->execute("getStats", $type);
+	}
+
+	/**
+	 * Close down the connection on shutdown.
+	 */
+	function __destruct() {
+		$this->connection->close();
 	}
 	
 }

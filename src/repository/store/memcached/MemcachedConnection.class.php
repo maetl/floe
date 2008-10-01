@@ -59,7 +59,7 @@ class MemcachedConnection {
 	 *
 	 * @param $method name of the method to execute - add, set, get, or delete.
 	 */
-	function execute($method, $key, $value=false) {
+	function execute($method, $key='', $value=false) {
 		$this->connect();
 		return $this->_connection->$method($key, $value);
 	}
