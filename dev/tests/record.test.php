@@ -444,7 +444,53 @@ class BooleanCastingTest extends UnitTestCase {
 	
 }
 
-class Pencil extends Record {
+class ColouredPencil extends Record {
+	
+	function __define() {
+		$this->property('colour', 'ColourType');
+	}
+	
+}
+
+class ColourType {
+	private $value;
+	
+	function __construct($value='000000') {
+		$this->value = strtoupper($value);
+	}
+	
+	function red() {
+		return substr($this->value, 0, 2);
+	}
+	
+	function green() {
+		return substr($this->value, 2, 2);
+	}
+	
+	function blue() {
+		return substr($this->value, 4, 2);
+	}	
+	
+}
+
+class PropertyCastToCustomValueObject extends UnitTestCase {
+	
+	function testValueObjectCastFromDefinedField() {
+		$pencil = new ColouredPencil();
+		$pencil->colour = "ff99cc";
+		$this->assertEqual($pencil->colour->red(), 'FF');
+		$this->assertEqual($pencil->colour->green(), '99');
+		$this->assertEqual($pencil->colour->blue(), 'CC');
+		
+		$pencil = new ColouredPencil();
+		// todo support real value objects
+		//$pencil->colour = new ColourType();
+		//$this->assertEqual($pencil->colour->red(), '00');
+	}
+	
+}
+
+class GraphitePencil extends Record {
 	
 	function __define() {
 		$this->property('lead', 'PencilLead');
@@ -469,10 +515,10 @@ class PencilLead {
 	
 }
 
-class PropertyCastToCustomValueObject extends UnitTestCase {
+class PropertyCastToDependentCompoundObject extends UnitTestCase {
 	
 	function testValueObjectCastFromDefinedField() {
-		$pencil = new Pencil();
+		$pencil = new GraphitePencil();
 		$this->assertFalse($pencil->lead->isSharp());
 		$pencil->lead->sharpen();
 		//$this->assertTrue($pencil->lead->isSharp());
