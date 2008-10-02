@@ -1,8 +1,15 @@
 <?php
+/**
+ * @package repository
+ * @subpackage store.mysql
+ */
 require_once dirname(__FILE__).'/../../Query.class.php';
 
 /**
  * Query criteria builder representing a Mysql query
+ *
+ * @package repository
+ * @subpackage store.mysql
  */
 class MysqlQuery extends Query {
 	

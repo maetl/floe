@@ -2,13 +2,13 @@
 // $Id: MysqlIterator.class.php 36 2007-04-01 04:12:37Z maetl_ $
 /**
  * @package repository
- * @subpackage store
+ * @subpackage store.mysql
  */
 require_once dirname(__FILE__).'/../StorageIterator.class.php';
 
 /**
  * @package repository
- * @subpackage store
+ * @subpackage store.mysql
  */
 class MysqlIterator implements StorageIterator {
 

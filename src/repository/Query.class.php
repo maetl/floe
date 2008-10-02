@@ -1,8 +1,13 @@
 <?php
+/**
+ * @package repository
+ */
 require_once dirname(__FILE__).'/../language/en/Inflect.class.php';
 
 /**
  * Criteria based query interface.
+ * 
+ * @package repository
  */
 class Query {
 	

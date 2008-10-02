@@ -1,8 +1,13 @@
 <?php
+/**
+ * @package repository
+ */
 require_once 'Record.class.php';
 
 /**
  * Base class for collection finders.
+ *
+ * @package repository
  */
 class Finder {
 	

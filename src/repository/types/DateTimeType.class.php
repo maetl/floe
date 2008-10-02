@@ -1,8 +1,14 @@
 <?php
+/**
+ * @package repository
+ * @subpackage types
+ */
 
 /**
  * A date and time value.
  *
+ * @package repository
+ * @subpackage types
  */
 class DateTimeType {
 	

@@ -1,10 +1,18 @@
 <?php
 /**
+ * @package repository
+ * @subpackage store
+ */
+
+/**
  * An identity map containing objects in the scope of the
  * current request.
  * 
  * If an object already exists in scope then no round trip is
  * required to retrieve it.
+ *
+ * @package repository
+ * @subpackage store
  */
 class LocalScope {
 	

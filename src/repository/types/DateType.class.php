@@ -1,8 +1,14 @@
 <?php
+/**
+ * @package repository
+ * @subpackage types
+ */
 
 /**
  * A single date type.
  *
+ * @package repository
+ * @subpackage types
  */
 class DateType {
 	

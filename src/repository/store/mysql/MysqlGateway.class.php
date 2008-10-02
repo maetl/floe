@@ -13,7 +13,7 @@
 //
 /**
  * @package repository
- * @subpackage store
+ * @subpackage store.mysql
  */
 require_once 'MysqlIterator.class.php';
 
@@ -21,7 +21,7 @@ require_once 'MysqlIterator.class.php';
  * Gateway for managing common database operations.
  *
  * @package repository
- * @subpackage store
+ * @subpackage store.mysql
  */
 class MysqlGateway {
 
