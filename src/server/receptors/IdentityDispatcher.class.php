@@ -35,7 +35,7 @@ class IdentityDispatcher implements Receptor {
 	 * and invoke its identity method.
 	 */
 	public function run(Request $request, Response $response) {
-		$base = (count($request->uri->segments() == 1) ? $request->uri->identity() : $request->uri->segment(0);
+		$base = (count($request->uri->segments()) == 1) ? $request->uri->identity() : $request->uri->segment(0);
 		$identity = $request->uri->segment(1);
 		$params = $request->uri->segmentsFrom(2);
 		if ($base == '') $base = DefaultMethodBinding;
