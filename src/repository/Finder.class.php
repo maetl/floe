@@ -16,7 +16,7 @@ class Finder {
 		$collectionName = str_replace('Finder', '', get_class($this));
 		$recordName = Inflect::toSingular($collectionName);
 		$this->record = new $recordName;
-		$this->tableName = strtolower($collectionName);
+		$this->tableName = Inflect::toTableName($recordName);
 	}
 
 	/**
