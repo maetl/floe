@@ -1,12 +1,12 @@
 <?php
 /**
- * @package floe
+ * @package framework
  */
 
 /**
  * Struct representing enabled logging levels.
  * 
- * @package floe
+ * @package framework
  */
 class Level {
 	

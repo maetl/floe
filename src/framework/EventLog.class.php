@@ -1,7 +1,6 @@
 <?php
 /**
- * Floe logger class
- * @package floe
+ * @package framework
  */
 require_once 'LogHandler.class.php';
 require_once 'Level.class.php';

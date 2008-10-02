@@ -1,13 +1,13 @@
 <?php
 /**
  * $Id: ResourceNotFound.class.php 179 2008-09-02 11:02:38Z coretxt $
- * @package repository
+ * @package framework
  */
 
 /**
  * Record not found.
  * 
- * @package repository
+ * @package framework
  */
 class MissingDependency extends Exception {
 	var $status = 500;
