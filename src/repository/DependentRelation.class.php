@@ -1,5 +1,5 @@
 <?php
-// $Id: Entity.class.php 60 2007-07-02 15:00:02Z maetl_ $
+// $Id$
 /**
  * @package repository
  */

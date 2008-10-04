@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: ResourceNotFound.class.php 179 2008-09-02 11:02:38Z coretxt $
+ * $Id$
  * @package framework
  */
 if (!defined('LIB_DIR')) define('LIB_DIR', dirname(__FILE__).'/../../');

@@ -1,6 +1,6 @@
 <?php
 /**
-* $Id: StorageAdaptor.class.php 44 2007-04-29 12:00:01Z maetl_ $
+* $Id$
 * @package repository
 * @subpackage store
 */

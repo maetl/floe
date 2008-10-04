@@ -1,5 +1,5 @@
 <?php
-// $Id: MysqlConnection.class.php 53 2007-05-06 09:54:15Z maetl_ $
+// $Id$
 /**
  * @package repository
  * @subpackage store.memcached

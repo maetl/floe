@@ -1,8 +1,8 @@
 <?php
-// $Id: MysqlConnection.class.php 53 2007-05-06 09:54:15Z maetl_ $
+// $Id$
 /**
  * @package repository
- * @subpackage store
+ * @subpackage store-mysql
  */
 require_once dirname(__FILE__) .'/../../../framework/EventLog.class.php';
 require_once dirname(__FILE__) .'/../ResourceError.class.php';
@@ -11,7 +11,7 @@ require_once dirname(__FILE__) .'/../ResourceError.class.php';
  * An active connection to a MySql database server.
  *
  * @package repository
- * @subpackage store
+ * @subpackage store-mysql
  */
 class MysqlConnection {
 

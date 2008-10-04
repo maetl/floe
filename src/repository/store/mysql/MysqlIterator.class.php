@@ -1,5 +1,5 @@
 <?php
-// $Id: MysqlIterator.class.php 36 2007-04-01 04:12:37Z maetl_ $
+// $Id$
 /**
  * @package repository
  * @subpackage store.mysql

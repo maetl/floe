@@ -9,7 +9,7 @@
 // | available at http://www.opensource.org/licenses/artistic-license.php   |
 // +------------------------------------------------------------------------+
 //
-// $Id: MysqlAdaptor.class.php 61 2007-07-02 15:00:31Z maetl_ $
+// $Id$
 //
 /**
  * @package repository
