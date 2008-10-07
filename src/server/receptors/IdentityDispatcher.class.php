@@ -4,12 +4,12 @@
  * @package server
  * @subpackage receptors
  */
-if (!defined('DefaultMethodBinding')) {
-	define('DefaultMethodBinding', 'index');
-}
 
-require_once dirname(__FILE__).'/../../language/en/Inflect.class.php';
-require_once dirname(__FILE__).'/../controllers/IdentityController.class.php';
+require_once dirname(__FILE__) .'/../../framework/EventLog.class.php';
+require_once dirname(__FILE__) .'/../../language/en/Inflect.class.php';
+require_once dirname(__FILE__) .'/../controllers/IdentityController.class.php';
+
+if (!defined('DefaultMethodBinding')) define('DefaultMethodBinding', 'index');
 
 /**
  * Delegates request binding to a controller based on URI identity.
@@ -87,6 +87,7 @@ class IdentityDispatcher implements Receptor {
 	}
 	
 	private function invoke($controller, $identity, $params) {
+		EventLog::info(sprintf("Invoked [%s->%s(%s)]", get_class($controller), $identity, implode(",", $params)));
 		if (method_exists($controller, 'before')) call_user_func(array($controller, 'before'));
 		call_user_func_array(array($controller, $identity), $params);
 		if (method_exists($controller, 'after')) call_user_func(array($controller, 'after'));			
