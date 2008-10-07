@@ -67,6 +67,17 @@ class Finder {
 		$this->storage->select($this->tableName, $query->toSql());
 		return $this->storage->getRecords();
 	}
+
+	/**
+	 * Return a single record based on given criteria.
+	 *
+	 * @param Query $query
+	 * @return array<Record>
+	 */
+	function findOneByCriteria($query) {
+		$this->storage->select($this->tableName, $query->toSql());
+		return $this->storage->getRecord();
+	}
 	
 	/**
 	 * Meta-find method.
