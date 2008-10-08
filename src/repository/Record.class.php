@@ -439,6 +439,13 @@ class Record {
 	}
 	
 	/**
+	 * Returns a map of the values set for this instance.
+	 */
+	function getProperties() {
+		return get_object_vars($this->recordInstance);
+	}
+	
+	/**
 	 * Validate the data stored for this record against
 	 * the defined rules.
 	 * 
