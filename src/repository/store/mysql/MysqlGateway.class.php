@@ -235,8 +235,15 @@ class MysqlGateway {
 	 */
 	function delete($table, $target) {
 		if (!is_array($target)) return;
-		$sql = 'DELETE FROM `'.$table.'` WHERE '.key($target).'="'.current($target).'"';
-		$this->_connection->execute($sql);
+		$sql = 'DELETE FROM `'.$table.'` WHERE ';
+		$where = '';
+		foreach ($target as $key => $value) {
+			if($where != "") {
+				$where .= "AND ";
+			}
+			$where .= mysql_real_escape_string($key) .'="'. mysql_real_escape_string($value) .'" ';
+		}
+		$this->_connection->execute($sql . $where);
 	}
 	
 	/**
