@@ -13,6 +13,11 @@ require_once dirname(__FILE__).'/../../Query.class.php';
  */
 class MysqlQuery extends Query {
 	
+	/**
+	 * Concatenate a criteria clause for output in SQL query.
+	 *
+	 * @ignore
+	 */
 	private function mergeClauses($criteria) {
 		return "{$criteria->field} {$criteria->operator} '{$criteria->value}'";
 	}

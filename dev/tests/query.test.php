@@ -8,27 +8,33 @@ class MysqlQueryCriteriaTest extends UnitTestCase {
 
 	function testStarSelect() {
 		$query = StorageAdaptor::query();
-		$query->selectAll()->from("articles");
+		$query->select()->from("articles");
 		$this->assertEqual($query->__toString(), "SELECT * FROM articles");
 	}
 	
-	function testMultipleColumnsSelect() {
+	function testMultipleColumnsSelectAsArray() {
 		$query = StorageAdaptor::query();
-		$query->selectColumns(array("title","summary"))->from("articles");
+		$query->select(array("title","summary"))->from("articles");
 		$this->assertEqual($query->__toString(), "SELECT title,summary FROM articles");
 	}
 	
+	function testMultipleColumnsSelectAsArgs() {
+		$query = StorageAdaptor::query();
+		$query->select("title","summary","updated")->from("articles");
+		$this->assertEqual($query->__toString(), "SELECT title,summary,updated FROM articles");
+	}	
+	
 	function testSingleColumnsSelect() {
 		$query = StorageAdaptor::query();
-		$query->selectColumn("title")->selectColumn("summary")->from("articles");
+		$query->select("title")->select("summary")->from("articles");
 		$this->assertEqual($query->__toString(), "SELECT title,summary FROM articles");
-	}	
+	}
 	
 	function testFieldSelectWithWhereClause() {
 		$query = StorageAdaptor::query();
-		$query->selectColumns(array("title","summary"))->from("articles")->whereEquals("title", "Hello");
+		$query->select(array("title","summary"))->from("articles")->whereEquals("title", "Hello");
 		$this->assertEqual($query->__toString(), "SELECT title,summary FROM articles WHERE title = 'Hello'");
-	}	
+	}
 	
 	function testSingleWhereClause() {
 		$query = StorageAdaptor::query();
@@ -84,6 +90,20 @@ class MysqlQueryCriteriaTest extends UnitTestCase {
 		$query->orderBy('foo')->asc()->limit(10,20);
 		$this->assertEqual($query->toSql(), "WHERE foo = 'bar' ORDER BY foo ASC LIMIT 10,20");
 	}
+	
+	function testTableAliases() {
+		$query = StorageAdaptor::query();
+		$query->select("i.field")->from("items i");
+		$query->whereEquals("foo", "bar");
+		$this->assertEqual($query->__toString(), "SELECT i.field FROM items i WHERE foo = 'bar'");
+	}
+	
+	function testColumnAliasesAsGiven() {
+		$query = StorageAdaptor::query();
+		$query->select("i.field AS fsharp", "i.foo AS fb")->from("items i");
+		$query->whereEquals("foo", "bar");
+		$this->assertEqual($query->__toString(), "SELECT i.field AS fsharp,i.foo AS fb FROM items i WHERE foo = 'bar'");
+	}	
 	
 }
 

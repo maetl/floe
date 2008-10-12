@@ -31,18 +31,21 @@ class Query {
 	}
 	
 	/**
-	 * Add a field to the select query.
-	 */
-	function selectColumn($column) {
-		$this->selectFields[] = $column;
-		return $this;
-	}
-	
-	/**
+	 * Select given columns from the target table.
 	 *
+	 * @return Query
 	 */
-	function selectColumns($columns) {
-		$this->selectFields = array_merge($this->selectFields, $columns);
+	function select($column="*") {
+		if (func_num_args() > 1) {
+			$columns = func_get_args();
+			$this->selectFields = array_merge($this->selectFields, $columns);
+		} else {
+			if (is_array($column))  {
+				$this->selectFields = array_merge($this->selectFields, $column);	
+			} else {
+				$this->selectFields[] = $column;				
+			}
+		}
 		return $this;
 	}
 
@@ -113,7 +116,7 @@ class Query {
 	function whereNotWithinRange($upper, $lower) {
 		$this->whereClauses[] = self::criteria($key, "NOT BETWEEN $upper AND", $lower);
 		return $this;		
-	}	
+	}
 	
 	function orderBy($field) {
 		$this->orderBy = Inflect::underscore($field);
