@@ -48,14 +48,6 @@ class Query {
 		}
 		return $this;
 	}
-
-	/**
-	 * Select all fields from the table.
-	 */
-	function selectAll() {
-		$this->selectFields[] = "*";
-		return $this;
-	}
 	
 	/**
 	 * Add a table name.
