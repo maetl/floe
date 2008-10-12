@@ -38,6 +38,19 @@ class MysqlQuery extends Query {
 		return $sql;
 	}
 	
+	/**
+	 * Cast the query object to a string.
+	 *
+	 * @return string
+	 */
+	function __toString() {
+		$sql = "SELECT ";
+		$sql .= implode(',', $this->selectFields);
+		$sql .= " FROM {$this->tableName} ";
+		$sql .= $this->toSql();
+		return trim($sql);
+	}
+	
 }
 
 ?>

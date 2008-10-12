@@ -5,7 +5,7 @@
 require_once dirname(__FILE__).'/../language/en/Inflect.class.php';
 
 /**
- * Criteria based query interface.
+ * Criteria based select query interface.
  * 
  * @package repository
  */
@@ -21,10 +21,57 @@ class Query {
 	
 	protected $whereClauses;
 	
+	protected $selectFields;
+	
+	protected $tableName;
+	
 	function __construct() {
+		$this->selectFields = array();
 		$this->whereClauses = array();
 	}
 	
+	/**
+	 * Add a field to the select query.
+	 */
+	function selectColumn($column) {
+		$this->selectFields[] = $column;
+		return $this;
+	}
+	
+	/**
+	 *
+	 */
+	function selectColumns($columns) {
+		$this->selectFields = array_merge($this->selectFields, $columns);
+		return $this;
+	}
+
+	/**
+	 * Select all fields from the table.
+	 */
+	function selectAll() {
+		$this->selectFields[] = "*";
+		return $this;
+	}
+	
+	/**
+	 * Add a table name.
+	 */
+	function from($table) {
+		$this->tableName = $table;
+		return $this;
+	}
+	
+	/**
+	 * Static factory for generating a criteria object.
+	 *
+	 * Criteria objects represent predicates in a where clause,
+	 * consisting of a field to match on, the value to match against, 
+	 * and an operator to express the match.
+	 *
+	 * <code>Query::criteria("title", "=", "My Title");</code>
+	 * <code>Query::criteria("count", ">=", 999);</code>
+	 */
 	static function criteria($field, $operator, $value) {
 		$criteria = new stdClass;
 		$criteria->field = Inflect::underscore($field);

@@ -5,6 +5,30 @@ require_once dirname(__FILE__).'/../../src/repository/store/StorageAdaptor.class
 require_once dirname(__FILE__).'/../../src/repository/store/mysql/MysqlQuery.class.php';
 
 class MysqlQueryCriteriaTest extends UnitTestCase {
+
+	function testStarSelect() {
+		$query = StorageAdaptor::query();
+		$query->selectAll()->from("articles");
+		$this->assertEqual($query->__toString(), "SELECT * FROM articles");
+	}
+	
+	function testMultipleColumnsSelect() {
+		$query = StorageAdaptor::query();
+		$query->selectColumns(array("title","summary"))->from("articles");
+		$this->assertEqual($query->__toString(), "SELECT title,summary FROM articles");
+	}
+	
+	function testSingleColumnsSelect() {
+		$query = StorageAdaptor::query();
+		$query->selectColumn("title")->selectColumn("summary")->from("articles");
+		$this->assertEqual($query->__toString(), "SELECT title,summary FROM articles");
+	}	
+	
+	function testFieldSelectWithWhereClause() {
+		$query = StorageAdaptor::query();
+		$query->selectColumns(array("title","summary"))->from("articles")->whereEquals("title", "Hello");
+		$this->assertEqual($query->__toString(), "SELECT title,summary FROM articles WHERE title = 'Hello'");
+	}	
 	
 	function testSingleWhereClause() {
 		$query = StorageAdaptor::query();
