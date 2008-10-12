@@ -105,6 +105,12 @@ class MysqlQueryCriteriaTest extends UnitTestCase {
 		$this->assertEqual($query->__toString(), "SELECT i.field AS fsharp,i.foo AS fb FROM items i WHERE foo = 'bar'");
 	}	
 	
+	function testSelectCountFunction() {
+		$query = StorageAdaptor::query();
+		$query->selectCount()->from("things");
+		$this->assertEqual($query->__toString(), "SELECT COUNT(id) AS count FROM things");
+	}
+	
 }
 
 ?>
