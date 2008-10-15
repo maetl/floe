@@ -32,6 +32,20 @@ class UriPathReaderTest extends UnitTestCase {
 		$this->assertEqual("content", $parts[0]);
 	}
 	
+	function testTrailingSlashIsDroppedFromSegmentPath() {
+		$path = new UriPath("/content/");
+		$this->assertEqual(1, count($path->segments()));
+		$this->assertEqual("/content/", $path->path());
+		$this->assertEqual("content", $path->identity());
+		$this->assertEqual("content", $path->resource());
+		$path = new UriPath("/content/entry/subject/id/");
+		$this->assertEqual(array("content", "entry", "subject", "id"), $path->segments());
+		$this->assertEqual(array("content", "entry", "subject", "id"), $path->segmentsFrom(0));
+		$this->assertEqual(array("entry", "subject", "id"), $path->segmentsFrom(1));
+		$this->assertEqual(array("subject", "id"), $path->segmentsFrom(2));
+		$this->assertEqual(array("id"), $path->segmentsFrom(3));		
+	}
+	
 	function testSegmentPathMethod() {
 		$path = new UriPath("/content/entry/subject");
 		$this->assertEqual("content", $path->segment(0));

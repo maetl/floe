@@ -36,13 +36,19 @@ class UriPath {
 				parse_str(strip_tags($this->_parsed['query']), $parameters);
 				$this->_parameters = $parameters;
 			}
-			$path = explode("/", substr($this->_parsed['path'], 1));
+			$path = $this->explodeSegmentPath($this->_parsed['path']);
 			$this->addResource(array_pop($path));
 			while ($segment = array_pop($path)) {
 				$this->_segments[] = urldecode($segment);
 			}
 			$this->_segments = array_reverse($this->_segments);
 		}
+	}
+	
+	/** @ignore */
+	private function explodeSegmentPath($path) {
+		if (substr($path, -1) == '/') $path = substr($path, 0, -1);
+		return explode('/', substr($path, 1));
 	}
 	
 	/** @private */
