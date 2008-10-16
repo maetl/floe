@@ -85,13 +85,13 @@ class Response {
 	}
 	
 	/**
-	 * Handles HTTP location redirect
+	 * Handles HTTP location redirect.
 	 *
 	 * @param string $path path to redirect to
 	 * @param int $status optional HTTP status (defaults to 301?)
 	 */
 	public function redirect($path, $status=false) {
-		if (!strstr("http://", $path)) $path = WEB_HOST . '/' . $path;
+		if (!strstr("http://", $path)) $path = WEB_HOST . $path;
 		$this->header("Location", $path);
 	}
 	
