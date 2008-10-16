@@ -180,7 +180,7 @@ class UriPath {
 	 * 	  $uri->baseSegment => content
 	 */
 	function baseSegment() {
-		return $this->_segments[0];
+		if (isset($this->_segments[0])) return $this->_segments[0];
 	}
 	
 	/**
