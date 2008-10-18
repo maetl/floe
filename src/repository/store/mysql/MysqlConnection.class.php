@@ -2,7 +2,7 @@
 // $Id$
 /**
  * @package repository
- * @subpackage store-mysql
+ * @subpackage store.mysql
  */
 require_once dirname(__FILE__) .'/../../../framework/EventLog.class.php';
 require_once dirname(__FILE__) .'/../ResourceError.class.php';
@@ -11,7 +11,7 @@ require_once dirname(__FILE__) .'/../ResourceError.class.php';
  * An active connection to a MySql database server.
  *
  * @package repository
- * @subpackage store-mysql
+ * @subpackage store.mysql
  */
 class MysqlConnection {
 
