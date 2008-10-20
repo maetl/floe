@@ -415,7 +415,7 @@ class Record {
 	}
 
 	function _getString($property) {
-		return ($this->recordInstance) ? $this->recordInstance->$property : null;
+		return ($this->recordInstance) ? stripslashes($this->recordInstance->$property) : null;
 	}
 
 	function _getInteger($property) {
