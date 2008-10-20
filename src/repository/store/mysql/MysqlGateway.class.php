@@ -221,7 +221,7 @@ class MysqlGateway {
 		$i = 1;
 		$sql = 'UPDATE `'.mysql_real_escape_string($table).'` SET ';
 		foreach($columns as $field=>$val) {
-			$sql .= $field.'="'.$val.'"';
+			$sql .= $field.'="'.mysql_real_escape_string($val).'"';
 			$i==$colnum ? $sql .= ' ' : $sql .= ',';
 			$i++;
 		}
