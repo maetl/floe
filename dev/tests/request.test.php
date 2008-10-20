@@ -73,7 +73,7 @@ class RequestTest extends UnitTestCase {
 	}
 	
 	function testNonExistingAndEmptyPostParametersReturned() {
-		$_POST = array("hello"=>"world", "foo"=>"");
+		$_POST = array("hello"=>"world", "foo"=>"", "bar"=>0, "boo"=>false, "hoo"=>true);
 		$this->mockMethodVerb('POST');
 		$http = new MockHttpEnvelope();
 		$http->setReturnValue('header', 'application/x-www-form-urlencoded', array('Content-Type'));
@@ -81,7 +81,7 @@ class RequestTest extends UnitTestCase {
 		$request = new Request($http);
 		$this->assertEqual("world", $request->hello);
 		$this->assertFalse($request->world);
-		$this->assertEqual(array("hello"=>"world", "foo"=>""), $request->posted());
+		$this->assertEqual(array("hello"=>"world", "foo"=>"", "bar"=>0, "boo"=>false, "hoo"=>true), $request->posted());
 	}
 	
 	function testUriPathComponents() {

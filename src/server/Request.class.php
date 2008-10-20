@@ -121,7 +121,7 @@ final class Request {
 	 * @return string|array
 	 */
 	private function cleanValue($value) {
-		if (!$value) return true;
+		if (!$value) return $value;
 		if (is_array($value)) {
 			return array_map(array($this, 'cleanValue'), $value);
 		} else {
@@ -196,7 +196,7 @@ final class Request {
 	 * @return array
 	 */
 	function posted() {
-		return array_filter($_POST, array($this, 'cleanValue'));
+		return array_map(array($this, 'cleanValue'), $_POST);
 	}
 	
 	/**
