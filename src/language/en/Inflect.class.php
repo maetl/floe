@@ -208,7 +208,7 @@ class Inflect implements Inflections {
 	 */
 	function encodeUriPart($part) {
 		$part = preg_replace("/([^\w\s]+)/", "",  ucwords($part));
-		return str_replace(' ', '-', strtolower(preg_replace("/([a-z]+)([A-Z])/","$1-$2", $part)));
+		return preg_replace("/([\s]+)/", '-', strtolower(preg_replace("/([a-z]+)([A-Z])/","$1-$2", $part)));
 	}
 		
 	/**
