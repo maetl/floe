@@ -61,8 +61,6 @@ class Query {
 	    } else {
 	       return $this->select("$column AS $alias");
 	    }
-	    
-		
 	}
 
 	/**
@@ -83,7 +81,7 @@ class Query {
 	 * @return Query
 	 */
 	function from($table) {
-		$this->tableName = $table;
+		$this->tableName = (is_array($table)) ? implode(', ', $table) : $table;
 		return $this;
 	}
 	
@@ -122,6 +120,17 @@ class Query {
 	    return $this;
 	}
 	
+	/**
+	 * Add a generic where clause
+	 *
+	 * @param stdClass $c criteria predicate object
+	 * @author Yuqi Liu
+	 * @todo should be no need to regenerate the criteria, expose a where(field, operator, value) method to client code
+	 */
+	function whereCustom($c) {
+		$this->whereClauses[] = self::criteria($c->field, $c->operator, $c->value);
+		return $this;
+	}
 	
 	/**
 	 * Add an equals clause to the query.
