@@ -111,6 +111,12 @@ class MysqlQueryCriteriaTest extends UnitTestCase {
 		$this->assertEqual($query->__toString(), "SELECT COUNT(id) AS count FROM things");
 	}
 	
+	function testWhereJoinFunction() {
+	    $query = StorageAdaptor::query();
+	    $query->select()->from('movie','trailer')->whereJoin('trailer.id','movie.id');
+	    $this->assertEqual($query->__toString(),"SELECT * FROM movie WHERE trailer.id = movie.id");
+	}
+	
 }
 
 ?>

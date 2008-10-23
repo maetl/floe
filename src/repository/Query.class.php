@@ -34,6 +34,7 @@ class Query {
 	 * Select given columns from the target table.
 	 *
 	 * @return Query
+	 * @todo need to Inflect::underscore this column
 	 */
 	function select($column="*") {
 		if (func_num_args() > 1) {
@@ -54,8 +55,14 @@ class Query {
 	 *
 	 * @return Query
 	 */
-	function selectAs($column) {
-		return $this->select("$column AS $alias");
+	function selectAs($column,$alias) {
+	    if ($column instanceof Query) {
+	       return $this->select("($column) AS $alias");
+	    } else {
+	       return $this->select("$column AS $alias");
+	    }
+	    
+		
 	}
 
 	/**
@@ -92,13 +99,29 @@ class Query {
 	 *
 	 * @return stdClass criteria object
 	 */
-	static function criteria($field, $operator, $value) {
+	static function criteria($field, $operator, $value, $isJoin=false) {
 		$criteria = new stdClass;
 		$criteria->field = Inflect::underscore($field);
 		$criteria->operator = $operator;
 		$criteria->value = $value;
+		$criteria->isJoin = $isJoin;
 		return $criteria;
 	}
+	
+	/**
+	 * Add join connection between PK and FK. Eg. trailers.movie_id=movies.id
+	 *
+	 * @param $left, the left key
+	 * @param $right, the right key
+	 * @return Query
+	 * @author Yuqi Liu
+	 * @todo need to change the change the from function to add multiple tables
+	 **/
+	function whereJoin($left,$right) {
+	    $this->whereClauses[]=self::criteria($left, "=", $right, true);
+	    return $this;
+	}
+	
 	
 	/**
 	 * Add an equals clause to the query.
@@ -156,7 +179,8 @@ class Query {
 	 * @return Query
 	 */	
 	function whereWithinRange($key, $upper, $lower) {
-		$this->whereClauses[] = self::criteria($key, "BETWEEN $upper AND", $lower);
+	    $operator = (is_string($upper)) ? "BETWEEN '$upper' AND" : "BETWEEN $upper AND";
+		$this->whereClauses[] = self::criteria($key, $operator, $lower);
 		return $this;
 	}
 	
@@ -166,7 +190,8 @@ class Query {
 	 * @return Query
 	 */	
 	function whereNotWithinRange($upper, $lower) {
-		$this->whereClauses[] = self::criteria($key, "NOT BETWEEN $upper AND", $lower);
+	    $operator = (is_string($upper)) ? "NOT BETWEEN '$upper' AND" : "NOT BETWEEN $upper AND";
+		$this->whereClauses[] = self::criteria($key, $operator, $lower);
 		return $this;		
 	}
 
