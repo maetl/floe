@@ -189,14 +189,14 @@ class Inflect implements Inflections {
 	 * 
 	 * @param $word string
 	 */
-	function underscore($word) {
+	static function underscore($word) {
 		return str_replace(' ', '_', strtolower(preg_replace("/([a-z]+)([A-Z])/","$1 $2", str_replace('-', ' ', $word))));
 	}
 
 	/**
 	 * Breaks down a URI part into sentence form.
 	 */
-	function decodeUriPart($cPart) {
+	static function decodeUriPart($cPart) {
 		return str_replace(" "," ", ucwords(str_replace("-"," ",$cPart)));
 	}
 	
@@ -206,7 +206,7 @@ class Inflect implements Inflections {
 	 * @param string $part
 	 * @return string
 	 */
-	function encodeUriPart($part) {
+	static function encodeUriPart($part) {
 		$part = preg_replace("/([^\w\s]+)/", "",  ucwords($part));
 		return preg_replace("/([\s]+)/", '-', strtolower(preg_replace("/([a-z]+)([A-Z])/","$1-$2", $part)));
 	}
@@ -214,14 +214,14 @@ class Inflect implements Inflections {
 	/**
 	 * Transforms from a camelCasedProperty to underscored_property form.
 	 */
-	function propertyToColumn($property_name) {
+	static function propertyToColumn($property_name) {
 			return str_replace("", "_", strtolower(preg_replace("/([A-Z])/","_$1", $property_name)));
 	}
 
 	/**
 	 * Transforms from underscored_property to camelCasedProperty form.
 	 */
-	function columnToProperty($column_name) {
+	static function columnToProperty($column_name) {
 		$word = Inflect::toClassName($column_name);
 		return strtolower($word[0]).substr($word,1);
 	}
