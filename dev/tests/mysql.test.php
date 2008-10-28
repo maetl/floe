@@ -140,4 +140,31 @@ class MysqlRecordIteratorTest extends MysqlQueryTest {
 
 }
 
+class MysqlAlterTableTest extends MysqlQueryTest {
+
+	function setUp() {
+		$query = new MysqlGateway($this->db);
+		$query->createTable("books", array('title'=>'string','tags'=>'string','author'=>'string'));
+	}
+	
+	function tearDown() {
+		$query = new MysqlGateway($this->db);
+		$query->dropTable("books");
+	}
+	
+	function testCanAddIndex() {
+		$query = new MysqlGateway($this->db);
+		$query->addIndex('books', 'text_fields', array('title','tags','author'));
+		$query->query("SHOW INDEXES FROM books");
+		$this->assertEqual(4, count($query->getObjects()));
+		$query->addIndex('books', 'title_field', array('title'));
+		$query->query("SHOW INDEXES FROM books");
+		$this->assertEqual(5, count($query->getObjects()));
+		$query->dropIndex('books', 'text_fields');
+		$query->query("SHOW INDEXES FROM books");
+		$this->assertEqual(2, count($query->getObjects()));		
+	}
+	
+} 
+
 ?>

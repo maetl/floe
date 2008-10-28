@@ -318,16 +318,46 @@ class MysqlGateway {
 		 $this->_connection->execute($sql);
 	 }
 
-	 
-	 /**
-	  * Checks if given table is defined in database
-	  * 
-	  * @return boolean
-	  */
-	 function hasTable($table) {
-	 	$sql = "SHOW TABLES LIKE '$table'";
-	 	return (boolean)mysql_num_rows($this->_connection->execute($sql));
-	 }	 
+	/**
+	 * Add an index to a table
+	 */
+	function addIndex($table, $name, $columns) {
+		$name = strtoupper($name);
+		$sql = "ALTER TABLE `$table` ADD INDEX `$name` (". array_reduce($columns, array($this,'reduceIndexColumns')) .")";
+		$this->_connection->execute($sql);
+	}
+	
+	/**
+	 * Reduce colunn names into SQL specific format for an alter table statement.
+	 */
+	private function reduceIndexColumns($accumulate, $column) {
+		$column = Inflect::propertyToColumn($column);
+		if ($accumulate == NULL) {
+			$accumulate = $column;
+		} else {
+			$accumulate .= ",$column";
+		}
+		return $accumulate;
+	}
+
+	/**
+	 * Remove a named index on a table
+	 */
+	function dropIndex($table, $name) {
+		$name = strtoupper($name);
+		$sql = "DROP INDEX `$name` ON `$table`";
+		$this->_connection->execute($sql);
+	}
+	
+	/**
+	 * Checks if given table is defined in database
+	 * 
+	 * @return boolean
+	 */
+	function hasTable($table) {
+		$sql = "SHOW TABLES LIKE '$table'";
+		return (boolean)mysql_num_rows($this->_connection->execute($sql));
+	}	 
 	 
 	 /**
 	  * Returns the mapping to a framework type class
