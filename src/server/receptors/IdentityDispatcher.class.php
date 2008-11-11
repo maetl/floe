@@ -77,8 +77,10 @@ class IdentityDispatcher implements Receptor {
 		}
 		$identity = strtolower(Inflect::underscore(Inflect::decodeUriPart($identity)));
 		if (method_exists($controller, $identity)) {
+			$response->assign('action', $identity);
 			$this->invoke($controller, $identity, $params);
 		} elseif (method_exists($controller, DefaultMethodBinding)) {
+			$response->assign('action', DefaultMethodBinding);
 			$this->invoke($controller, DefaultMethodBinding, $request->uri->segmentsFrom(1));
 		} else {
 			include_once dirname(__FILE__).'/../ResourceNotFound.class.php';
