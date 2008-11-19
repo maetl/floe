@@ -19,7 +19,7 @@ class ResourceNotFound extends HttpError {
 	var $resource;
 	var $include;
 	
-	function __construct($resource, $include) {
+	function __construct($resource, $include='') {
 		$this->resource = $resource;
 		$this->include = $include;
 	}

@@ -191,10 +191,17 @@ class Response {
 	 * response.
 	 */
 	public function raise(Exception $error) {
-		if (isset($error->status)) $this->status($error->status, $error->getMessage());
+		$status = (isset($error->status)) ? $error->status : 500;
+		$template = ($status == 404) ? 'not-found' : 'internal-error';
+		$message = ($error->getMessage()) ? $error->getMessage() : 'Internal Server Error';
+		if (defined('ENVIRONMENT') && ENVIRONMENT == 'live') {
+			$this->writeTemplate("errors/$template");
+			return;
+		}
 		$this->write("<h1>".$error->getMessage()."</h1>");
-		$this->write("<p>".$error->resource." (".$error->include.")</p>");
-		$this->write("<ul>");		
+		$path = ($error->include) ? "(".$error->include.")" : '';
+		$this->write("<p>{$error->resource} $path</p>");
+		$this->write("<ul>");
 		foreach($error->getTrace() as $trace) {
 			if (isset($trace['class'])) {
 				$method = $trace['class'].$trace['type'].$trace['function'];
