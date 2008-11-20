@@ -194,8 +194,8 @@ class Response {
 		$status = (isset($error->status)) ? $error->status : 500;
 		$template = ($status == 404) ? 'not-found' : 'internal-error';
 		$message = ($error->getMessage()) ? $error->getMessage() : 'Internal Server Error';
+		$this->status($status, $message);
 		if (defined('ENVIRONMENT') && ENVIRONMENT == 'live') {
-			$this->status($status);
 			$this->writeTemplate("errors/$template");
 			return;
 		}
