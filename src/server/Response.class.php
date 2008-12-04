@@ -191,17 +191,18 @@ class Response {
 	 * response.
 	 */
 	public function raise(Exception $error) {
+		EventLog::error("[ERROR] [$error]");
 		$status = (isset($error->status)) ? $error->status : 500;
 		$template = ($status == 404) ? 'not-found' : 'internal-error';
 		$message = ($error->getMessage()) ? $error->getMessage() : 'Internal Server Error';
-		$this->status($status, $message);
 		if (defined('ENVIRONMENT') && ENVIRONMENT == 'live') {
 			$this->writeTemplate("errors/$template");
 			return;
 		}
 		$this->write("<h1>".$error->getMessage()."</h1>");
-		$path = ($error->include) ? "(".$error->include.")" : '';
-		$this->write("<p>{$error->resource} $path</p>");
+		$path = (isset($error->include)) ? "(".$error->include.")" : '';
+		$resource = (isset($error->resource)) ? $error->resource : get_class($error)." in line {$error->getLine()} of {$error->getFile()}";
+		$this->write("<p>$resource $path</p>");
 		$this->write("<ul>");
 		foreach($error->getTrace() as $trace) {
 			if (isset($trace['class'])) {
