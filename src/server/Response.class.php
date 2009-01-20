@@ -192,8 +192,8 @@ class Response {
 	 */
 	public function raise(Exception $error) {
 		EventLog::error("[ERROR] [$error]");
-		$status = (isset($error->status)) ? $error->status : 500;
-		$template = ($status == 404) ? 'not-found' : 'internal-error';
+		$this->status = (isset($error->status)) ? $error->status : 500;
+		$template = ($this->status == 404) ? 'not-found' : 'internal-error';
 		$message = ($error->getMessage()) ? $error->getMessage() : 'Internal Server Error';
 		if (defined('ENVIRONMENT') && ENVIRONMENT == 'live') {
 			$this->writeTemplate("errors/$template");
