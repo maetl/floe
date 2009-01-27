@@ -91,7 +91,7 @@ class Response {
 	 * @param int $status optional HTTP status (defaults to 301?)
 	 */
 	public function redirect($path, $status=false) {
-		if (!strstr("http://", $path)) $path = WEB_HOST . $path;
+		if (!strstr($path, 'http://')) $path = WEB_HOST . $path;
 		$this->header("Location", $path);
 	}
 	
