@@ -323,6 +323,7 @@ class Record {
 			case 'integer':
 				return $this->_getInteger($key);
 				break;
+			case 'decimal':
 			case 'float':
 				return $this->_getFloat($key);
 				break;
@@ -384,7 +385,8 @@ class Record {
 	function setProperty($property, $value) {
 		$property = Inflect::columnToProperty($property);
 		if (array_key_exists($property, $this->properties)) {
-			if (is_a($value, 'DateTime')) {
+			if ($value instanceof DateTime) {
+			//if (is_a($value, 'DateTime')) {
 				$value = $value->format('Y-n-d H:i:s');
 			}
 			if ($this->properties[$property] == 'date') {
