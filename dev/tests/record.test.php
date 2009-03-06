@@ -165,6 +165,19 @@ class OneToManyAssociationTest extends UnitTestCase {
 		$this->assertEqual("something else", $proj->tasks[1]->name);
 	}
 	
+	function testPopulateRecordWithArray() {
+		$task = new Task();
+		$task->populate(array("name"=>"mytask","projectId"=>9));
+		
+		$this->assertEqual("mytask", $task->name);
+		$this->assertEqual(9, $task->projectId);
+		
+		$task->populate(array("name"=>"mytask2","projectId"=>"9"));
+		
+		$this->assertEqual("mytask2", $task->name);
+		$this->assertEqual(9, $task->projectId);
+	}
+	
 	function tearDown() {
 		$adaptor = StorageAdaptor::instance();
 		$adaptor->dropTable("projects");
