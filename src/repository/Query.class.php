@@ -161,26 +161,56 @@ class Query {
 		$this->whereClauses[] = self::criteria($key, "LIKE", "%$value%");
 		return $this;				
 	}
+	
+  /**
+   * Column matches given value using NOT LIKE.
+   *
+   * @return Query
+   */ 
+  function whereNotLike($key, $value) {
+    $this->whereClauses[] = self::criteria($key, "NOT LIKE", "%$value%");
+    return $this;       
+  }
 
 	/**
-	 * Column is greater than given value
-	 *
-	 * @return Query
-	 */	
-	function whereGreaterThan($key, $value) {
-		$this->whereClauses[] = self::criteria($key, ">", $value);
-		return $this;		
-	}
+   * Column is greater than given value
+   *
+   * @return Query
+   */ 
+  function whereGreaterThan($key, $value) {
+    $this->whereClauses[] = self::criteria($key, ">", $value);
+    return $this;   
+  }
+  
+  /**
+   * Column is greater than or equal to given value
+   *
+   * @return Query
+   */ 
+  function whereGreaterThanEqual($key, $value) {
+    $this->whereClauses[] = self::criteria($key, ">=", $value);
+    return $this;   
+  }
 
-	/**
-	 * Column is less than given value.
-	 *
-	 * @return Query
-	 */
-	function whereLessThan($key, $value) {
-		$this->whereClauses[] = self::criteria($key, "<", $value);
-		return $this;		
-	}
+  /**
+   * Column is less than given value.
+   *
+   * @return Query
+   */
+  function whereLessThan($key, $value) {
+    $this->whereClauses[] = self::criteria($key, "<", $value);
+    return $this;   
+  }
+
+  /**
+   * Column is less than or equal to given value.
+   *
+   * @return Query
+   */
+  function whereLessThanEqual($key, $value) {
+    $this->whereClauses[] = self::criteria($key, "<=", $value);
+    return $this;   
+  }
 	
 	/**
 	 * Add a range based criteria to the query.
@@ -192,6 +222,8 @@ class Query {
 		$this->whereClauses[] = self::criteria($key, $operator, $lower);
 		return $this;
 	}
+	
+	
 	
 	/**
 	 * Add a range based criteria to the query.
