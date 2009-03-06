@@ -22,7 +22,7 @@ class StorageAdaptor {
 		/**
 		 * Returns a MysqlAdaptor instance
 		 */
-        function instance($plugin = false) {
+        static function instance($plugin = false) {
         	if (!self::$implementation) {
             	self::$implementation = new MysqlGateway(new MysqlConnection());
         	}
@@ -34,7 +34,7 @@ class StorageAdaptor {
 		 *
 		 * @return Query
 		 */
-		function query() {
+		static function query() {
 			return new MysqlQuery();
 		}
 		
