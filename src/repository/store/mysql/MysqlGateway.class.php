@@ -317,6 +317,15 @@ class MysqlGateway {
 		 $sql = "ALTER TABLE `$table` ADD COLUMN $name " . $this->defineType($type);
 		 $this->_connection->execute($sql);
 	 }
+	
+	/**
+	 * Add a new table column
+	 */
+	 function dropColumn($table, $name) {
+	 	 $name = Inflect::propertyToColumn($name);
+		 $sql = "ALTER TABLE `$table` DROP COLUMN $name";
+		 $this->_connection->execute($sql);
+	 }	
 
 	/**
 	 * Add an index to a table
@@ -379,7 +388,9 @@ class MysqlGateway {
 					return "INT(11)";
 				case 'bool':
 				case 'boolean':
-					return "TINYINT(1)";					
+					return "TINYINT(1)";
+				case 'decimal':
+					return "DOUBLE(16,2) ZEROFILL";
 				case 'float':
 					return "DOUBLE(16,8) ZEROFILL";
 				case 'text':
