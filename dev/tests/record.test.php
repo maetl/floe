@@ -239,6 +239,24 @@ class ManyToManyRelationshipTest extends UnitTestCase {
 		$this->assertEqual("Hello World", $post->title);
 		$this->assertEqual("hello", $post->topics[0]->name);
 		$this->assertEqual("world", $post->topics[1]->name);
+		
+		unset($post);
+		$adaptor = StorageAdaptor::instance();
+		$adaptor->selectById("posts", $id);
+		$post = $adaptor->getRecord();
+		
+		$this->assertEqual("Hello World", $post->title);
+		$this->assertTrue($post->save());
+		$this->assertEqual("hello", $post->topics[0]->name);
+		$this->assertEqual("world", $post->topics[1]->name);
+		
+		unset($post);
+		$adaptor = StorageAdaptor::instance();
+		$adaptor->selectById("topics", 1);
+		$topic = $adaptor->getRecord();
+		
+		$this->assertEqual("hello", $topic->name);
+		$this->assertEqual("Hello World", $topic->posts[0]->title);
 	}
 
 	function tearDown() {

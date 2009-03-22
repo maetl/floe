@@ -524,7 +524,7 @@ class Record {
 	 */
 	private function saveAssociations() {
 		foreach($this->associations as $key=>$association) {
-			if (is_array($association)) {
+			if (!empty($association)) {
 				$table = $this->joins[$key];
 				$self_id = $this->id;
 				$self_join = strtolower(get_class($this)) . "_id";
