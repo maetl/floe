@@ -5,7 +5,7 @@
  */
 
 /**
- * Record not found.
+ * Required class or PHP file could not be included.
  * 
  * @package framework
  */
