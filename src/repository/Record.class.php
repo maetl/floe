@@ -302,7 +302,8 @@ class Record {
 		if ($this->hasParentRelation($key)) {
 			return $this->getParentRelation($key);
 		} elseif (array_key_exists($key, $this->joins)) {
-			$this->storage->selectByAssociation($key, $this->joins[$key]);
+			$target = strtolower(get_class($this));
+			$this->storage->selectByAssociation($key, $this->joins[$key], array($target."_id"=>$this->id));
 			return $this->storage->getRecords();
 		} elseif (array_key_exists($key, $this->dependentRelations)) {
 			if (is_array($this->dependentRelations[$key])) {
@@ -577,6 +578,8 @@ class Record {
 			if (is_array($relation)) {
 				foreach($relation as $model) {
 					if ($model->isDirty()) {
+						$foreignKey = strtolower(get_class($this))."Id";
+						$model->setProperty($foreignKey, $this->id);
 						if (!$model->save()) return false;
 					}
 				}
