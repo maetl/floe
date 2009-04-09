@@ -79,6 +79,14 @@ class ConsoleText {
 		$a=''; for($i=0;$i<$chars+2;$i++) { $a.=' '; } return $a;
 	}
 	
+	static function startSession() {
+		if (self::$colorize) echo "\033[37m";
+	}
+	
+	static function endSession() {
+		if (self::$colorize) echo "\033[0m";
+	}
+	
 	/** @ignore */
 	private static $colorize = false;
 	
@@ -96,7 +104,8 @@ class ConsoleText {
 	 * Paints the output text white.
 	 */
 	static function white($text) {
-		echo (self::$colorize) ? "\033[37m".$text."\033[0m" : $text;
+		return $text;
+		//echo (self::$colorize) ? "\033[37m".$text."\033[0m" : $text;
 	}
 	
 	/**

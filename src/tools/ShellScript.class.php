@@ -64,6 +64,7 @@ class ShellScript {
 	 * commands in through the std input.
 	 */
 	static function loop() {
+		ConsoleText::startSession();
 		ConsoleText::printBlocks();
 		ConsoleText::printHeader();
 		ConsoleText::printPrompt();
@@ -78,7 +79,8 @@ class ShellScript {
 			$command = new CommandIndex();
 			$command->$cmd();
 			ConsoleText::printPrompt();
-		}		
+		}
+		ConsoleText::endSession();
 	}
 	
 	/**
