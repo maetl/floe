@@ -46,6 +46,14 @@ class IdentityController {
 		$this->response = $response;
 		$this->session = SessionState::instance();
 		$this->importModel();
+		$this->assignDefaults();
+	}
+
+	/**
+	 * The identity of this controller.
+	 */
+	public function identity() {
+		return strtolower(str_replace('Controller', '', get_class($this)));
 	}
 	
 	/**
@@ -59,10 +67,11 @@ class IdentityController {
 	}
 	
 	/**
-	 * The identity of this controller.
+	 * Provide set of default properties & metadata to
+	 * the response.
 	 */
-	public function identity() {
-		return strtolower(str_replace('Controller', '', get_class($this)));
+	private function assignDefaults() {
+		$this->response->assign('controller', $this->identity());
 	}
 
 }
