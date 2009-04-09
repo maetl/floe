@@ -41,6 +41,7 @@ class TaskManager {
 	private $taskRunnableList = array();
 	
 	function collectTask($file) {
+		if (strstr($file->getPath(), '.svn')) return;
 		require_once $file;
 		$filename = $file->getFileName();
 		if (strstr($filename, '.class.php')) {
