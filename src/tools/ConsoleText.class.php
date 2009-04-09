@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: Inflections.class.php 264 2009-03-22 06:29:51Z coretxt $
+ * $Id$
  * @package language
  *
  * Copyright (c) 2007-2009 Coretxt
