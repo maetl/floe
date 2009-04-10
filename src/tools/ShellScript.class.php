@@ -74,7 +74,8 @@ class ShellScript {
 				ConsoleText::printPrompt();
 				continue;
 			}
-			$command = new CommandIndex($cmd);
+			$args = split(' ', $cmd);
+			$command = new CommandIndex($args[0], array_slice($args, 1));
 			$command->invoke();
 			ConsoleText::printPrompt();
 		}

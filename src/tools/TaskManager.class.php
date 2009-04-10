@@ -48,7 +48,9 @@ class TaskManager {
 		if (array_key_exists($command, $this->taskIndex)) {
 			$taskClass = $this->taskIndex[$command]->classname;
 			$task = new $taskClass();
-			if (method_exists($task, 'process')) $task->process($arguments);
+			if (method_exists($task, 'process')) {
+				$task->process($arguments);
+			}
 			return true;
 		} else {
 			return false;
