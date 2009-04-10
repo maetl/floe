@@ -48,12 +48,10 @@ class ShellScript {
 	 */
 	static function start() {		
 		if (isset($_SERVER['argv'][1])) {
-			
-			$command = explode(':', $_SERVER['argv'][1]);
+			$command = $_SERVER['argv'][1];
 			$arguments = array_slice($_SERVER['argv'], 2);
-			
-			echo $command[0];
-			
+			$index = new CommandIndex($command, $arguments);
+			$index->invoke();
 		} else {
 			self::loop();
 		}
@@ -76,8 +74,8 @@ class ShellScript {
 				ConsoleText::printPrompt();
 				continue;
 			}
-			$command = new CommandIndex();
-			$command->$cmd();
+			$command = new CommandIndex($cmd);
+			$command->invoke();
 			ConsoleText::printPrompt();
 		}
 		ConsoleText::endSession();

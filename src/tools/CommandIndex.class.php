@@ -38,14 +38,33 @@ require_once dirname(__FILE__).'/ConsoleText.class.php';
  */
 class CommandIndex {
 	
+	private $command;
+	private $arguments;
+	
+	function __construct($command, $arguments=false) {
+		$this->command = $command;
+		$this->arguments = $arguments;
+	}
+	
+	/**
+	 * Invoke the command, delegating to missing method handler
+	 * if method does not exist.
+	 */
+	function invoke() {
+		call_user_func_array(array($this, $this->command), $this->arguments);
+	}
+	
 	function __call($method, $args) {
-		ConsoleText::printLine($method . " was not found");
+		$manager = new TaskManager();
+		if (!$manager->runTask($this->command, $this->arguments)) {
+			ConsoleText::printLine($method . " was not found");	
+		}
 	}
 	
 	function tasks() {
 		$manager = new TaskManager();
 		ConsoleText::printLine("Available tasks for app:");
-		ConsoleText::printListing($manager->findInDirectory(dirname(__FILE__).'/tasks'));
+		ConsoleText::printListing($manager->getTaskListing());
 	}
 	
 	function t() {

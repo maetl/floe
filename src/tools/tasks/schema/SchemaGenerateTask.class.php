@@ -35,10 +35,10 @@
 class SchemaGenerateTask {
 	
 	/**
-	 * @description Generates a database schema from reflection on declared Record classes
+	 * @description generates a database schema from reflection on declared Record classes
 	 */
 	function process() {
-		
+		ConsoleText::printLine("Generate a database schema");
 	}
 	
 }

@@ -37,12 +37,27 @@ require_once dirname(__FILE__).'/../language/en/Inflect.class.php';
  */
 class TaskManager {
 	
-	private $taskDocumentationList = array();
-	private $taskRunnableList = array();
+	private $taskIndex = array();
+	
+	function __construct() {
+		$this->collectFromDirectory(dirname(__FILE__).'/tasks');
+		if (defined('DEV_DIR')) $this->collectFromDirectory(DEV_DIR.'/tasks');
+	}
+	
+	function runTask($command, $arguments) {
+		if (array_key_exists($command, $this->taskIndex)) {
+			$taskClass = $this->taskIndex[$command]->classname;
+			$task = new $taskClass();
+			if (method_exists($task, 'process')) $task->process($arguments);
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	function collectTask($file) {
 		if (strstr($file->getPath(), '.svn')) return;
-		require_once $file;
+		$classfile = (string)$file;
 		$filename = $file->getFileName();
 		if (strstr($filename, '.class.php')) {
 			$taskClass = str_replace('.class.php', '', $filename);
@@ -53,10 +68,13 @@ class TaskManager {
 			$taskClass = Inflect::toClassName($taskName).'Task';
 		}
 		$executable = $this->getNamespace($file).':'.$taskName;
-		$task = new $taskClass();
-		$reflected = new ReflectionMethod(get_class($task), 'process');
-		$this->taskDocumentationList[$executable] = $this->getDescription($reflected->getDocComment());
-		$this->taskRunnableList[$taskClass] = $file;
+		$taskInfo = new stdClass;
+		require_once $classfile;
+		$reflected = new ReflectionMethod($taskClass, 'process');
+		$taskInfo->description = $this->getDescription($reflected->getDocComment());
+		$taskInfo->classname = $taskClass;
+		$taskInfo->path = $classfile;
+		$this->taskIndex[$executable] = $taskInfo;
 	}
 	
 	function getNamespace($file) {
@@ -71,13 +89,20 @@ class TaskManager {
 
 	private $currentPath;
 	
-	function findInDirectory($path) {
+	function collectFromDirectory($path) {
 		$this->currentPath = $path;
 		$directory = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
 		foreach($directory as $file) {
 			if (!$file->isDir()) $this->collectTask($file);
 		}
-		return $this->taskDocumentationList;
+	}
+	
+	function getTaskListing() {
+		$listing = array();
+		foreach($this->taskIndex as $cmd => $task) {
+			$listing[$cmd] = $task->description;
+		}
+		return $listing;
 	}
 
 	

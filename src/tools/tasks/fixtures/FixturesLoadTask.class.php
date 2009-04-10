@@ -35,10 +35,10 @@
 class FixturesLoadTask {
 	
 	/**
-	 * @description Load fixtures into the database
+	 * @description load fixtures into the database
 	 */
 	function process() {
-		
+		ConsoleText::printLine("Load fixtures");		
 	}
 	
 }

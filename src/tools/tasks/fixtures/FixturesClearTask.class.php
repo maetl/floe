@@ -35,10 +35,10 @@
 class FixturesClearTask {
 	
 	/**
-	 * @description Clears out fixture records from the database.
+	 * @description clears out fixture records from the database.
 	 */
 	function process() {
-		
+		ConsoleText::printLine("Clear fixtures");
 	}
 	
 }

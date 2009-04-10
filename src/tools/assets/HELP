@@ -1,15 +1,17 @@
-
-======= INSTRUCTIONS ======= 
+=====================================================================
+Floe. Instructions
 
 Usage: ./floe <command> <options>
 
+Run ./floe with no arguments to start an interactive shell prompt.
+
 Commands:
 
-# ./floe help      - you're looking at it (shortcut <h>)
-# ./floe project   - create a project (shortcut <p>)
-# ./floe tasks     - view available tasks (shortcuts <t>, <ls>)
+# help      - you're looking at it (shortcut <h>)
+# project   - create a project (shortcut <p>)
+# tasks     - view available tasks (shortcuts <t>, <ls>)
+# quit      - quit out of the shell (shortcut <q>)
 
-Run ./floe with no arguments to start an interactive shell prompt.
-		
+
 Skating on thin ice.
 (c) Mark Rickerby, 2007-2009

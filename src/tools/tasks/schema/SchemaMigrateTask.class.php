@@ -35,10 +35,10 @@
 class SchemaMigrateTask {
 	
 	/**
-	 * @description Performs a schema migration
+	 * @description performs a schema migration
 	 */
 	function process() {
-		
+		ConsoleText::printLine("Run a migration");	
 	}
 	
 }
