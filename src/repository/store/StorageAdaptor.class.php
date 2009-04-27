@@ -57,16 +57,6 @@ class StorageAdaptor {
         	if (!self::$implementation) self::$implementation = new MysqlGateway(new MysqlConnection());
         	return self::$implementation;
         }
-
-		/**
-		 * Factory method for returning a Query object.
-		 *
-		 * @todo move to Query::instance()
-		 * @return Query
-		 */
-		static function queryInstance() {
-			return new MysqlQuery();
-		}
 		
 		private $gateway;
 		

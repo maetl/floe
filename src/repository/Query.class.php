@@ -27,6 +27,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 require_once dirname(__FILE__).'/../language/en/Inflect.class.php';
+require_once 'store/mysql/MysqlQuery.class.php';
 
 /**
  * Criteria based select query interface.
@@ -48,6 +49,13 @@ class Query {
 	protected $selectFields;
 	
 	protected $tableName;
+
+	/**
+	 * Factory method for returning a Query object supporting the default storage adaptor.
+	 */
+	static function instance() {
+		return new MysqlQuery();
+	}
 	
 	function __construct() {
 		$this->selectFields = array();
