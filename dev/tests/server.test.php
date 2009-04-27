@@ -10,7 +10,8 @@ require_once dirname(__FILE__).'/../../src/server/controllers/BaseController.cla
 class ServerTestCase extends UnitTestCase {
 	
 	function setUp() {
-		define('CTR_DIR', dirname(__FILE__).'/resources/server/');
+		if (!defined('CTR_DIR')) define('CTR_DIR', dirname(__FILE__).'/resources/server/');
+		if (!defined('MOD_DIR')) define('MOD_DIR', dirname(__FILE__).'/resources/models/');
 		$this->getRequest = $_GET;
 		$this->postRequest = $_POST;
 		$this->serverEnv = $_SERVER;
@@ -36,6 +37,7 @@ class ServerTestCase extends UnitTestCase {
 class ControllerDispatchTest extends ServerTestCase {
 	
 	function testIndexRouteInvoked() {
+		$this->mockMethodVerb('GET');
 		$this->mockUri('/');
 		$request = new Request();
 		$response = new Response();
@@ -47,6 +49,7 @@ class ControllerDispatchTest extends ServerTestCase {
 	}	
 	
 	function testSampleRouteInvoked() {
+		$this->mockMethodVerb('GET');		
 		$this->mockUri('/sample');
 		$request = new Request();
 		$response = new Response();
@@ -60,6 +63,7 @@ class ControllerDispatchTest extends ServerTestCase {
 	}
 	
 	function testSubFolderBaseRouteInvoked() {
+		$this->mockMethodVerb('GET');		
 		$this->mockUri('/sub');
 		$request = new Request();
 		$response = new Response();
@@ -73,6 +77,7 @@ class ControllerDispatchTest extends ServerTestCase {
 	}
 	
 	function testSubFolderAlternateRouteInvoked() {
+		$this->mockMethodVerb('GET');		
 		$this->mockUri('/sub/alternate');
 		$request = new Request();
 		$response = new Response();
@@ -86,6 +91,7 @@ class ControllerDispatchTest extends ServerTestCase {
 	}
 	
 	function testSubFolderAlternateRouteMethodInvoked() {
+		$this->mockMethodVerb('GET');		
 		$this->mockUri('/sub/alternate/action');
 		$request = new Request();
 		$response = new Response();
@@ -98,6 +104,7 @@ class ControllerDispatchTest extends ServerTestCase {
 	}
 	
 	function testMissingResourceException() {
+		$this->mockMethodVerb('GET');		
 		$this->mockUri('/missing/controller');
 		$request = new Request();
 		$response = new Response();
@@ -108,6 +115,7 @@ class ControllerDispatchTest extends ServerTestCase {
 	}
 	
 	function testBindAllToIndexNoException() {
+		$this->mockMethodVerb('GET');		
 		$this->mockUri('/missing/controller');
 		$request = new Request();
 		$response = new Response();

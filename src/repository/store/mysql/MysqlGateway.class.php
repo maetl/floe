@@ -392,7 +392,7 @@ class MysqlGateway {
 	  *
 	  * @return string SQL definition
 	  */
-	 function defineType($type) {
+	 private function defineType($type) {
 		 switch($type) {
 				case 'int':
 				case 'integer':
