@@ -39,21 +39,29 @@ require_once 'mysql/MysqlQuery.class.php';
  */
 class StorageAdaptor {
 
+		private static $adaptor = null;
 		private static $implementation = null;
 	
 		/**
-		 * Returns a MysqlAdaptor instance
+		 * Access a singleton instance of the StorageAdaptor
 		 */
         static function instance($plugin = false) {
-        	if (!self::$implementation) {
-            	self::$implementation = new StorageAdaptor(new MysqlGateway(new MysqlConnection()));
-        	}
+        	if (!self::$adaptor) self::$adaptor = new StorageAdaptor(self::gateway());
+        	return self::$adaptor;
+        }
+
+		/**
+		 * Returns a MysqlAdaptor instance
+		 */
+        static function gateway($plugin = false) {
+        	if (!self::$implementation) self::$implementation = new MysqlGateway(new MysqlConnection());
         	return self::$implementation;
         }
 
 		/**
 		 * Factory method for returning a Query object.
 		 *
+		 * @todo move to Query::instance()
 		 * @return Query
 		 */
 		static function queryInstance() {

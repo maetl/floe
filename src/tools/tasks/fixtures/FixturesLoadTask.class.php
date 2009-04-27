@@ -41,7 +41,7 @@ class FixturesLoadTask {
 	 * @description load fixtures into the database
 	 */
 	function process($args) {
-		$db = StorageAdaptor::instance();
+		$db = StorageAdaptor::gateway();
 		$fixtures = array();
 
 		$dir = dir(DEV_DIR.'/fixtures/');

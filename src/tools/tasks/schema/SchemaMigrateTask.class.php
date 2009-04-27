@@ -44,7 +44,7 @@ class SchemaMigrateTask {
 			ConsoleText::printLine("No migration specified. Defaulting to latest version.");
 			$args[0] = 'up';
 		}
-		$db = StorageAdaptor::instance();
+		$db = StorageAdaptor::gateway();
 		if (!$db->hasTable("schema")) {
 			echo "Creating schema table...\n";
 			$db->createTable("schema", array("version"=>"integer"));

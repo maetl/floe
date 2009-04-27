@@ -42,7 +42,7 @@ class SchemaGenerateTask {
 	 */
 	function process($args) {
 		ConsoleText::printLine("Generating table schema...");
-		$db = StorageAdaptor::instance();
+		$db = StorageAdaptor::gateway();
 		if ($db->hasTable("schema")) $db->dropTable("schema");
 		// stick all the model classes into the global namespace
 		$dir = dir(MOD_DIR);
