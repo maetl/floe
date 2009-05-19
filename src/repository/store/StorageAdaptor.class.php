@@ -101,6 +101,13 @@ class StorageAdaptor {
 		function getValue() {
 			return $this->gateway->getValue();
 		}
+		
+		/**
+		 * @todo document
+		 */
+		function getIterator() {
+			return $this->gateway->getIterator();
+		}		
 
 		/**
 		 * @deprecated
