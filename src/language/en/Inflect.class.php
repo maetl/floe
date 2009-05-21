@@ -72,7 +72,8 @@ class Inflect implements Inflections {
 	 */
 	static private $SingularRules = array(
 		'/(x|ch|ss)es$/' => '\1',
-		'/([^aeiouy]|qu)ies$/' => '\1y',
+		'/([^aeiouyv]|qu)ies$/' => '\1y',
+		'/ies$/' => '\1ie',
 		'/([lr])ves$/' => '\1f',
 		'/([^f])ves$/' => '\1fe',
 		'/(analy|ba|diagno|parenthe|progno|synop|the)ses$/' => '\1sis',
@@ -217,10 +218,13 @@ class Inflect implements Inflections {
 	}
 
 	/**
-	 * Breaks down a URI part into sentence form.
+	 * Breaks down an encoded URI part into sentence form.
+	 *
+	 * @param string $part
+	 * @return string	
 	 */
-	static function decodeUriPart($cPart) {
-		return str_replace(" "," ", ucwords(str_replace("-"," ",$cPart)));
+	static function decodeUriPart($part) {
+		return str_replace(' ', ' ', ucwords(str_replace('-', ' ', $part)));
 	}
 	
 	/**
@@ -230,8 +234,14 @@ class Inflect implements Inflections {
 	 * @return string
 	 */
 	static function encodeUriPart($part) {
-		$part = preg_replace("/([^\w\s]+)/", "",  ucwords($part));
-		return preg_replace("/([\s]+)/", '-', strtolower(preg_replace("/([a-z]+)([A-Z])/","$1-$2", $part)));
+	   $part = strtolower($part);                         // To Lower Case
+	   $part = str_replace('&', 'and', $part);            // Replace ampersands with 'and'
+	   $part = preg_replace('/(\s|_)+/i', '-', $part);    // Replace whitespace and underscores with a dash
+	   $part = preg_replace('/[^a-z0-9\-]/i', '', $part); // Remove anything that isn't lowercase-alpha-numeric or a dash
+	   $part = preg_replace('/(\-)+/i', '-', $part);      // Replace multiple dashes with a single dash
+	   $part = preg_replace('/^((\-)+)/i', '', $part);    // Trim dashes from the start of the string
+	   $part = preg_replace('/((\-)+)$/i', '', $part);    // Trim dashes from the end of the string
+	   return $part;
 	}
 		
 	/**
