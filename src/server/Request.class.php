@@ -221,6 +221,15 @@ final class Request {
 	function posted() {
 		return array_map(array($this, 'cleanValue'), $_POST);
 	}
+
+	/**
+	 * Accessor for the raw body of the HTTP request
+	 * 
+	 * @return string
+	 */
+	function body() {
+		return $this->entityBody();
+	}
 	
 	/**
 	 * Accessor for the raw body of the HTTP request
