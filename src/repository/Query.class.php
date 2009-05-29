@@ -249,13 +249,12 @@ class Query {
 	 *
 	 * @return Query
 	 */	
-	function whereWithinRange($key, $upper, $lower) {
-	    $operator = (is_string($upper)) ? "BETWEEN '$upper' AND" : "BETWEEN $upper AND";
-		$this->whereClauses[] = self::criteria($key, $operator, $lower);
+	function whereWithinRange($key, $lower, $upper) {
+	    $operator = (is_string($lower)) ? "BETWEEN '$lower' AND" : "BETWEEN $lower AND";
+		$upper = (is_string($upper)) "'$upper'" : $upper;
+		$this->whereClauses[] = self::criteria($key, $operator, $upper);
 		return $this;
 	}
-	
-	
 	
 	/**
 	 * Add a range based criteria to the query.

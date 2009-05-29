@@ -297,6 +297,13 @@ class MysqlGateway {
 	 function dropTable($table) {
 		 $this->_connection->execute("DROP TABLE `$table`");
 	 }
+	
+	/**
+	 * Renames a table
+	 */
+	function renameTable($tableFrom, $tableTo) {
+		$this->_connection->execute("RENAME TABLE `$tableFrom` TO `$tableTo`");
+	}
 
  	/**
 	 * Checks if a table exists

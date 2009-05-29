@@ -46,6 +46,7 @@ class EnglishPluralsTest extends UnitTestCase {
 	function testIrregularSingularNouns() {
 		$this->assertEqual('parenthesis', Inflect::toSingular('parentheses'));
 		$this->assertEqual('movie', Inflect::toSingular('movies'));
+		$this->assertEqual('selectedmovie', Inflect::toSingular('selectedmovies'));
 		$this->assertEqual('person', Inflect::toSingular('people'));
 		$this->assertEqual('child', Inflect::toSingular('children'));
 		$this->assertEqual('octopus', Inflect::toSingular('octopi'));
