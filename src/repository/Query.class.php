@@ -251,7 +251,7 @@ class Query {
 	 */	
 	function whereWithinRange($key, $lower, $upper) {
 	    $operator = (is_string($lower)) ? "BETWEEN '$lower' AND" : "BETWEEN $lower AND";
-		$upper = (is_string($upper)) "'$upper'" : $upper;
+		$upper = (is_string($upper)) ? "'$upper'" : $upper;
 		$this->whereClauses[] = self::criteria($key, $operator, $upper);
 		return $this;
 	}
