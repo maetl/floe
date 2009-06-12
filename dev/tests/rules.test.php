@@ -2,6 +2,7 @@
 require_once 'simpletest/autorun.php';
 
 require_once dirname(__FILE__).'/../../src/repository/rules/EmailRule.class.php';
+require_once dirname(__FILE__).'/../../src/repository/rules/ComplexEmailRule.class.php';
 require_once dirname(__FILE__).'/../../src/repository/rules/AlphanumericRule.class.php';
 require_once dirname(__FILE__).'/../../src/repository/rules/MatchingRule.class.php';
 require_once dirname(__FILE__).'/../../src/repository/rules/NumericRule.class.php';
@@ -12,7 +13,8 @@ class EmailRuleTest extends UnitTestCase {
 		$rule = new EmailRule();
 		$this->assertTrue($rule->validate("you@example.com"));
 		$this->assertTrue($rule->validate("first.last@example.com"));
-		//$this->assertTrue($rule->validate("you+sub@example.com")); // currently unsupported
+		$this->assertTrue($rule->validate("you+sub@example.com"));
+		$this->assertFalse($rule->validate("x@is.a.valid.address"));		
 	}
 
 	function testRejectsInvalidEmails() {
@@ -20,7 +22,6 @@ class EmailRuleTest extends UnitTestCase {
 		$this->assertFalse($rule->validate("you@example"));
 		$this->assertFalse($rule->validate("first.com"));
 		$this->assertFalse($rule->validate("@"));
-		$this->assertFalse($rule->validate("x@not.a.valid.address"));
 	}
 	
 }
