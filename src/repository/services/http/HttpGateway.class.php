@@ -1,11 +1,19 @@
 <?php
 /**
+ * @package repository
+ * @subpackage services.http
+ */
+
+/**
  * HTTP client that implements a service gateway.
  *
  * <p>This is an experimental attempt to integrate HTTP services with the repository,
  * though this class itself has been battle tested in Flicks.co.nz and works pretty damn well.</p>
  *
  * <p>And so it should, because all it really is, is a nice little wrapper around CURL.</p>
+ *
+ * @package repository
+ * @subpackage services.http
  */
 class HttpGateway {
 	
