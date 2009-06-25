@@ -193,6 +193,20 @@ class StorageAdaptor {
 			return $this->gateway->dropTable($name);
 		}
 		
+		/**
+		 * @todo extract to SqlAdaptor interface
+		 */
+		function addColumn($table, $column, $type) {
+			return $this->gateway->addColumn($table, $column, $type);
+		}
+		
+		/**
+		 * @todo extract to SqlAdaptor interface
+		 */
+		function dropColumn($table, $column) {
+			return $this->gateway->dropColumn($table, $column);
+		}
+		
 }
 
 ?>

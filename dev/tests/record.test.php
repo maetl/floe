@@ -378,6 +378,81 @@ class SingleTableInheritanceTest extends UnitTestCase {
 	
 }
 
+class BaseObj extends Record {
+	
+	function __define() {
+		$this->property('name', 'string');
+		$this->property('tag', 'string');
+		$this->hasMany('relatedObjs');
+	}
+	
+}
+
+class ChildObj extends BaseObj {
+	
+	function __define() {
+		$this->property('number', 'integer');
+		$this->hasMany('otherRelatedObjs');	
+	}
+	
+}
+
+class RelatedObj extends Record {
+	
+	function __define() {
+		$this->property('relatedThing', 'string');
+		$this->belongsTo('baseObj');
+	}
+	
+}
+
+class OtherRelatedObj extends Record {
+	
+	function __define() {
+		$this->property('otherThing', 'string');
+		$this->belongsTo('childObj');
+	}
+	
+}
+
+class SingleTableInheritanceWithRelationshipsTest extends UnitTestCase {
+	
+	function setUp() {
+		$base = new BaseObj();
+		$child = new ChildObj();
+		$related = new RelatedObj();
+		$other = new OtherRelatedObj();
+		$adaptor = StorageAdaptor::instance();
+		$adaptor->createTable("base_objs", $base->properties());
+		$adaptor->addColumn("base_objs", "type", "string");
+		$adaptor->addColumn("base_objs", "number", "integer");
+		$adaptor->createTable("related_objs", $related->properties());
+		$adaptor->createTable("other_related_objs", $other->properties());
+	}
+	
+	function tearDown() {
+		$adaptor = StorageAdaptor::instance();
+		$adaptor->dropTable("base_objs");
+		$adaptor->dropTable("related_objs");
+		$adaptor->dropTable("other_related_objs");
+	}
+
+	function testHasManyCanDetectCorrectParentKey() {
+		$rel1 = new RelatedObj();
+		$rel1->relatedThing = "one";
+		$rel2 = new RelatedObj();
+		$rel2->relatedThing = "two";
+		$base = new BaseObj();
+		$base->relatedObjs = $rel1;
+		$base->relatedObjs = $rel2;
+		$base->save();
+		
+		$this->assertEqual(count($base->relatedObjs), 2);
+	}
+	
+}
+
+
 class OverloadedPropertyAccess extends Record {
 	
 	function __define() {
