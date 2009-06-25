@@ -60,8 +60,7 @@ class Record {
 		$this->errors = array();
 		$this->recordInstance = new stdClass();
 		if (get_parent_class($this) == 'Record') {
-			if (method_exists($this, '__define')) $this->__define();
-			$this->tableName = Inflect::toTableName(get_class($this));
+			$this->initializeAsBaseAncestor();
 		} else {
 			$this->initializeDefinedAncestors();
 			$this->property("type", "string");
@@ -131,6 +130,8 @@ class Record {
 		}
 	}
 	
+	public static $hasInheritedTypes = false;
+	
 	/**
 	 * Traverse the inheritance chain to define parent properties
 	 * of a single table inheritance mapping.
@@ -138,11 +139,18 @@ class Record {
 	private function initializeDefinedAncestors() {
 		$class = get_class($this);
 		while ($class != self::$baseAncestor) {
-			$method = new ReflectionMethod($class, '__define');
-			$method->invoke($this);
+			$parentDefinition = new ReflectionMethod($class, '__define');
+			$parentDefinition->invoke($this);
 			$this->tableName = Inflect::toTableName($class);
 			$class = get_parent_class($class);
 		}
+	}
+	
+	private function initializeAsBaseAncestor() {
+		$class = get_class($this);
+		if (method_exists($this, '__define')) $this->__define();
+		$this->tableName = Inflect::toTableName($class);
+		if ($this->hasProperty('type')) $this->setProperty("type", get_class($this));
 	}
 	
 	/**

@@ -272,6 +272,7 @@ class ManyToManyRelationshipTest extends UnitTestCase {
 class Player extends Record {
 	
 	function __define() {
+		$this->property('type', 'string'); // shouldn't have to add manually
 		$this->property('name', 'string');
 	}
 	
@@ -312,11 +313,13 @@ class SingleTableInheritanceTest extends UnitTestCase {
 	function testCanAccessBaseRecord() {
 		$player = new Player();
 		$player->name = "Ritchie McCaw";
+		$this->assertEqual("Player", $player->type);
 		$player->save();
 		$id = $player->id;
 		unset($player);
 		$player = new Player($id);
 		$this->assertEqual("Ritchie McCaw", $player->name);
+		$this->assertEqual("Player", $player->type);
 	}
 	
 	function testCanAccessInheritedRecord() {
@@ -381,6 +384,7 @@ class SingleTableInheritanceTest extends UnitTestCase {
 class BaseObj extends Record {
 	
 	function __define() {
+		$this->property('type', 'string'); // shouldn't have to add manually		
 		$this->property('name', 'string');
 		$this->property('tag', 'string');
 		$this->hasMany('relatedObjs');
@@ -391,7 +395,7 @@ class BaseObj extends Record {
 class ChildObj extends BaseObj {
 	
 	function __define() {
-		$this->property('number', 'integer');
+		$this->property('numberOfProblems', 'integer');
 		$this->hasMany('otherRelatedObjs');	
 	}
 	
@@ -419,13 +423,12 @@ class SingleTableInheritanceWithRelationshipsTest extends UnitTestCase {
 	
 	function setUp() {
 		$base = new BaseObj();
-		$child = new ChildObj();
+		//$child = new ChildObj();
 		$related = new RelatedObj();
 		$other = new OtherRelatedObj();
 		$adaptor = StorageAdaptor::instance();
 		$adaptor->createTable("base_objs", $base->properties());
-		$adaptor->addColumn("base_objs", "type", "string");
-		$adaptor->addColumn("base_objs", "number", "integer");
+		$adaptor->addColumn("base_objs", "number_of_problems", "integer");
 		$adaptor->createTable("related_objs", $related->properties());
 		$adaptor->createTable("other_related_objs", $other->properties());
 	}
@@ -437,7 +440,7 @@ class SingleTableInheritanceWithRelationshipsTest extends UnitTestCase {
 		$adaptor->dropTable("other_related_objs");
 	}
 
-	function testHasManyCanDetectCorrectParentKey() {
+	function testHasManyCalledCorrectlyOnParent() {
 		$rel1 = new RelatedObj();
 		$rel1->relatedThing = "one";
 		$rel2 = new RelatedObj();
@@ -445,10 +448,37 @@ class SingleTableInheritanceWithRelationshipsTest extends UnitTestCase {
 		$base = new BaseObj();
 		$base->relatedObjs = $rel1;
 		$base->relatedObjs = $rel2;
+		$this->assertEqual($base->type, "BaseObj");
 		$base->save();
 		
+		$this->assertEqual($base->type, "BaseObj");
 		$this->assertEqual(count($base->relatedObjs), 2);
+		$this->assertEqual($base->relatedObjs[0]->relatedThing, "one");
+		$this->assertEqual($base->relatedObjs[1]->relatedThing, "two");
 	}
+	
+	function testHasManyCalledCorrectlyOnChild() {
+		$rel1 = new RelatedObj();
+		$rel1->relatedThing = "one";
+		$rel2 = new RelatedObj();
+		$rel2->relatedThing = "two";
+		$rel3 = new OtherRelatedObj();
+		$rel3->otherThing = "three";
+		$rel4 = new OtherRelatedObj();
+		$rel4->otherThing = "four";
+		$child = new ChildObj();
+		$child->relatedObjs = $rel1;
+		$child->relatedObjs = $rel2;
+		$child->otherRelatedObjs = $rel3;
+		$child->otherRelatedObjs = $rel4;	
+		$child->numberOfProblems = 99;
+		$child->save();
+		
+		$this->assertEqual($child->type, "ChildObj");
+		$this->assertEqual(count($child->relatedObjs), 2);
+		$this->assertEqual($child->relatedObjs[0]->relatedThing, "one");
+		$this->assertEqual($child->relatedObjs[1]->relatedThing, "two");
+	}	
 	
 }
 
