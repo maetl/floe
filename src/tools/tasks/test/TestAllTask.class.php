@@ -22,7 +22,7 @@ class TestAllTask {
 		require_once 'simpletest/unit_tester.php';
 		require_once 'simpletest/collector.php';
 		$test = new TestSuite(__CLASS__);
-		$test->collect(DEV_DIR.'/tests', new SimplePatternCollector('/\.test\.php$/');
+		$test->collect(DEV_DIR.'/tests', new SimplePatternCollector('/\.test\.php$/'));
 		$index = new RecursiveDirectoryIterator(DEV_DIR.'/tests');
 		foreach($index as $dir) {
 			if ($dir->isDir()) $test->collect($dir->getPathName(), new SimplePatternCollector('/\.test\.php$/'));
