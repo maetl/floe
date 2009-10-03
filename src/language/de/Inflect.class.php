@@ -7,12 +7,17 @@
 require_once dirname(__FILE__).'/../Inflections.class.php';
 
 /**
- * German language support.
+ * German language support. Hahaha.. yeah, right.
+ * {@link http://www.vistawide.com/german/grammar/german_nouns02.htm}
  *
  * @package language
  * @subpackage de
  */
-class Inflect {
+class InflectDE {
+	
+	function toPlural($word) {
+		return $word;
+	}
 	
 }
 
