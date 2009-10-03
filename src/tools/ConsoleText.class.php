@@ -16,12 +16,12 @@ define("BR", "\n");
 class ConsoleText {
 
 	function printHeader() {
-		$banner = (self::$banner) ? self::$banner : file_get_contents(dirname(__FILE__).'/../VERSION');
-		echo self::white('Floe. '.$banner).BR;
+		echo self::white('Floe. '.file_get_contents(dirname(__FILE__).'/../VERSION')).BR;
 	}
 
 	function printBlocks() {
-		echo self::white(file_get_contents(dirname(__FILE__).'/assets/HEADER')).BR;
+		$banner = (self::$banner) ? self::$banner : file_get_contents(dirname(__FILE__).'/../VERSION');
+		echo self::white($banner).BR;
 	}
 
 	function printPrompt() {
