@@ -1,5 +1,6 @@
 <?php
 /**
+ * $Id$
  * @package framework
  */
 require_once 'LogHandler.class.php';
@@ -10,6 +11,8 @@ require_once 'Level.class.php';
  * 
  * Set up the logger by adding observers that implement the LogHandler
  * interface.
+ *
+ * @package framework
  */
 class EventLog {
 	
