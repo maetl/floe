@@ -20,8 +20,8 @@ class ConsoleText {
 	}
 
 	function printBlocks() {
-		$banner = (self::$banner) ? self::$banner : file_get_contents(dirname(__FILE__).'/../VERSION');
-		echo self::white($banner).BR;
+		$banner = (self::$banner) ? self::$banner : dirname(__FILE__).'/../VERSION';
+		echo self::white(file_get_contents($banner)).BR;
 	}
 
 	function printPrompt() {
