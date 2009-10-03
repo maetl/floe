@@ -16,7 +16,7 @@ define("BR", "\n");
 class ConsoleText {
 
 	function printHeader() {
-		$banner = (self::$banner) self::$banner : file_get_contents(dirname(__FILE__).'/../VERSION');
+		$banner = (self::$banner) ? self::$banner : file_get_contents(dirname(__FILE__).'/../VERSION');
 		echo self::white('Floe. '.$banner).BR;
 	}
 
