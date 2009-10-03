@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: Unauthorized.class.php 263 2009-03-22 06:20:18Z coretxt $
+ * $Id$
  * @package server
  *
  * Copyright (c) 2007-2009 Coretxt

@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: SchemaMigrateTask.class.php 273 2009-04-10 01:56:06Z coretxt $
+ * $Id$
  * @package tools
  * @subpackage tasks
  *

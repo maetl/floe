@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: SchemaGenerateTask.class.php 281 2009-04-27 11:48:11Z coretxt $
+ * $Id$
  * @package tools
  * @subpackage tasks
  *

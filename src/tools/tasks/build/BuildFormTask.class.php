@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: TaskManager.class.php 274 2009-04-10 04:00:06Z coretxt $
+ * $Id$
  * @package tools
  * @subpackage tasks
  *
