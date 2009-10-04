@@ -1,0 +1,1 @@
+floe{if $title == 'Todo List'} todo{elseif $pagetitle == 'index'} index{elseif $pagetitle == 'elmindex'}.{$package} index{else}{if $package}.{$package}{/if}{if $subpackage}.{$subpackage|replace:'-':'.'}{/if}{/if}
