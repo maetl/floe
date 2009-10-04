@@ -1,0 +1,40 @@
+require 'rake'
+require 'rake/tasklib'
+require 'rake/packagetask'
+
+$version = File.read('src/VERSION')
+
+desc "Unfortunately we can't run this with the -tb switch because phpDocumentor is screwed 6 ways from Sunday"
+task :phpdoc do
+  sh "rm -r doc/api/*"
+  sh "phpdoc -d src -t doc/api -ti 'Floe #{$version}' -dn 'api' -o HTML:Smarty:floe -ed doc/examples"
+end
+
+desc "Export the latest revision of the framework from trunk"
+task :package_export do
+	sh "svn export http://floe.googlecode.com/svn/trunk/src floe"
+end
+
+desc "Build .tar and .zip packages of the latest version"
+Rake::PackageTask.new("floe", $version) do |pkg|
+	pkg.need_tar = true
+	pkg.need_zip = true
+	pkg.package_files.include("floe/*")
+	pkg.package_files.include("floe/framework/*.php")
+	pkg.package_files.include("floe/language/*.php")
+	pkg.package_files.include("floe/language/en/*.php")
+	pkg.package_files.include("floe/repository/*.php")
+	pkg.package_files.include("floe/repository/store/*.php")
+	pkg.package_files.include("floe/repository/store/mysql/*.php")
+	pkg.package_files.include("floe/server/**/*.php")
+	pkg.package_files.include("floe/tools/**/*.php")
+end
+
+desc "Remove exported files"
+task :package_clean do
+	sh "rm -r floe"
+end
+
+
+
+
