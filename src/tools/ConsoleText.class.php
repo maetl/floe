@@ -20,7 +20,7 @@ class ConsoleText {
 	}
 
 	function printBlocks() {
-		$banner = (self::$banner) ? self::$banner : dirname(__FILE__).'/../VERSION';
+		$banner = (self::$banner) ? self::$banner : dirname(__FILE__).'/assets/HEADER';
 		echo self::white(file_get_contents($banner)).BR;
 	}
 

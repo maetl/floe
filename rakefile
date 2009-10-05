@@ -35,6 +35,8 @@ task :package_clean do
 	sh "rm -r floe"
 end
 
-
-
+desc "Mirror local git-svn link to source on GitHub"
+task :mirror do
+	sh "../mirrors/mirror.sh"
+end
 
