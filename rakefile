@@ -2,6 +2,8 @@ require 'rake'
 require 'rake/tasklib'
 require 'rake/packagetask'
 
+Rake.application.options.trace = true
+
 $version = File.read('src/VERSION')
 
 desc "Unfortunately we can't run this with the -tb switch because phpDocumentor is screwed 6 ways from Sunday"
