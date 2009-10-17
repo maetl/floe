@@ -40,3 +40,10 @@ task :mirror do
 	sh "../mirrors/mirror.sh"
 end
 
+desc "Run all testcases for the Floe project"
+task :test do
+	sh "php dev/tests/floe.suite.php"
+end
+
+desc "run tests and integrate with runcoderun"
+task :default => :test
