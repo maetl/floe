@@ -44,7 +44,11 @@ class SqliteGateway implements SqlGateway {
 	}
 	
 	function getObjects() {
-		
+		$objects = array();
+		while ($object = $this->result->fetchObject()) {
+			$objects[] = $object;
+		}
+		return $objects;
 	}
 	
 	function getIterator() {
@@ -89,7 +93,17 @@ class SqliteGateway implements SqlGateway {
 	}
 	
 	function delete($table, $target) {
-		
+		if (!is_array($target)) return;
+		$this->connection->connect();
+		$sql = 'DELETE FROM '.$table.' WHERE ';
+		$where = '';
+		foreach ($target as $key => $value) {
+			if($where != "") {
+				$where .= "AND ";
+			}
+			$where .= Inflect::propertyToColumn($key) .'="'. $value .'" ';
+		}
+		$this->connection->execute($sql . $where);		
 	}
 
 	function createTable($table, $rows) {

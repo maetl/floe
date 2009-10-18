@@ -27,26 +27,44 @@ class SqliteQueryTest extends UnitTestCase {
 	}
 	
 	function testCanCreateTable() {
-		$query = new SqliteGateway($this->db);
-		$query->createTable("people", array('first_name'=>'string'));
+		$gateway = new SqliteGateway($this->db);
+		$gateway->createTable("people", array('first_name'=>'string'));
 		$this->assertTrue($this->db->execute("SELECT * FROM people"));
 	}
 	
 	function testCanInsertAndUpdateOnTableWithSingleRecord() {
-		$query = new SqliteGateway($this->db);
-		$query->createTable("people", array('first_name'=>'string', 'age'=>'number'));
-		$query->insert('people', array('id'=>1, 'first_name'=>'jim','age'=>27));
-		$query->query('SELECT * FROM people WHERE id="1"');
-		$result = $query->getObject();
+		$gateway = new SqliteGateway($this->db);
+		$gateway->createTable("people", array('first_name'=>'string', 'age'=>'number'));
+		$gateway->insert('people', array('id'=>1, 'first_name'=>'jim','age'=>27));
+		$gateway->query('SELECT * FROM people WHERE id="1"');
+		$result = $gateway->getObject();
 		$this->assertEqual($result->id, 1);
 		$this->assertEqual($result->first_name, 'jim');
 		$this->assertEqual($result->age, 27);
-		$query->update('people', array('id'=>1), array('first_name'=>'jimmy','age'=>38));
-		$query->query('SELECT * FROM people WHERE id="1"');
-		$result = $query->getObject();
+		$gateway->update('people', array('id'=>1), array('first_name'=>'jimmy','age'=>38));
+		$gateway->query('SELECT * FROM people WHERE id="1"');
+		$result = $gateway->getObject();
 		$this->assertEqual($result->first_name, 'jimmy');
 		$this->assertEqual($result->age, 38);
 	}
+	
+	function testCanDeleteFromTable() {
+		$gateway = new SqliteGateway($this->db);
+		$gateway->createTable("people", array('first_name'=>'string', 'age'=>'number'));
+		$gateway->insert('people', array('id'=>1, 'first_name'=>'jules','age'=>26));
+		$gateway->delete('people', array('id'=>1));
+		$gateway->query('SELECT * FROM people WHERE id="1"');
+		$this->assertFalse($gateway->getObject());
+		$gateway->insert('people', array('id'=>1, 'first_name'=>'jules','age'=>37));
+		$gateway->insert('people', array('id'=>2, 'first_name'=>'julius','age'=>38));
+		$gateway->insert('people', array('id'=>3, 'first_name'=>'julius','age'=>39));
+		$gateway->query('SELECT * FROM people');
+		$this->assertEqual(3, count($gateway->getObjects()));
+		$gateway->delete('people', array('first_name'=>'julius'));
+		$gateway->query('SELECT * FROM people');
+		$this->assertEqual(1, count($gateway->getObjects()));
+	}
+	
 }
 
 ?>
