@@ -1,32 +1,17 @@
 <?php
 /**
- * $Id$
+ * This file is part of Floe, a minimalist PHP framework.
+ * Copyright (C) 2007-2009 Mark Rickerby <http://maetl.net>
+ *
+ * See the LICENSE file distributed with this software for full copyright, disclaimer
+ * of liability, and the specific limitations that govern the use of this software.
+ *
+ * @version $Id$
  * @package repository
  * @subpackage types
- *
- * Copyright (c) 2007-2009 Coretxt
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
  */
+
+require_once dirname(__FILE__).'/../Type.class.php';
 
 /**
  * A date and time value.
@@ -34,15 +19,17 @@
  * @package repository
  * @subpackage types
  */
-class DateTimeType {
-	
+class DateTimeType implements Type {
+	const DefaultFormat = 'Y-m-d h:i:s';
 	private $value;
 	
-	function __construct($datetime=false) {
-		if (is_int($datetime)) {
-			$this->value = new DateTime($datetime);
+	function __construct($value=false) {
+		if (!$value) {
+			$this->value = new DateTime();
+		} elseif (is_numeric($value)) {
+			$this->value = new DateTime(date(self::DefaultFormat, $value));
 		} else {
-			$this->value = new DateTime(strtotime($datetime));
+			$this->value = new DateTime($value);
 		}
 	}
 	
@@ -50,7 +37,7 @@ class DateTimeType {
 	 * Convert to default string format.
 	 */
 	function __toString() {
-		return $this->value->format('Y-m-d h:i:s');
+		return $this->value->format(self::DefaultFormat);
 	}
 	
 	/**
