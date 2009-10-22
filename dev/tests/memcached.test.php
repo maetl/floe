@@ -12,6 +12,10 @@ class MemcachedExtensionTest extends UnitTestCase {
 
 	private $cache;
 
+	function skip() {
+		$this->skipUnless(extension_loaded('memcache'));
+	}
+	
 	function setUp() {
 		$env = new stdClass();
 		$env->MEMCACHED_HOST = 'localhost';
