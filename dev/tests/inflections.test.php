@@ -97,9 +97,11 @@ class StringTransformationUtilityTest extends UnitTestCase {
 		$this->assertEqual("what-is-a-page", Inflect::encodeUriPart("what is a page?"));
 		$this->assertEqual("what-is-a-page", Inflect::encodeUriPart("What Is A Page?"));
 		$this->assertEqual("remove-brackets", Inflect::encodeUriPart("Remove (brackets)"));
-		$this->assertEqual("crunchx", Inflect::encodeUriPart("CRUNCH^*%&^&&*^*^*&^*X"));
+		$this->assertEqual("ampersands-and-more-so", Inflect::encodeUriPart("Ampersands & More So"));
+		$this->assertEqual("ampersands-and-more-and-more", Inflect::encodeUriPart("Ampersands & More & More"));
+		$this->assertEqual("crunchx", Inflect::encodeUriPart("CRUNCH^*%^*^*^*^*X"));
 		$this->assertEqual("this-is-umpossible", Inflect::encodeUriPart("THIS IS UMPOSSIBLE"));
-		$this->assertEqual("single-space-only", Inflect::encodeUriPart("Single & Space | Only"));
+		$this->assertEqual("single-and-space-only", Inflect::encodeUriPart("Single & Space | Only"));
 	}
 	
 	function testUriNameDecoding() {
