@@ -1,31 +1,14 @@
 <?php
 /**
- * $Id$
+ * This file is part of Floe, a minimalist PHP framework.
+ * Copyright (C) 2007-2009 Mark Rickerby <http://maetl.net>
+ *
+ * See the LICENSE file distributed with this software for full copyright, disclaimer
+ * of liability, and the specific limitations that govern the use of this software.
+ *
+ * @version $Id$
  * @package tools
  * @subpackage tasks
- *
- * Copyright (c) 2007-2009 Coretxt
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
  */
 
 /**
@@ -53,8 +36,8 @@ class SchemaMigrateTask {
 		$db->query("select version from `schema` order by version desc");
 		$version = $db->getValue();
 		if (!$version) {
-			$db->insert("schema", array("version"=>1));
-			$version = 1;
+			$db->insert("schema", array("version"=>0));
+			$version = 0;
 		}
 		
 		$versionName = str_pad($version, 3, '0', STR_PAD_LEFT);
@@ -62,7 +45,7 @@ class SchemaMigrateTask {
 		if ($args[0] == 'up') {
 			sort($versions);
 			$offset = array_search($versionName, $versions);
-			$migrations = array_slice($versions, $offset+1);
+			$migrations = ($version == 0) ? $versions : array_slice($versions, $offset+1);
 		} elseif ($args[0] == 'down') {
 			if (!isset($args[1])) die("No version specified for rollback.\n");
 			rsort($versions);
@@ -70,7 +53,7 @@ class SchemaMigrateTask {
 			$total = count($versions);
 			$migrations = array_slice($versions, 0, ($total-$offset)+1);
 		} elseif ($args[0] == 'version') {
-			echo "Schema Version $versionName\n";
+			ConsoleText::printLine("The installed schema is at version $versionName.");
 			exit;
 		} else {
 			throw new Exception("Invalid migration method. Must be up or down.");
@@ -78,7 +61,7 @@ class SchemaMigrateTask {
 		foreach($migrations as $migration) {
 			$this->runMigration($migration, $args[0]);
 		}
-		$currentVersion = (int)$versions[count($versions)-1];
+		$currentVersion = (count($versions) == 0) ? 1 : (int)$versions[count($versions)-1];
 		$db->update("schema", array("id"=>1), array("version"=>$currentVersion));
 	}
 	
@@ -90,7 +73,7 @@ class SchemaMigrateTask {
 			$migration->$direction();
 			ConsoleText::printLine("Migrating $direction to $version");
 		} else {
-			throw new Exception("Migration $className not found");
+			throw new Exception("Class $className not found.");
 		}
 	}
 	
@@ -103,6 +86,7 @@ class SchemaMigrateTask {
 				$versions[] = $matches[1];
 			}
 		}
+		if (empty($versions)) throw new Exception("No migrations defined in dev directory.");
 		return $versions;
 	}
 	
