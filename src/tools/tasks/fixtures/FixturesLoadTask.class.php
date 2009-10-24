@@ -65,7 +65,7 @@ class FixturesLoadTask {
 		while (false !== ($entry = $dir->read())) {
 			preg_match("/([a-z-]+)\.json/", $entry, $matches);
 			if ($matches) {
-				$fixtures[$matches[1]] = $this->loadFixture($entry);
+				$fixtures[$matches[1]] = $this->loadFixture(DEV_DIR.'/fixtures/'.$entry);
 			}
 		}
 		return $fixtures;

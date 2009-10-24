@@ -21,7 +21,26 @@ class FixturesClearTask {
 	 * @description clears out fixture records from the database.
 	 */
 	function process() {
-		ConsoleText::printLine("Clear fixtures");
+		ConsoleText::printLine("Deleting fixtures...");
+		$db = StorageAdaptor::gateway();
+		// stick all the model classes into the global namespace
+		$dir = dir(MOD_DIR);
+		while (false !== ($entry = $dir->read())) {
+			preg_match("/([a-z-]+)\.model\.php/", $entry, $matches);
+			if ($matches) {
+				require_once MOD_DIR . $entry;
+			}
+		}
+		// throw up a database table for each model
+		foreach (get_declared_classes() as $class) {
+			if (is_subclass_of($class, 'Record')) {
+				$table = Inflect::toTableName($class);
+				if ($db->hasTable($table)) {
+					ConsoleText::printLine($table);
+					$db->query("TRUNCATE TABLE `$table`");
+				}
+			}
+		}		
 	}
 	
 }
