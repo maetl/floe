@@ -1,10 +1,5 @@
 <?php
 require_once 'simpletest/autorun.php';
-
-/**
- * Note: some of these tests won't work when the Response is triggered via CLI
- * rather than via Apache.
- */
 require_once dirname(__FILE__).'/../../src/server/Response.class.php';
 
 if (!defined('TPL_DIR')) define('TPL_DIR', dirname(__FILE__).'/resources/templates/');
@@ -59,6 +54,16 @@ class ResponseTest extends UnitTestCase {
 		$response->render('hello');
 		$this->assertPattern("/<span>bar<\/span>/", $response->body());
 		$this->assertPattern("/<div><h1>Hello World<\/h1><\/div>/", $response->body());
+	}
+	
+	function testTemplateRenderEmbeddedSubTemplate() {
+		$response = new Response();
+		$response->assign('foo', 'parent');
+		$response->assign('bar', 'child');
+		$response->render('parent');
+		$this->assertPattern("/<span>parent<\/span>/", $response->body());
+		$this->assertPattern("/<span>child<\/span>/", $response->body());
+		$this->assertPattern("/<h1>Hello World<\/h1>/", $response->body());
 	}
 	
 }

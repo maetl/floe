@@ -1,0 +1,1 @@
+<span><?php echo $bar; ?></span>
