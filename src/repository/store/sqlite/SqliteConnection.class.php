@@ -50,6 +50,10 @@ class SqliteConnection {
 		return $this->connection->fetchObject();
 	}
 	
+	function getTableDefinition($table) {
+		
+	}
+	
 }
 
 ?>

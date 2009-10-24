@@ -65,6 +65,37 @@ class SqliteQueryTest extends UnitTestCase {
 		$this->assertEqual(1, count($gateway->getObjects()));
 	}
 	
+	function testCanSelectFromTable() {
+		$gateway = new SqliteGateway($this->db);
+		$gateway->createTable("people", array('first_name'=>'string', 'age'=>'number'));
+		$gateway->insert('people', array('id'=>1, 'first_name'=>'mark','age'=>26));
+		$gateway->insert('people', array('id'=>2, 'first_name'=>'markus','age'=>26));
+		$gateway->insert('people', array('id'=>3, 'first_name'=>'markus','age'=>27));
+		$gateway->query('SELECT * FROM people WHERE id=2');
+		$person = $gateway->getObject();
+		$this->assertEqual($person->first_name, 'markus');
+		$this->assertEqual($person->age, '26');
+		$gateway->query('SELECT * FROM people WHERE age=26');
+		$people = $gateway->getObjects();
+		$this->assertEqual($people[0]->first_name, 'mark');
+		$this->assertEqual($people[1]->first_name, 'markus');
+		$this->assertEqual(count($people), 2);
+	}
+	
+	function testCanAlterTable() {
+		$gateway = new SqliteGateway($this->db);
+		$gateway->createTable("people", array('first_name'=>'string', 'age'=>'number'));
+		$gateway->insert('people', array('id'=>1, 'first_name'=>'peter','age'=>26));
+		$gateway->insert('people', array('id'=>2, 'first_name'=>'paul','age'=>26));
+		$gateway->insert('people', array('id'=>3, 'first_name'=>'paul','age'=>27));
+		$gateway->addColumn('people', 'birthdate', 'date');
+		$gateway->update('people', array('id'=>2), array('birthdate'=>'1979-9-24'));
+		$gateway->query('SELECT * FROM people WHERE id=2');
+		$person = $gateway->getObject();
+		$this->assertEqual($person->name, 'paul');
+		$this->assertEqual($person->birthdate, '1979-09-24');
+	}	
+	
 }
 
 ?>

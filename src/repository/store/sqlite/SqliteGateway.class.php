@@ -118,7 +118,53 @@ class SqliteGateway implements SqlGateway {
 		$sql .= ")";
 		$this->connection->execute($sql);
 	}
+	
+	/**
+	 * Destroys an existing table and all its data
+	 */
+	 function dropTable($table) {
+		 $this->connection->execute("DROP TABLE `$table`");
+	 }
 
+	/**
+	 * Renames a table
+	 */
+	function renameTable($tableFrom, $tableTo) {
+		$this->connection->execute("ALTER TABLE $tableFrom RENAME TO $tableTo");
+	}
+
+ 	/**
+	 * Checks if a table exists
+	 */
+	 function tableExists($table) {
+		 throw new Exception("Unsupported by SQLite");
+	 }
+
+	/**
+	 * Rename a table column without altering it's structure
+	 */
+	function changeColumn($table, $oldCol, $newCol, $type=false) {
+		throw new Exception("Unsupported by SQLite");
+	}
+
+	/**
+	 * Add a new table column
+	 */
+	 function addColumn($table, $name, $type) {
+	 	$name = Inflect::propertyToColumn($name);
+		$sql = "ALTER TABLE $table ADD $name " . $this->defineType($type);
+		$this->connection->execute($sql);
+	 }
+
+	/**
+	 * Add a new table column
+	 */
+	 function dropColumn($table, $name) {
+	 	$name = Inflect::propertyToColumn($name);
+		$sql = "ALTER TABLE $table DROP COLUMN $name";
+		$this->connection->execute($sql);
+	}
+	
 	 /**
 	  * Gets native SQL definition for a column type.
 	  *
@@ -140,16 +186,14 @@ class SqliteGateway implements SqlGateway {
 				case 'text':
 					return"TEXT";
 				case 'date': 
-					return "DATE";
 				case 'datetime':
-					return "DATETIME";
+					return "CHAR(30)";
 				case 'raw':
 					return "BLOB";
 				default:
-					return "CHAR(255)";
+					return "VARCHAR(255)";
 			}
 	 }
-	
 }
 
 ?>
