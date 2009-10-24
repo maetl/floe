@@ -18,7 +18,7 @@ task :package_export do
 end
 
 desc "Build .tar and .zip packages of the latest version"
-Rake::PackageTask.new("floe", $version) do |pkg|
+Rake::PackageTask.new("floe", $version) => :package_export do |pkg|
 	pkg.need_tar = true
 	pkg.need_zip = true
 	pkg.package_files.include("floe/*")
@@ -26,8 +26,8 @@ Rake::PackageTask.new("floe", $version) do |pkg|
 	pkg.package_files.include("floe/language/*.php")
 	pkg.package_files.include("floe/language/en/*.php")
 	pkg.package_files.include("floe/repository/*.php")
-	pkg.package_files.include("floe/repository/store/*.php")
-	pkg.package_files.include("floe/repository/store/mysql/*.php")
+	pkg.package_files.include("floe/repository/**/*.php")
+	pkg.package_files.include("floe/repository/**/**/*.php")
 	pkg.package_files.include("floe/server/**/*.php")
 	pkg.package_files.include("floe/tools/**/*.php")
 end
@@ -35,6 +35,11 @@ end
 desc "Remove exported files"
 task :package_clean do
 	sh "rm -r floe"
+end
+
+desc "Build a release package of the latest version"
+task :release do
+  puts "Nothing"
 end
 
 desc "Mirror local git-svn link to source on GitHub"
