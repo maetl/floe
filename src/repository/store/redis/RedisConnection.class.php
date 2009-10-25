@@ -10,6 +10,7 @@
  * @package repository
  * @subpackage store.redis
  */
+define('CRLF', sprintf('%s%s', chr(13), chr(10)));
 
 /**
  * Active connection to Redis store.
@@ -50,17 +51,32 @@ class RedisConnection {
 	
 	function write($command) {
 		if (!$this->connection) $this->connect();
-		while ($command) {
-			$i = fwrite($this->connection, $command);
-			if ($i == 0) break;
-		    $command = substr($command, $i);
-		}
+		fwrite($this->connection, $command.CRLF);
 	}
 	
 	function read() {
-		if ($data = fgets($this->connection)) return $data;
-		$msg = "Could not read from socket";
-		throw new Exception($msg);
+		$data = trim(fgets($this->connection), 512);
+		
+		switch (substr($data, 0, 1)) {
+			case "+":
+				$result = substr(trim($data), 1);
+				break;
+			case "-":
+				throw new Exception(substr(trim($data), 4));
+				break;
+			case "$":	
+				$length = substr(trim($data), 1);
+				$result = "";
+				do {
+					$result .= trim(fread($this->connection, 1024), CRLF);
+				} while (strlen($result) < $length);
+				break;
+			default:
+				throw new Exception("Bad data from connection");
+				break;
+		}
+		return $result;
+
 	}
 	
 }

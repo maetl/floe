@@ -25,15 +25,26 @@ class RedisConnectionTest extends UnitTestCase {
 		$connection->disconnect();
 	}
 	
+	function testWriteConnectionToLocalhost() {
+		$connection = new RedisConnection('127.0.0.1');
+		$this->assertTrue($connection->connect());
+		$connection->write("PING");
+		$this->assertEqual("PONG", $connection->read());
+		$connection->disconnect();
+	}
+	
 	function testBadHostThrowsResourceError() {
 		//$connection = new RedisConnection('bad.host');
 		//$this->expectException();		
 	}
 	
-	function testBasicDataSetValues() {
+	function testGetAndSetKeyValueAsString() {
 		$connection = new RedisConnection('127.0.0.1');
-		$connection->write("Testing the socket");
-		//$this->dump($connection->read());
+		$connection->write("SET city 6");
+		$connection->write("Berlin");
+		$this->assertEqual("OK", $connection->read());
+		//$connection->write("GET city");
+		//$this->assertEqual("Berlin", $connection->read());
 		$connection->disconnect();
 	}
 	
