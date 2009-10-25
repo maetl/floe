@@ -32,7 +32,6 @@ class RedisConnectionTest extends UnitTestCase {
 	
 	function testBasicDataSetValues() {
 		$connection = new RedisConnection('127.0.0.1');
-		$this->assertTrue($connection->connect());
 		$connection->write("Testing the socket");
 		//$this->dump($connection->read());
 		$connection->disconnect();

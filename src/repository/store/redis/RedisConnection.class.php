@@ -41,11 +41,15 @@ class RedisConnection {
 	}
 	
 	function disconnect() {
-		if ($this->connection) fclose($this->connection);
+		if ($this->connection) {
+			$this->write("QUIT");
+			fclose($this->connection);
+		}
 		$this->connection = null;
 	}
 	
 	function write($command) {
+		if (!$this->connection) $this->connect();
 		while ($command) {
 			$i = fwrite($this->connection, $command);
 			if ($i == 0) break;
