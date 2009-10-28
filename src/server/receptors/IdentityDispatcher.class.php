@@ -31,6 +31,7 @@
 require_once dirname(__FILE__) .'/../../framework/EventLog.class.php';
 require_once dirname(__FILE__) .'/../../language/en/Inflect.class.php';
 require_once dirname(__FILE__) .'/../controllers/IdentityController.class.php';
+require_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 
 if (!defined('DefaultMethodBinding')) define('DefaultMethodBinding', 'index');
 
@@ -75,7 +76,6 @@ class IdentityDispatcher implements Receptor {
 				$path = CTR_DIR ."/$base.controller.php";
 				$params = $request->uri->segmentsFrom(0);
 				if (!$path) {
-					include_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 					throw new ResourceNotFound("Controller not found", $path);
 				}
 			}
@@ -87,7 +87,6 @@ class IdentityDispatcher implements Receptor {
 				$response->render($base);
 				return;
 			} else {
-				include_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 				throw new ResourceNotFound("Controller file not found", $path);
 			}
 		}
@@ -95,7 +94,6 @@ class IdentityDispatcher implements Receptor {
 		if (class_exists($classname)) {
 			$controller = new $classname($request, $response);
 		} else {
-			include_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 			throw new ResourceNotFound("Controller $classname not defined", $path);
 		}
 		$identity = $this->stripActionIdentifier($identity);
@@ -104,7 +102,6 @@ class IdentityDispatcher implements Receptor {
 		} elseif (method_exists($controller, DefaultMethodBinding)) {
 			$this->invoke($controller, DefaultMethodBinding, $request->uri->segmentsFrom(1));
 		} else {
-			include_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 			throw new ResourceNotFound("Method $identity not defined in $classname", $path);
 		}
 	}
