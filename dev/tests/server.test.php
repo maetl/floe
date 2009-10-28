@@ -4,6 +4,7 @@ require_once "simpletest/mock_objects.php";
 
 require_once dirname(__FILE__).'/../../src/server/Membrane.class.php';
 require_once dirname(__FILE__).'/../../src/server/receptors/IdentityDispatcher.class.php';
+require_once dirname(__FILE__).'/../../src/server/receptors/RouteDispatcher.class.php';
 require_once dirname(__FILE__).'/../../src/server/controllers/BaseController.class.php';
 
 
@@ -33,8 +34,59 @@ class ServerTestCase extends UnitTestCase {
 	
 }
 
+class RouteDispatchTest extends ServerTestCase {
+	
+	function testIndexRouteInvoked() {
+		$this->mockMethodVerb('GET');
+		$this->mockUri('/');
+		$request = new Request();
+		$response = new Response();
+		
+		RouteDispatcher::map(array(
+			"/" => "default"
+		));
 
-class ControllerDispatchTest extends ServerTestCase {
+		$this->assertFalse(class_exists('DefaultController'));
+		$dispatcher = new RouteDispatcher();
+		$dispatcher->run($request, $response);
+		$this->assertTrue(class_exists('DefaultController'));
+	}
+	
+	function testExactMatchingRouteInvoked() {
+		$this->mockMethodVerb('GET');
+		$this->mockUri('/alpha/action');
+		$request = new Request();
+		$response = new Response();
+		
+		RouteDispatcher::map(array(
+			"/alpha/action" => "alpha"
+		));
+
+		$this->assertFalse(class_exists('AlphaController'));
+		$dispatcher = new RouteDispatcher();
+		$dispatcher->run($request, $response);
+		$this->assertTrue(class_exists('AlphaController'));
+	}
+	
+	function testPatternMatchingRouteInvoked() {
+		$this->mockMethodVerb('GET');
+		$this->mockUri('/alpha/beta/action');
+		$request = new Request();
+		$response = new Response();
+		
+		RouteDispatcher::map(array(
+			"/alpha/(.+)/(.+)" => "%1"
+		));
+
+		$this->assertFalse(class_exists('BetaController'));
+		$dispatcher = new RouteDispatcher();
+		$dispatcher->run($request, $response);
+		$this->assertTrue(class_exists('BetaController'));
+	}
+	
+}
+
+class IdentityDispatchTest extends ServerTestCase {
 	
 	function testIndexRouteInvoked() {
 		$this->mockMethodVerb('GET');
