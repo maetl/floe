@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Floe, a minimalist PHP framework.
+ * This file is part of Floe, a graceful PHP framework.
  * Copyright (C) 2005-2009 Mark Rickerby <http://maetl.net>
  *
  * See the LICENSE file distributed with this software for full copyright, disclaimer
@@ -11,11 +11,17 @@
  * @subpackage receptors
  */
 
-if (!defined('DefaultMethodBinding')) {
-	define('DefaultMethodBinding', 'index');
-}
+/**
+ * Bind base URL requests to this controller by default.
+ */
+if (!defined('DefaultControllerBinding')) define('DefaultControllerBinding', 'index');
 
-require_once 'language/en/Inflect.class.php';
+/**#@+
+ * Required dependency.
+ */
+require_once dirname(__FILE__).'language/en/Inflect.class.php';
+require_once dirname(__FILE__).'/../ResourceNotFound.class.php';
+/**#@-*/
 
 /**
  * Delegates request binding to a controller based on RESTful convention.
@@ -39,7 +45,7 @@ class ResourceDispatcher implements Receptor {
 	public function run(Request $request, Response $response) {
 		$base = $request->uri->segment(0);
 		$params = $request->uri->segmentsFrom(1);
-		if ($base == '') $base = DefaultMethodBinding;
+		if ($base == '') $base = DefaultControllerBinding;
 		$path = APP_DIR ."controllers/$base.controller.php";
 		if (!file_exists($path)) {
 			$identity = $request->uri->segment(1);

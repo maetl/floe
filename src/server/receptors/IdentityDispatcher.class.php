@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Floe, a minimalist PHP framework.
+ * This file is part of Floe, a graceful PHP framework.
  * Copyright (C) 2005-2009 Mark Rickerby <http://maetl.net>
  *
  * See the LICENSE file distributed with this software for full copyright, disclaimer
@@ -11,25 +11,35 @@
  * @subpackage receptors
  */
 
+/**#@+
+ * Required dependency.
+ */
 require_once dirname(__FILE__) .'/../../framework/EventLog.class.php';
 require_once dirname(__FILE__) .'/../../language/en/Inflect.class.php';
 require_once dirname(__FILE__) .'/../controllers/IdentityController.class.php';
 require_once dirname(__FILE__).'/../ResourceNotFound.class.php';
+/**#@-*/
 
+/**
+ * Bind base URL requests to this method by default.
+ */
 if (!defined('DefaultMethodBinding')) define('DefaultMethodBinding', 'index');
 
 /**
  * Delegates request binding to a controller based on URI identity.
  * 
- * The identity binding is based on a simple heirachical convention
- * for invoking controller methods:
+ * <p>The identity binding is based on a simple heirachical convention
+ * for invoking controller methods:</p>
  * 
- * /thing/action => maps to the ThingController::action() method
- * /thing/action/id => maps to the ThingController:action() method and passes the ID as a parameter
- * /thing => maps to the ThingController::index() method
- * / => maps to the IndexController::index() method
+ * - /thing/action => maps to the ThingController::action() method
+ * - /thing/action/id => maps to the ThingController:action() method and passes the ID as a parameter
+ * - /thing => maps to the ThingController::index() method
+ * - / => maps to the IndexController::index() method
  * 
- * The default URL mapping should throw a ResourceNotFound exception if no IndexController exists.
+ * <p>The default URL mapping will throw a ResourceNotFound exception if no controller exists by that name.
+ * To override this behavior, and route all requests to a controller method binding, define a constant
+ * <code>BindMissingDefault</code> in your app configuration. This will load the default controller on
+ * all URL requests, and leaves 404 handling up to you.</p>
  * 
  * @package server
  * @subpackage receptors
