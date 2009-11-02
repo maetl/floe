@@ -27,6 +27,7 @@ class SchemaMigrateTask {
 			ConsoleText::printLine("No migration specified. Defaulting to latest version.");
 			$args[0] = 'up';
 		}
+		
 		$db = StorageAdaptor::gateway();
 		if (!$db->hasTable("schema")) {
 			echo "Creating schema table...\n";
@@ -46,21 +47,28 @@ class SchemaMigrateTask {
 			sort($versions);
 			$offset = array_search($versionName, $versions);
 			$migrations = ($version == 0) ? $versions : array_slice($versions, $offset+1);
+		
 		} elseif ($args[0] == 'down') {
 			if (!isset($args[1])) die("No version specified for rollback.\n");
+			if (!is_numeric($args[1])) die("Invalid schema version (must be numeric).\n");
+			
 			rsort($versions);
 			$offset = array_search($args[1], $versions);
 			$total = count($versions);
 			$migrations = array_slice($versions, 0, ($total-$offset)+1);
+			
 		} elseif ($args[0] == 'version') {
 			ConsoleText::printLine("The installed schema is at version $versionName.");
 			exit;
+			
 		} else {
 			throw new Exception("Invalid migration method. Must be up or down.");
 		}
+		
 		foreach($migrations as $migration) {
 			$this->runMigration($migration, $args[0]);
 		}
+		
 		$currentVersion = (count($versions) == 0) ? 1 : (int)$versions[count($versions)-1];
 		$db->update("schema", array("id"=>1), array("version"=>$currentVersion));
 	}
