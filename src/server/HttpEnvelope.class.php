@@ -1,34 +1,17 @@
 <?php
 /**
+ * This file is part of Floe, a graceful PHP framework.
+ * Copyright (C) 2005-2010 Mark Rickerby <http://maetl.net>
+ *
+ * See the LICENSE file distributed with this software for full copyright, disclaimer
+ * of liability, and the specific limitations that govern the use of this software.
+ *
  * $Id$
  * @package server
- *
- * Copyright (c) 2007-2009 Coretxt
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
  */
 
 /**
- * HTTP protocol components of an active request
+ * HTTP protocol headers from the active request
  * 
  * @package server
  */
@@ -85,8 +68,43 @@ class HttpEnvelope {
 		}
 		return $buffer;
 	}
-
+	
+	/**
+	 * Return the highest priority language in list of accepted languages.
+	 *
+	 * @todo return Locale object?
+	 * @return string ISO language code
+	 */
+	function language() {
+		$languages = $this->languages();
+		return key($languages);
+	}
+	
+	/**
+	 * Parse the Accept-Language header and return the list of
+	 * accepted languages in order of priority.
+	 *
+	 * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
+	 * @return array map of accepted languages
+	 */
+	function languages() {
+		if (!isset($this->languages)) {
+			$range = $this->header('Accept-Language');
+			$pattern = '/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i';
+			preg_match_all($pattern, $range, $parts);
+			if (count($parts[1])) {
+				$langs = array_combine($parts[1], $parts[4]);
+				foreach ($langs as $lang => $val) {
+					if ($val === '') $langs[$lang] = 1;
+				}
+				arsort($langs, SORT_NUMERIC);
+				$this->languages = $langs;
+			} else {
+				$this->languages = array('en' => 1);
+			}
+		}
+		return $this->languages;
+	}
 }
-
 
 ?>

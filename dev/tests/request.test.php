@@ -6,6 +6,7 @@ require_once dirname(__FILE__).'/../../src/server/Request.class.php';
 require_once dirname(__FILE__).'/../../src/server/HttpEnvelope.class.php';
 
 Mock::generate("HttpEnvelope");
+Mock::generatePartial("HttpEnvelope", "StubHttpEnvelope", array('header'));
 
 class RequestTest extends UnitTestCase {
 	protected $getRequest;
@@ -94,11 +95,11 @@ class RequestTest extends UnitTestCase {
 	
 	function testEnvelopeSupportsPlainHeaders() {
 		$http = new MockHttpEnvelope();
-		$http->setReturnValue('header', 'en-us', array('Accept-Language'));
+		$http->setReturnValue('header', 'no-cache', array('Pragma'));
 		$http->setReturnValue('header', 'http://example.org/action', array('Referer'));
 
 		$request = new Request($http);
-		$this->assertEqual('en-us', $request->language());
+		$this->assertEqual('no-cache', $request->header('Pragma'));
 		$this->assertEqual('http://example.org/action', $request->referer());
 	}
 	
@@ -116,6 +117,29 @@ class RequestTest extends UnitTestCase {
 		$this->assertEqual('Mozilla', $browser->vendor);
 	}
 	
+	function testEnvelopeSupportsAcceptLanguage() {
+		$http = new StubHttpEnvelope();
+		$lang = "en-us";
+		$http->setReturnValue('header', $lang, array('Accept-Language'));
+		
+		$request = new Request($http);
+		$language = $request->language();
+		$precedence = $request->languages();
+		$this->assertEqual('en-us', $language);
+		$this->assertEqual(array('en-us'=>1), $precedence);
+	}
+	
+	function testEnvelopeSupportsAcceptLanguagePrecedence() {
+		$http = new StubHttpEnvelope();
+		$lang = "de-de;q=1,en-us;q=0.8,fr;q=0.6";
+		$http->setReturnValue('header', $lang, array('Accept-Language'));
+		
+		$request = new Request($http);
+		$language = $request->language();
+		$precedence = $request->languages();
+		$this->assertEqual('de-de', $language);
+		$this->assertEqual(array('de-de'=>1,'en-us'=>0.8,'fr'=>0.6), $precedence);
+	}
 }
 
 ?>

@@ -1,30 +1,13 @@
 <?php
 /**
+ * This file is part of Floe, a graceful PHP framework.
+ * Copyright (C) 2005-2010 Mark Rickerby <http://maetl.net>
+ *
+ * See the LICENSE file distributed with this software for full copyright, disclaimer
+ * of liability, and the specific limitations that govern the use of this software.
+ *
  * $Id$
  * @package server
- *
- * Copyright (c) 2007-2009 Coretxt
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
  */
 require_once "UriPath.class.php";
 require_once "UserAgent.class.php";
@@ -33,8 +16,8 @@ require_once "HttpEnvelope.class.php";
 /**
  * Reads data from an incoming HTTP request.
  *
- * Provides immutable accessors for GET and POST properties 
- * and access to the UriPath and UserAgent for the request instance.
+ * <p>Provides immutable accessors for GET and POST properties 
+ * and access to the UriPath and UserAgent for the request instance.</p>
  *
  * @package server
  */ 
@@ -43,8 +26,13 @@ final class Request {
 	 * @var UriPath
 	 */
 	public $uri;
+	
+	/**#@+
+	 * @ignore
+	 */
 	private $method;
 	private $envelope;
+	/**#@-*/
 
 	function __construct($headers=false) {
 		$this->envelope = ($headers) ? $headers : new HttpEnvelope();
@@ -262,12 +250,21 @@ final class Request {
 	}
 	
 	/**
-	 * Language accepted by the client
+	 * Returns the highest priority language that the client accepts.
 	 * 
-	 * @return string
+	 * @return string ISO language code
 	 */
 	function language() {
-		return $this->envelope->header("Accept-Language");
+		return $this->envelope->language();
+	}
+	
+	/**
+	 * Returns the priority map of languages that the client accepts.
+	 *
+	 * @return array map of languages
+	 */
+	function languages() {
+		return $this->envelope->languages();
 	}
 
 	/**
@@ -304,9 +301,7 @@ final class Request {
 		if (isset($_FILES[$name])) {
 			return $_FILES[$name];
 		}
-	}
-	
-	
+	}	
 }
 
 ?>
