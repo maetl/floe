@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Floe, a minimalist PHP framework.
+ * This file is part of Floe, a graceful PHP framework.
  * Copyright (C) 2007-2009 Mark Rickerby <http://maetl.net>
  *
  * See the LICENSE file distributed with this software for full copyright, disclaimer
@@ -14,7 +14,7 @@
 require_once dirname(__FILE__).'/../Type.class.php';
 
 /**
- * A date and time value.
+ * A date and time value type.
  *
  * @package repository
  * @subpackage types
@@ -41,10 +41,19 @@ class DateTimeType implements Type {
 	}
 	
 	/**
-	 * Format a date string.
+	 * Format a date string, using the default date() syntax.
+	 * @see http://www.php.net/manual/en/function.date.php
 	 */
-	function format($date) {
-		return $this->value->format($date);
+	function format($format) {
+		return $this->value->format($format);
+	}
+	
+	/**
+	 * Format a date string, based on setlocale and the strftime() syntax.
+	 * @see http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
+	 */
+	function lformat($format) {
+		return strftime($format, $this->value->getTimestamp());
 	}
 	
 }
