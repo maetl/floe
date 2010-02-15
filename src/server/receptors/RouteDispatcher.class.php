@@ -6,7 +6,7 @@
  * See the LICENSE file distributed with this software for full copyright, disclaimer
  * of liability, and the specific limitations that govern the use of this software.
  *
- * @version $Id: Response.class.php 333 2009-10-24 21:44:48Z coretxt $
+ * @version $Id$
  * @package server
  * @subpackage receptors
  */

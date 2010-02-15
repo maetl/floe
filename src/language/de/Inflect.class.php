@@ -1,9 +1,16 @@
 <?php
 /**
- * $Id: Inflect.class.php 284 2009-05-21 23:06:07Z coretxt $
+ * This file is part of Floe, a graceful PHP framework.
+ * Copyright (C) 2005-2010 Mark Rickerby <http://maetl.net>
+ *
+ * See the LICENSE file distributed with this software for full copyright, disclaimer
+ * of liability, and the specific limitations that govern the use of this software.
+ *
+ * $Id$
  * @package language
- * @subpackage de
+ * @subpackage en
  */
+ 
 require_once dirname(__FILE__).'/../Inflections.class.php';
 
 /**
