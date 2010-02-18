@@ -1,17 +1,7 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once dirname(__FILE__).'/../../src/language/en/Inflect.class.php';
 require_once dirname(__FILE__).'/../../src/repository/store/redis/RedisConnection.class.php';
 
-/**
- * Install and start the Redis server:
- *
- * $> wget http://redis.googlecode.com/files/redis-1.02.tar.gz
- * $> tar -xzf redis-1.02.tar.gz
- * $> cd redis-1.02
- * $> make
- * $> ./redis-server
- */
 class RedisConnectionTest extends UnitTestCase {
 	
 	function skip() {
@@ -33,18 +23,28 @@ class RedisConnectionTest extends UnitTestCase {
 		$connection->disconnect();
 	}
 	
-	function testBadHostThrowsResourceError() {
+	//function testBadHostThrowsResourceError() {
 		//$connection = new RedisConnection('bad.host');
 		//$this->expectException();		
+	//}
+	
+	function testEchoToConnection() {
+		$connection = new RedisConnection('127.0.0.1');
+		$this->assertTrue($connection->connect());
+		$connection->write("ECHO 6\r\nBerlin\r\n");
+		$this->assertEqual("Berlin", $connection->read());
+		$connection->write("ECHO 6\r\nLondon\r\n");
+		$this->assertEqual("London", $connection->read());
+		$connection->disconnect();		
 	}
 	
 	function testGetAndSetKeyValueAsString() {
 		$connection = new RedisConnection('127.0.0.1');
-		$connection->write("SET city 6");
-		$connection->write("Berlin");
+		$connection->write("SET city 6\r\nBerlin\r\n");
 		$this->assertEqual("OK", $connection->read());
-		//$connection->write("GET city");
-		//$this->assertEqual("Berlin", $connection->read());
+		
+		$connection->write("GET city");
+		$this->assertEqual("Berlin", $connection->read());
 		$connection->disconnect();
 	}
 	

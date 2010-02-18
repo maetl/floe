@@ -49,34 +49,75 @@ class RedisConnection {
 		$this->connection = null;
 	}
 	
+	function execute($command) {
+		$writeResult = $this->write($command);
+		if (!$writeResult) {
+			throw new Exception("Bad write to socket");
+		}
+		return $this->read();
+	}
+	
 	function write($command) {
 		if (!$this->connection) $this->connect();
-		fwrite($this->connection, $command.CRLF);
+		return fwrite($this->connection, $command.CRLF);
 	}
 	
 	function read() {
-		$data = trim(fgets($this->connection), 512);
+		$responseHeader = fgets($this->connection);
+		if (!$responseHeader) {
+			throw new Exception("Bad response from socket");
+		}
 		
-		switch (substr($data, 0, 1)) {
+		$prefix = substr($responseHeader, 0, 1);
+		$responseBody = substr($responseHeader, 1, -2);
+		
+		return $this->readResponse($prefix, $responseBody);
+	}
+	
+	private function readResponse($prefix, $data) {
+		switch ($prefix) {
+			# status
 			case "+":
-				$result = substr(trim($data), 1);
+				$result = $this->readStatus($data);
 				break;
+			
+			 # error
 			case "-":
 				throw new Exception(substr(trim($data), 4));
 				break;
-			case "$":	
-				$length = substr(trim($data), 1);
-				$result = "";
-				do {
-					$result .= trim(fread($this->connection, 1024), CRLF);
-				} while (strlen($result) < $length);
+			
+			# bulk
+			case "$":
+				$result = $this->readBulk($data);
 				break;
+			
 			default:
+				echo $data;
 				throw new Exception("Bad data from connection");
 				break;
 		}
+		
 		return $result;
+	}
 
+	function readStatus($status) {
+		if ($status === 'OK') {
+			return true;
+		} elseif ($status == 'QUEUED') {
+			// queue unsupported
+			throw new Exception("QUEUED response not supported");
+		}
+		return $status;
+	}
+	
+	function readBulk($length) {
+		if ($length > 0) {
+			$data = stream_get_contents($this->connection, $length);
+		} else {
+			$data = "";
+		}
+		fread($this->connection, 2);
+		return $data;
 	}
 	
 }
