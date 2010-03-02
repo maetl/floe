@@ -6,7 +6,7 @@
  * See the LICENSE file distributed with this software for full copyright, disclaimer
  * of liability, and the specific limitations that govern the use of this software.
  *
- * $Id: HttpEnvelope.class.php 347 2010-01-24 22:58:04Z coretxt $
+ * $Id$
  * @package repository
  * @subpackage rules
  */
@@ -14,6 +14,8 @@ require_once 'ValidationRule.class.php';
 	
 /**
  * Checks if the field is a valid US Social Security Number.
+ *
+ * @see http://en.wikipedia.org/wiki/Social_Security_number#Valid_SSNs
  *
  * Details:
  *	 - None of the digit groups can be all zeros.
