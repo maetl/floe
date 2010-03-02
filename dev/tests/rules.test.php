@@ -5,6 +5,7 @@ require_once dirname(__FILE__).'/../../src/repository/rules/EmailRule.class.php'
 require_once dirname(__FILE__).'/../../src/repository/rules/AlphanumericRule.class.php';
 require_once dirname(__FILE__).'/../../src/repository/rules/MatchingRule.class.php';
 require_once dirname(__FILE__).'/../../src/repository/rules/NumericRule.class.php';
+require_once dirname(__FILE__).'/../../src/repository/rules/SocialSecurityNumberRule.class.php';
 
 class EmailRuleTest extends UnitTestCase {
 
@@ -22,7 +23,6 @@ class EmailRuleTest extends UnitTestCase {
 		$this->assertFalse($rule->validate("first.com"));
 		$this->assertFalse($rule->validate("@"));
 	}
-	
 }
 
 class AlphanumericRuleTest extends UnitTestCase {
@@ -40,7 +40,6 @@ class AlphanumericRuleTest extends UnitTestCase {
 		$this->assertFalse($rule->validate(""));
 		$this->assertFalse($rule->validate("..."));
 	}
-
 }
 
 class MatchingRuleTest extends UnitTestCase {
@@ -61,7 +60,6 @@ class MatchingRuleTest extends UnitTestCase {
 		$rule = new MatchingRule("");
 		$this->assertFalse($rule->validate(""));
 	}
-
 }
 
 class NumericRuleTest extends UnitTestCase {
@@ -81,7 +79,25 @@ class NumericRuleTest extends UnitTestCase {
 		$this->assertFalse($rule->validate(new stdClass));
 		$this->assertFalse($rule->validate(array(1)));
 	}
+}
+
+class SocialSecurityNumberRuleTest extends UnitTestCase {
+
+	function testAcceptsValidSSNS() {
+		$rule = new SocialSecurityNumberRule();
+		$this->assertTrue($rule->validate("762-65-4320"));
+		$this->assertTrue($rule->validate("132-11-4320"));
+	}
 	
+	function testRejectsInvalidSSNS() {
+		$rule = new SocialSecurityNumberRule();
+		$this->assertFalse($rule->validate(""));
+		$this->assertFalse($rule->validate("aaa"));
+		$this->assertFalse($rule->validate("000-00-0000"));
+		$this->assertFalse($rule->validate("666-11-4320"));
+		$this->assertFalse($rule->validate("774-11-4320"));
+	}
+
 }
 
 ?>
