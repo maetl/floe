@@ -19,7 +19,7 @@ if (!defined('DefaultControllerBinding')) define('DefaultControllerBinding', 'in
 /**#@+
  * Required dependency.
  */
-require_once dirname(__FILE__).'language/en/Inflect.class.php';
+require_once dirname(__FILE__).'/../../language/en/Inflect.class.php';
 require_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 /**#@-*/
 
