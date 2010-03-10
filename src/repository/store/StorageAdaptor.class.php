@@ -24,8 +24,11 @@ require_once 'mysql/MysqlQuery.class.php';
 class StorageAdaptor {
 
 		private static $adaptor = null;
+		
 		private static $implementation = null;
-	
+		
+		private $currentRecordType;
+		
 		/**
 		 * Access a singleton instance of the StorageAdaptor
 		 */
@@ -52,18 +55,44 @@ class StorageAdaptor {
 		}
 		
 		/**
-		 * @todo document
+		 * Converts a passed in value to a record class name.
 		 */
-		function getRecord() {
-			return $this->gateway->getRecord();
+		function setRecordType($type) {
+			$this->currentRecordType = Inflect::toClassName(Inflect::toSingular($type));
 		}
 		
 		/**
-		 * @todo document
+		 * Returns an object as the result of a select query.
+		 * 
+		 * @return stdClass
+		 */
+		function getRecord() {
+			$object = $this->getObject();
+			if ($object) {
+				if (isset($object->type)) {
+					$record = $object->type;
+				} else {
+					$record = $this->currentRecordType;				
+				}
+				return new $record($object);
+			} else {
+				return null;
+			}
+		}
+		
+		/**
+		 * Returns an array of record objects as the result of a select query.
+		 *
+		 * @return array<Record>
 		 */
 		function getRecords() {
-			return $this->gateway->getRecords();
-		}	
+			$i=0; $records = array();
+			while ($row = $this->getObject()) {
+				$record = (isset($row->type)) ? $row->type : $this->currentRecordType;
+				$records[$i] = new $record($row); $i++;
+			}
+			return $records;
+		}
 
 		/**
 		 * @todo document
@@ -97,6 +126,7 @@ class StorageAdaptor {
 		 * @deprecated
 		 */
 		function selectById($table, $id) {
+			$this->setRecordType($table);
 			return $this->gateway->selectById($table, $id);
 		}
 		
@@ -104,6 +134,7 @@ class StorageAdaptor {
 		 * @deprecated
 		 */
 		function selectByKey($table, $key) {
+			$this->setRecordType($table);
 			return $this->gateway->selectByKey($table, $key);
 		}
 		
@@ -111,6 +142,7 @@ class StorageAdaptor {
 		 * @deprecated
 		 */
 		function selectAll($table) {
+			$this->setRecordType($table);
 			return $this->gateway->selectAll($table);
 		}
 		
@@ -118,6 +150,7 @@ class StorageAdaptor {
 		 * @deprecated
 		 */
 		function select($table, $target) {
+			$this->setRecordType($table);
 			return $this->gateway->select($table, $target);
 		}
 		
@@ -125,6 +158,7 @@ class StorageAdaptor {
 		 * @deprecated
 		 */
 		function selectByAssociation($table, $join_table, $target=false) {
+			$this->setRecordType($table);
 			return $this->gateway->selectByAssociation($table, $join_table, $target);
 		}
 		
@@ -139,6 +173,7 @@ class StorageAdaptor {
 		 * @todo extract to SqlAdaptor interface
 		 */
 		function insert($table, $properties) {
+			$this->setRecordType($table);
 			return $this->gateway->insert($table, $properties);
 		}
 		
@@ -146,6 +181,7 @@ class StorageAdaptor {
 		 * @todo extract to SqlAdaptor interface
 		 */
 		function update($table, $target, $properties) {
+			$this->setRecordType($table);
 			return $this->gateway->update($table, $target, $properties);
 		}
 		
@@ -153,6 +189,7 @@ class StorageAdaptor {
 		 * @todo extract to SqlAdaptor interface
 		 */
 		function delete($table, $matching) {
+			$this->setRecordType($table);
 			return $this->gateway->delete($table, $matching);
 		}
 		
@@ -161,7 +198,7 @@ class StorageAdaptor {
 		 * @todo better object check
 		 */
 		function query($statement) {
-			if (is_object($statement)) $this->gateway->tableName = $statement->tableName;
+			if (is_object($statement)) $this->setRecordType($statement->tableName);
 			return $this->gateway->query($statement);
 		}
 
@@ -169,6 +206,7 @@ class StorageAdaptor {
 		 * @todo extract to SqlAdaptor interface
 		 */
 		function createTable($name, $properties) {
+			$this->setRecordType($name);
 			return $this->gateway->createTable($name, $properties);
 		}
 		
@@ -176,6 +214,7 @@ class StorageAdaptor {
 		 * @todo extract to SqlAdaptor interface
 		 */
 		function dropTable($name) {
+			$this->setRecordType($name);
 			return $this->gateway->dropTable($name);
 		}
 		
@@ -183,6 +222,7 @@ class StorageAdaptor {
 		 * @todo extract to SqlAdaptor interface
 		 */
 		function addColumn($table, $column, $type) {
+			$this->setRecordType($table);
 			return $this->gateway->addColumn($table, $column, $type);
 		}
 		
@@ -190,6 +230,7 @@ class StorageAdaptor {
 		 * @todo extract to SqlAdaptor interface
 		 */
 		function dropColumn($table, $column) {
+			$this->setRecordType($table);
 			return $this->gateway->dropColumn($table, $column);
 		}
 		
