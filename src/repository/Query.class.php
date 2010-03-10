@@ -1,8 +1,15 @@
 <?php
 /**
+ * This file is part of Floe, a graceful PHP framework.
+ * Copyright (C) 2005-2010 Mark Rickerby <http://maetl.net>
+ *
+ * See the LICENSE file distributed with this software for full copyright, disclaimer
+ * of liability, and the specific limitations that govern the use of this software.
+ *
  * $Id$
  * @package repository
  */
+
 require_once dirname(__FILE__).'/../language/en/Inflect.class.php';
 require_once 'store/mysql/MysqlQuery.class.php';
 
@@ -26,6 +33,8 @@ class Query {
 	protected $selectFields;
 	
 	protected $tableName;
+	
+	protected $tableNames;
 
 	/**
 	 * Factory method for returning a Query object supporting the default storage adaptor.
@@ -37,6 +46,7 @@ class Query {
 	function __construct() {
 		$this->selectFields = array();
 		$this->whereClauses = array();
+		$this->tableNames = array();
 	}
 	
 	/**
@@ -89,8 +99,9 @@ class Query {
 	 *
 	 * @return Query
 	 */
-	function from($table) {
-		$this->tableName = (is_array($table)) ? implode(', ', $table) : $table;
+	function from() {
+		$this->tableNames = func_get_args();
+		if (!isset($this->tableName)) $this->tableName = $this->tableNames[0];
 		return $this;
 	}
 	
@@ -135,8 +146,8 @@ class Query {
 	 * @param $right, the right key
 	 * @return Query
 	 */
-	function whereJoin($left,$right) {
-	    $this->whereClauses[]=self::criteria($left, "=", $right, true);
+	function whereJoin($left, $right) {
+	    $this->whereClauses[] = self::criteria($left, "=", $right, true);
 	    return $this;
 	}
 	

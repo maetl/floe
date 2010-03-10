@@ -113,8 +113,8 @@ class MysqlQueryCriteriaTest extends UnitTestCase {
 	
 	function testWhereJoinFunction() {
 	    $query = Query::instance();
-	    $query->select()->from('movie','trailer')->whereJoin('trailer.id','movie.id');
-	    $this->assertEqual($query->__toString(),"SELECT * FROM movie WHERE trailer.id = movie.id");
+	    $query->select()->from('movies','trailers')->whereJoin('trailer.id','movie.id');
+	    $this->assertEqual($query->__toString(),"SELECT * FROM movies,trailers WHERE trailer.id = movie.id");
 	}
 	
 	function testCustomWhereClause() {
