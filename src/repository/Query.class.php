@@ -32,9 +32,9 @@ class Query {
 	
 	protected $selectFields;
 	
-	protected $tableName;
-	
 	protected $tableNames;
+	
+	public $tableName;
 
 	/**
 	 * Factory method for returning a Query object supporting the default storage adaptor.
