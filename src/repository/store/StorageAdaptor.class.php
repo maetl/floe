@@ -158,9 +158,10 @@ class StorageAdaptor {
 		
 		/**
 		 * @todo extract to SqlAdaptor interface
+		 * @todo better object check
 		 */
 		function query($statement) {
-			$this->gateway->currentTable = 'entries';
+			if (is_object($statement)) $this->gateway->tableName = $statement->tableName;
 			return $this->gateway->query($statement);
 		}
 
