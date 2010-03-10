@@ -117,6 +117,12 @@ class MysqlQueryCriteriaTest extends UnitTestCase {
 	    $this->assertEqual($query->__toString(),"SELECT * FROM movie WHERE trailer.id = movie.id");
 	}
 	
+	function testCustomWhereClause() {
+		$query = Query::instance();
+		$query->select()->from('things')->where('key', '=', '1');
+	    $this->assertEqual($query->__toString(),"SELECT * FROM things WHERE key = 1");		
+	}
+	
 }
 
 ?>

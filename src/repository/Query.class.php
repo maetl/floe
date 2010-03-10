@@ -103,7 +103,7 @@ class Query {
 	 *
 	 * <code>Query::criteria("title", "=", "My Title");</code>
 	 * <code>Query::criteria("count", ">=", 999);</code>
-	 *
+	 * @todo fix isJoin parameter hack	
 	 * @return stdClass criteria object
 	 */
 	static function criteria($field, $operator, $value, $isJoin=false) {
@@ -114,31 +114,30 @@ class Query {
 		$criteria->isJoin = $isJoin;
 		return $criteria;
 	}
+
+	/**
+	 * Add a generic where predicate, matching value against the given operator.
+	 *
+	 * @param string $field name of the field to match against
+	 * @param string $operator match operator (=, etc)
+	 * @return Query	
+	 */
+	function where($field, $operator, $value) {
+		$this->whereClauses[] = self::criteria($field, $operator, $value, true);
+		return $this;
+	}
 	
 	/**
 	 * Add join connection between PK and FK. Eg. trailers.movie_id=movies.id
+	 * @todo fix isJoin parameter hack
 	 *
 	 * @param $left, the left key
 	 * @param $right, the right key
 	 * @return Query
-	 * @author Yuqi Liu
-	 * @todo need to change the change the from function to add multiple tables
-	 **/
+	 */
 	function whereJoin($left,$right) {
 	    $this->whereClauses[]=self::criteria($left, "=", $right, true);
 	    return $this;
-	}
-	
-	/**
-	 * Add a generic where clause
-	 *
-	 * @param stdClass $c criteria predicate object
-	 * @author Yuqi Liu
-	 * @todo should be no need to regenerate the criteria, expose a where(field, operator, value) method to client code
-	 */
-	function whereCustom($c) {
-		$this->whereClauses[] = self::criteria($c->field, $c->operator, $c->value);
-		return $this;
 	}
 	
 	/**
