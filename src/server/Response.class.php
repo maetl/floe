@@ -10,11 +10,10 @@
  * @package server
  */
 
-require_once "UriPath.class.php";
-require_once "UserAgent.class.php";
-require_once "HttpEnvelope.class.php";
-
-if (!defined('OUTPUT_VAR')) define('OUTPUT_VAR', 'output');
+require_once dirname(__FILE__)."/UriPath.class.php";
+require_once dirname(__FILE__)."/UserAgent.class.php";
+require_once dirname(__FILE__)."/HttpEnvelope.class.php";
+require_once dirname(__FILE__)."/template/PhpTemplate.class.php";
 
 /**
  * Renders data output from server process.
@@ -31,6 +30,7 @@ class Response {
 	private $headers;
 	private $status;
 	private $variables;
+	private $template;
 	
 	public function __construct() {
 		ob_start();
@@ -38,6 +38,11 @@ class Response {
 		$this->headers = array();
 		$this->status = 200;
 		$this->variables = array();
+		$this->template = new PhpTemplate();
+	}
+	
+	public function setTemplate($handler) {
+		$this->template = $handler;
 	}
 	
 	/**
@@ -79,7 +84,7 @@ class Response {
 	 * @param mixed  $value the object to assign
 	 */
 	public function assign($key, $value=true) {
-		$this->variables[$key] = $value;
+		$this->template->assign($key, $value);
 	}
 	
 	/**
@@ -88,7 +93,7 @@ class Response {
 	 * @see Response::assign
 	 */
 	public function set($key, $value) {
-		$this->assign($key, $value);
+		$this->template->set($key, $value);
 	}
 	
 	/**
@@ -109,15 +114,7 @@ class Response {
 	 * @param string $template path to PHP template
 	 */
 	public function render($template) {
-		ob_start();
-		$this->writeTemplate($template);
-		if ($this->wrappedTemplate) {
-			$this->assign(OUTPUT_VAR, ob_get_contents());
-			ob_clean();
-			$this->writeTemplate($this->wrappedTemplate);
-		}
-		$this->write(ob_get_contents());
-		ob_clean();
+		$this->write($this->template->render($template));
 	}
 	
 	/**
@@ -134,11 +131,8 @@ class Response {
 	 * @param string $template path to template to include
 	 */
 	private function embed($template) {
-		$this->writeTemplate($template);
+		$this->template->embed($template);
 	}
-	
-	/** @ignore */
-	private $wrappedTemplate;
 	
 	/**
 	 * Wraps a main layout template around the render call.
@@ -147,24 +141,7 @@ class Response {
 	 * @param string $template path to wrapping template
 	 */
 	function wrap($template) {
-		$this->wrappedTemplate = $template;
-	}
-	
-	/**
-	 * Write a PHP template to the render buffer, applying any
-	 * assigned variables to the current scope.
-	 * 
-	 * @param string $template template name
-	 */
-	private function writeTemplate($template) {
-		extract($this->variables);
-		$templatePath = TPL_DIR . "/" . $template . ".php";
-		if (file_exists($templatePath)) {
-			include $templatePath;
-		} else {
-			require_once 'ResourceNotFound.class.php';
-			throw new ResourceNotFound("Response template not found", $templatePath);
-		}
+		$this->template->wrap($template);
 	}
 	
 	/**
@@ -208,6 +185,23 @@ class Response {
 			}
 		}
 		$this->status = $code . " " . $message;
+	}
+
+	/**
+	 * Write a PHP template to the render buffer, applying any
+	 * assigned variables to the current scope.
+	 * 
+	 * @param string $template template name
+	 */
+	private function writeTemplate($template) {
+		extract($this->variables);
+		$templatePath = TPL_DIR . "/" . $template . ".php";
+		if (file_exists($templatePath)) {
+			include $templatePath;
+		} else {
+			require_once 'ResourceNotFound.class.php';
+			throw new ResourceNotFound("Response template not found", $templatePath);
+		}
 	}
 	
 	/**
