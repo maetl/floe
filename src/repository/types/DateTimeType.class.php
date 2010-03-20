@@ -41,7 +41,10 @@ class DateTimeType implements Type {
 	}
 	
 	/**
-	 * Format a date string, using the default date() syntax.
+	 * Format an English language date string, using the default PHP syntax.
+	 *
+	 * <code>$date->format('jS F Y');</code>
+	 *
 	 * @see http://www.php.net/manual/en/function.date.php
 	 */
 	function format($format) {
@@ -49,10 +52,15 @@ class DateTimeType implements Type {
 	}
 	
 	/**
-	 * Format a date string, based on setlocale and the strftime() syntax.
+	 * Format a date string using server locale settings.
+	 *
+	 * <p>Uses strftime:</p>
+	 * <code>$date->translate('%e %B %Y')</code>
+	 * 
+	 * @see http://php.net/manual/en/function.strftime.php
 	 * @see http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 	 */
-	function lformat($format) {
+	function translate($format) {
 		return strftime($format, $this->value->getTimestamp());
 	}
 	

@@ -52,4 +52,21 @@ class TimeTypeTest extends UnitTestCase {
 	
 }
 
+class MultiLingualDateTest extends UnitTestCase {
+	
+	function testDateStringValueConversion() {
+		$date = new DateType('1st January 1980');
+		$this->assertEqual('January', $date->translate('%B'));
+		setlocale(LC_ALL, 'de_DE');
+		$this->assertEqual('Januar', $date->translate('%B'));
+		setlocale(LC_ALL, 'nl_NL');
+		$this->assertEqual('januari', $date->translate('%B'));
+		setlocale(LC_ALL, 'fr_FR');
+		$this->assertEqual('janvier', $date->translate('%B'));
+		setlocale(LC_ALL, 'ru_RU');
+		$this->assertEqual('января', $date->translate('%B'));		
+	}
+	
+}
+
 ?>

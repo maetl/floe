@@ -39,10 +39,26 @@ class TimeType implements Type {
 	}
 	
 	/**
-	 * Format a date string.
+	 * Format a date string using default PHP callback.
+	 *
+	 * <code>$time->format('h:i:s');</code>
+	 *
+	 * @see http://php.net/manual/en/function.date.php
 	 */
-	function format($date) {
-		return $this->value->format($date);
+	function format($format) {
+		return $this->value->format($format);
+	}
+	
+	/**
+	 * Format a date string using server locale settings.
+	 *
+	 * <p>Uses strftime:</p>
+	 * <code>$time->translate('h:i:s')</code>
+	 *
+	 * @see http://php.net/manual/en/function.strftime.php
+	 */
+	function translate($format) {
+		return strftime($format, $this->value->getTimestamp());
 	}
 	
 }

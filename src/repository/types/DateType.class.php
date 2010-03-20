@@ -41,10 +41,27 @@ class DateType implements Type {
 	}
 	
 	/**
-	 * Format a date string.
+	 * Format an English language date string, using the default PHP syntax.
+	 *
+	 * <code>$date->format('jS F Y');</code>
+	 *
+	 * @see http://www.php.net/manual/en/function.date.php
 	 */
-	function format($date) {
-		return $this->value->format($date);
+	function format($format) {
+		return $this->value->format($format);
+	}
+	
+	/**
+	 * Format a date string using server locale settings.
+	 *
+	 * <p>Uses strftime:</p>
+	 * <code>$date->translate('%e %B %Y')</code>
+	 * 
+	 * @see http://php.net/manual/en/function.strftime.php
+	 * @see http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
+	 */
+	function translate($format) {
+		return strftime($format, $this->value->format('U'));
 	}
 	
 }
