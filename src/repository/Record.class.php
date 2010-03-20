@@ -340,12 +340,8 @@ class Record {
 			case 'boolean':
 				return $this->_getBoolean($key);
 				break;
-			case 'date':
-			case 'datetime':
-				return $this->_getValue($key, 'DateTime');
-				break;
 			default:
-				if (class_exists($type)) return $this->_getValue($key, $type);
+				return $this->_getValue($key, $type);
 				break;
 		}
 	}
@@ -443,10 +439,14 @@ class Record {
 	}
 
 	function _getValue($property, $type) {
+		$camelCaseBullshitInputVar = $type.'Type';
+		if (!class_exists($camelCaseBullshitInputVar)) {
+			require_once dirname(__FILE__).'/types/'.$camelCaseBullshitInputVar.'.class.php';
+		}
 		if ($this->recordInstance) {
-			return new $type($this->recordInstance->$property);
+			return new $camelCaseBullshitInputVar($this->recordInstance->$property);
 		} else {
-			return new $Type();
+			return new $camelCaseBullshitInputVar();
 		}
 	}
 	
