@@ -61,7 +61,7 @@ class DateTimeType implements Type {
 	 * @see http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 	 */
 	function translate($format) {
-		return strftime($format, $this->value->getTimestamp());
+		return strftime($format, $this->value->format('U'));
 	}
 	
 }

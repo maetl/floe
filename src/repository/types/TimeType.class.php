@@ -58,7 +58,7 @@ class TimeType implements Type {
 	 * @see http://php.net/manual/en/function.strftime.php
 	 */
 	function translate($format) {
-		return strftime($format, $this->value->getTimestamp());
+		return strftime($format, $this->value->format('U'));
 	}
 	
 }
