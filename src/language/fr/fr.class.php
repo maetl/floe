@@ -8,14 +8,14 @@
  *
  * $Id$
  * @package language
- * @subpackage en
+ * @subpackage fr
  */
-class en implements LocaleFormat {
+class fr implements LocaleFormat {
 	
-	const Name = 'English';
+	const Name = 'Français';
 	
-	const ShortDate = '%b %e %Y';
-	const LongDate = '%B %e, %Y';
+	const ShortDate = '%e %b %Y';
+	const LongDate = '%e %B %Y';
 }
 
 ?>

@@ -64,7 +64,7 @@ class MultiLingualDateTest extends UnitTestCase {
 		setlocale(LC_ALL, 'fr_FR');
 		$this->assertEqual('janvier', $date->translate('%B'));
 		setlocale(LC_ALL, 'ru_RU');
-		$this->assertEqual('января', $date->translate('%B'));	
+		$this->assertEqual('января', $date->translate('%B'));
 	}
 	
 }
