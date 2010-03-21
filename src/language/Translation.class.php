@@ -33,7 +33,7 @@ class Translation {
 	 */
 	static function locale($locale) {
 		self::$locale = $locale;
-		setlocale(LC_ALL, $locale);
+		setlocale(LC_ALL, $locale.'_'.strtoupper($locale));
 		require_once dirname(__FILE__).'/'.$locale.'/'.$locale.'.class.php';
 	}
 	
