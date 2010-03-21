@@ -63,7 +63,7 @@ class DateTimeType implements Type {
 	function translate($format) {
 		return strftime($format, $this->value->format('U'));
 	}
-	
+
 }
 
 ?>

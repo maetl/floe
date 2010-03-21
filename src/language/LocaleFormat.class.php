@@ -8,24 +8,12 @@
  *
  * $Id$
  * @package language
- * @subpackage en
  */
- 
-require_once dirname(__FILE__).'/../Inflections.class.php';
 
 /**
- * German language support. Hahaha.. yeah, right.
- * {@link http://www.vistawide.com/german/grammar/german_nouns02.htm}
- *
- * @package language
- * @subpackage de
+ * Formatting strings for a particular locale.
  */
-class InflectDE {
-	
-	function toPlural($word) {
-		return $word;
-	}
-	
+interface LocaleFormat {
 }
 
 ?>

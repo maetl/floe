@@ -4,13 +4,18 @@ require 'rake/packagetask'
 
 $version = File.read('src/VERSION').strip()
 
-# Packaging steps:
+################################################################################################
+# Building Floe:
 #
 #  1. Set version number to the latest minor point release
-#     $> echo "0.1.9etc" > /src/VERSION
+#     $> echo "0.6.4" > /src/VERSION
 #
-#  2. Extract and package release, and upload to Google Code 
+#  2. Generate documentation
+#     $> rake phpdoc; rake webdoc
+#
+#  3. Extract and package release, and upload to Google Code
 #     $> rake tag; rake release
+#
 #
 
 desc "Remove exported files"
@@ -32,8 +37,9 @@ end
 desc "Upload version release to Google Code"
 task :release => :package do
   cmd = "./release -s 'Alpha release' -p floe -l Featured,Type-Source pkg/floe-#{$version}"
-  sh cmd + ".tgz"
+  sh cmd + ".tar.gz"
   sh cmd + ".zip"
+  sh "rm -r floe"
 end
 
 desc "Tag current release version in Google Code SVN"
@@ -60,15 +66,19 @@ task :default => :test
 
 # Documentation steps:
 # Documentation is currently a mess.
-#
+
+#  Api documentation
+#  - Will build HTML templates from PHP documentor.
+#  But none of us are happy with this.
 
 desc "Unfortunately we can't run this with the -tb switch because phpDocumentor is screwed 6 ways from Sunday"
-task :phpdoc do
+task :apidoc do
   sh "rm -r doc/api/*"
   sh "phpdoc -d floe -t doc/api -ti 'Floe #{$version}' -dn 'api' -o HTML:Smarty:floe -ed doc/examples"
 end
 
-desc "FloeDoc - Treetop explosion"
-task :floedoc do
+
+desc "Generate static website for the project"
+task :webdoc do
   #sh ""
 end

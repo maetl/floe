@@ -84,7 +84,6 @@ module Floe
       Project.create_index_controller
     end
     
-    # the command doesn't exist... we could delegate to something smarter here perhaps
     def self.method_missing(method, args)
       Raise::no_command(method)
     end
