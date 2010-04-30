@@ -598,6 +598,13 @@ class Record {
 		return $this->storage->getObject();
 	}
 	
+	function toArray() {
+		return (array)$this->recordInstance;
+	}
+	
+	function toJson() {
+		return json_encode($this->recordInstance);
+	}
 }
 
 ?>
