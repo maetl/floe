@@ -69,9 +69,6 @@ class MysqlConnection {
 				return false;
 			}
 			EventLog::info("Selected [{$this->_db_name}]");
-			if (function_exists('mysql_set_charset')) {
-				mysql_set_charset('utf8', $this->_connection);
-			}
 		}
 		return true;
 	}
