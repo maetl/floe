@@ -439,7 +439,10 @@ class Record {
 	}
 
 	function _getValue($property, $type) {
-		$camelCaseBullshitInputVar = Inflect::toClassName($type).'Type';
+		if (strtolower($type) == 'datetime') {
+			$type = "DateTime";
+		}
+		$camelCaseBullshitInputVar = $type.'Type';
 		if (!class_exists($camelCaseBullshitInputVar)) {
 			require_once dirname(__FILE__).'/types/'.$camelCaseBullshitInputVar.'.class.php';
 		}
