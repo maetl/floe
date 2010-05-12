@@ -43,7 +43,7 @@ class Translation {
 				require_once $formatPath;
 				setlocale(LC_ALL, self::locales());
 			} else {
-				setlocale(LC_ALL, self::$locale);
+				setlocale(LC_ALL, self::$locale.'_'.strtoupper(self::$locale));
 			}
 		}
 		return (!isset(self::$locale)) ? $_ENV['LANG'] : self::$locale;
