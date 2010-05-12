@@ -39,8 +39,12 @@ class Translation {
 		if ($locale) {
 			self::$locale = $locale;
 			$formatPath = dirname(__FILE__).'/'.$locale.'/'.$locale.'.class.php';
-			if (file_exists($formatPath)) require_once $formatPath;
-			setlocale(LC_ALL, $locale.'_'.strtoupper($locale));
+			if (file_exists($formatPath)) {
+				require_once $formatPath;
+				setlocale(LC_ALL, self::locales());
+			} else {
+				setlocale(LC_ALL, self::$locale);
+			}
 		}
 		return (!isset(self::$locale)) ? $_ENV['LANG'] : self::$locale;
 	}
@@ -61,9 +65,11 @@ class Translation {
 	
 	/**
 	 * Return a fallback list of system names for the current locale.
+	 *
+	 * @compatibility PHP 5.2.2 only
 	 */
 	static function locales() {
-		return call_user_func(self::$locale.'::locales');
+		return call_user_func(array(self::$locale, 'locales'));
 	}
 	
 }
