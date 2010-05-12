@@ -16,6 +16,10 @@ class de implements LocaleFormat {
 	
 	const ShortDate = '%e. %b %Y';
 	const LongDate = '%e. %B %Y';
+	
+	function locales() {
+		return array('de_DE', 'de_DE.UTF8', 'de.UTF8');		
+	}
 }
 
 ?>

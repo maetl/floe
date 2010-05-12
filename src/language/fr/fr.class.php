@@ -15,7 +15,13 @@ class fr implements LocaleFormat {
 	const Name = 'Français';
 	
 	const ShortDate = '%e %b %Y';
+	
 	const LongDate = '%e %B %Y';
+	
+	function locales() {
+		return array('fr_FR', 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');		
+	}
+	
 }
 
 ?>

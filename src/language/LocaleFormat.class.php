@@ -14,6 +14,23 @@
  * Formatting strings for a particular locale.
  */
 interface LocaleFormat {
+	
+	/**
+	 * Return a standard list of fallback locales for the given language, used to set the
+	 * system context with setlocale.
+	 *
+	 * <p>Known to support OSX and Debian/Ubuntu.</p>
+	 *
+	 * <p>Example implementation:</p>
+	 *
+	 * <code>function locales() {
+	 *     return array('es_ES', 'es_ES.UTF8', 'es.UTF8');
+	 * }</code>
+	 *
+	 * @return array list of fallback locales
+	 */
+	function locales();
+	
 }
 
 ?>
