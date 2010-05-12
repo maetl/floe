@@ -19,7 +19,7 @@ class en implements LocaleFormat {
 	const LongDate = '%B %e %Y';
 	
 	function locales() {
-		return array('en', 'en_US', 'en_GB', 'en_US.UTF8', 'en_GB.UTF8', 'en.UTF8');		
+		return array('en', 'en_US', 'en_GB', 'en_US.UTF8', 'en_GB.UTF8', 'en.UTF8');
 	}	
 	
 }
