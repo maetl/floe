@@ -22,6 +22,12 @@ class DateTimeTypeTest extends UnitTestCase {
 		$this->assertEqual('1980-01-01 12:00:00', (string)$obj);
 	}
 	
+	function testLocaleFormat() {
+		$date = new DateTimeType('01/01/2010');
+		setlocale(LC_ALL, 'de_DE');
+		$this->assertEqual('Januar', $date->strformat('%B'));
+	}
+	
 }
 
 class DateTypeTest extends UnitTestCase {
@@ -37,8 +43,14 @@ class DateTypeTest extends UnitTestCase {
 	}
 	
 	function testDateStringValueConversion() {
-		$obj = new DateType('1st January 1980');
+		$obj = new DateType('01/01/1980');
 		$this->assertEqual('1980-01-01', (string)$obj);
+	}
+	
+	function testLocaleFormat() {
+		$date = new DateType('01/01/2010');
+		setlocale(LC_ALL, 'nl_NL');
+		$this->assertEqual('januari', $date->strformat('%B'));
 	}
 	
 }
@@ -50,21 +62,10 @@ class TimeTypeTest extends UnitTestCase {
 		$this->assertEqual(date('h:i:s'), (string)$obj);
 	}
 	
-}
-
-class MultiLingualDateTest extends UnitTestCase {
-	
-	function testDateStringValueConversion() {
-		$date = new DateTimeType('1st January 1980');
-		$this->assertEqual('January', $date->translate('%B'));
-		setlocale(LC_ALL, 'de_DE');
-		$this->assertEqual('Januar', $date->translate('%B'));
-		setlocale(LC_ALL, 'nl_NL');
-		$this->assertEqual('januari', $date->translate('%B'));
-		setlocale(LC_ALL, 'fr_FR');
-		$this->assertEqual('janvier', $date->translate('%B'));
+	function testLocaleFormat() {
+		$date = new TimeType('01/01/2010');
 		setlocale(LC_ALL, 'ru_RU');
-		$this->assertEqual('января', $date->translate('%B'));
+		$this->assertEqual('января', $date->strformat('%B'));
 	}
 	
 }

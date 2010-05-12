@@ -50,14 +50,29 @@ class TimeType implements Type {
 	}
 	
 	/**
-	 * Format a date string using server locale settings.
+	 * Format a date string using the strftime syntax.
 	 *
 	 * <p>Uses strftime:</p>
-	 * <code>$time->translate('h:i:s')</code>
-	 *
+	 * <code>$date->strformat('%e %B %Y')</code>
+	 * 
 	 * @see http://php.net/manual/en/function.strftime.php
+	 * @see http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 	 */
-	function translate($format) {
+	function strformat($format) {
+		return strftime($format, $this->value->format('U'));
+	}	
+	
+	/**
+	 * Translate a date string using server locale settings.
+	 *
+	 * <p>Translated short date:</p>
+	 * <code>$date->translate('ShortDate')</code>
+	 * 
+	 * <p>Translated long date:</p>
+	 * <code>$date->translate('LongDate')</code>
+	 */
+	function to($format) {
+		$format = Translation::format($format);
 		return strftime($format, $this->value->format('U'));
 	}
 	

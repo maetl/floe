@@ -20,38 +20,35 @@ class Translation {
 	private static $locale;
 	
 	/**
-	 * Check if the given locale is available.
-	 */	
-	static function available($locale) {
-		return file_exists(dirname(__FILE__).'/'.$locale.'/'.$locale.'.class.php');
-	}	
-	
-	/**
-	 * Set the global locale for this execution context.
+	 * Global locale accessor for this execution context.
 	 *
+	 * <p>This only supports two letter ISO language codes, not proper locales.</p>
+	 *
+	 * <h3>Getting the current locale:</h3>
+	 * <code>$locale = Translation::locale(); // returns 'en', or 'de' etc...</code>
+	 *
+	 * <h3>Setting the locale:</h3>
+	 * <code>$locale = Translation::locale('pl'); // sets the current locale to be Polish</code>
+	 *
+	 * @return two letter ISO language code, defaults to current system locale if none previously set
 	 * @todo accept-lang grammar/wikipedia reference for better param names
+	 * @todo shouldn’t throw an error if locale doesn't exist in Floe languages
+	 * @todo support for custom locale paths in app/locales
 	 */
-	static function locale($locale) {
-		self::$locale = $locale;
-		setlocale(LC_ALL, $locale.'_'.strtoupper($locale));
-		require_once dirname(__FILE__).'/'.$locale.'/'.$locale.'.class.php';
-	}
-	
-	/**
-	 * Returns the current global locale for this execution context.
-	 */
-	static function currentLocale() {
-		if (!isset(self::$locale)) {
-			return $_ENV['LANG'];
-		} else {
-			return self::$locale;
+	static function locale($locale=false) {
+		if ($locale) {
+			self::$locale = $locale;
+			setlocale(LC_ALL, $locale.'_'.strtoupper($locale));
+			$formatPath = dirname(__FILE__).'/'.$locale.'/'.$locale.'.class.php';
+			if (file_exists($formatPath)) require_once $formatPath;
 		}
+		return (!isset(self::$locale)) ? $_ENV['LANG'] : self::$locale;
 	}
 	
 	/**
 	 * Full name of the language for current global locale.
 	 */	
-	static function currentLanguage() {
+	static function language() {
 		return constant(self::$locale.'::Name');		
 	}
 	
