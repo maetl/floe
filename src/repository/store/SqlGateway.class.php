@@ -15,7 +15,7 @@
  * @package repository
  * @subpackage store
  */
-interface SqlGateway {
+interface RelationalStore {
 
 	function getRecord();
 	
