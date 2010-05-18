@@ -29,12 +29,52 @@
  */
 
 /**
- * Standard SPL interface or custom iterator protocol?
+ * Adaptor for iterating over typed record sets.
  * 
  * @package repository
  * @subpackage store
  */
-interface StorageIterator extends Iterator {
+class StorageIterator implements Iterator {
+	private $iterator;
+	private $recordType;
+	
+	function __construct($iterator) {
+		$this->iterator = $iterator;
+	}
+
+	function current() {
+	
+	}
+	
+	function valid() {
+	
+	}
+	
+	function key() {
+	
+	}
+	
+	function rewind() {
+	
+	}
+
+	function count() {
+		return $this->_count;
+	}
+	
+	function setRecordType($type) {
+		$this->recordType = $type;
+	}
+
+	function next() {
+		$object = $this->iterator->next();
+		$record = (isset($object->type)) ? $object->type : $this->recordType;
+		return new $record($object);
+	}
+	
+	function close() {
+		$this->_current = 0;
+	}
 
 }
 
