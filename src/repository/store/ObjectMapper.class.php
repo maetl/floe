@@ -16,7 +16,7 @@
  * @package repository
  * @subpackage store
  */
-interface ObjectMapper {
+interface ObjectStore {
 	
 }
 
