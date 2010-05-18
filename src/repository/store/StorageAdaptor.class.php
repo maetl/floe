@@ -105,7 +105,7 @@ class StorageAdaptor {
 		 * @todo document
 		 */
 		function getObjects() {
-			return $this->gateway->getObject();
+			return $this->gateway->getObjects();
 		}
 		
 		/**
