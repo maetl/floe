@@ -62,8 +62,7 @@ class StorageAdaptor {
 		}
 		
 		/**
-		 * Returns an object as the result of a select query.
-		 * 
+		 * Provides a single row query result as an active record object.
 		 * @return stdClass
 		 */
 		function getRecord() {
@@ -81,42 +80,44 @@ class StorageAdaptor {
 		}
 		
 		/**
-		 * Returns an array of record objects as the result of a select query.
-		 *
+		 * Provides a multi row result set as a list of active record objects.
+		 * @todo fix the suck of double looping through the list
 		 * @return array<Record>
 		 */
 		function getRecords() {
-			$i=0; $records = array();
-			while ($row = $this->getObject()) {
-				$record = (isset($row->type)) ? $row->type : $this->currentRecordType;
-				$records[$i] = new $record($row); $i++;
+			$type = $this->currentRecordType;
+			$objects = $this->gateway->getObjects();
+			foreach($objects as $object) {
+				$records[] = new $type($object);
 			}
 			return $records;
 		}
 
 		/**
-		 * @todo document
+		 * Provides a single row query result as an untyped object.
+		 * @return stdClass
 		 */
 		function getObject() {
 			return $this->gateway->getObject();
 		}
 		
 		/**
-		 * @todo document
+		 * Provides a multi row result set as a list of untyped objects.
+		 * @return array<strClass>
 		 */
 		function getObjects() {
 			return $this->gateway->getObjects();
 		}
 		
 		/**
-		 * @todo document
+		 * Provides a single value from a query result.
 		 */
 		function getValue() {
 			return $this->gateway->getValue();
 		}
 		
 		/**
-		 * @todo document
+		 * Provides an iterator over a result set.
 		 */
 		function getIterator() {
 			return $this->gateway->getIterator();
