@@ -15,6 +15,12 @@ require_once dirname(__FILE__) .'/../../../framework/EventLog.class.php';
 require_once dirname(__FILE__) .'/../ResourceError.class.php';
 
 /**
+ * If a UTF8 connection is needed, this constant should be set to true.
+ * Should only be used if the database is not correctly configured for UTF8 connections.
+ */
+if (!defined('MysqlConnection_ForceUTF8')) define('MysqlConnection_ForceUTF8', false);
+
+/**
  * An active connection to a MySql database server.
  *
  * @package repository
@@ -22,7 +28,7 @@ require_once dirname(__FILE__) .'/../ResourceError.class.php';
  */
 class MysqlConnection {
 
-	private $_connection;
+	private $connection;
 	private $_db_host;
 	private $_db_name;
 	private $_db_user;
@@ -57,18 +63,19 @@ class MysqlConnection {
 	 * @return boolean true on success
 	 */
 	function connect() {
-		if (!is_resource($this->_connection)) {
-			$this->_connection = @mysql_connect($this->_db_host, $this->_db_user, $this->_db_pass);
-			if (!is_resource($this->_connection)) {
+		if (!is_resource($this->connection)) {
+			$this->connection = @mysql_connect($this->_db_host, $this->_db_user, $this->_db_pass);
+			if (!is_resource($this->connection)) {
 				$this->raiseError();
 				return false;
 			}
 			EventLog::info("Connected to [{$this->_db_host}]");
-			if (!@mysql_select_db($this->_db_name, $this->_connection)) {
+			if (!@mysql_select_db($this->_db_name, $this->connection)) {
 				$this->raiseError();
 				return false;
 			}
 			EventLog::info("Selected [{$this->_db_name}]");
+			if (MysqlConnection_ForceUTF8) mysql_set_charset('utf8', $this->connection);
 		}
 		return true;
 	}
@@ -86,7 +93,7 @@ class MysqlConnection {
 	 */
 	function execute($sql) {
 		$this->connect();
-		$query = mysql_query($sql, $this->_connection);
+		$query = mysql_query($sql, $this->connection);
 		EventLog::info("Executed [$sql]");
 		return (mysql_error() != '') ? $this->raiseError() : $query;
 	}
