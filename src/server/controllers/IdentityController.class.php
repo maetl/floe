@@ -48,7 +48,7 @@ class IdentityController {
 	/**
 	 * Imports a model file based on controller identity.
 	 * 
-	 * Should this be phased out in favor of autoload?
+	 * @todo should this be phased out in favor of autoload?
 	 */
 	private function importModel() {
 		$modelPath = MOD_DIR . '/' . $this->identity() . '.model.php';
@@ -61,6 +61,7 @@ class IdentityController {
 	 */
 	private function assignDefaults() {
 		$this->response->assign('controller', $this->identity());
+		$this->response->assign('uri', $this->request->uri);
 	}
 
 }
