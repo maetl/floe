@@ -13,7 +13,7 @@
 
 require_once "TemplateHandler.class.php";
 
-if (!defined('OUTPUT_VAR')) define('OUTPUT_VAR', 'output');
+if (!defined('PhpTemplate_WrapVariable')) define('PhpTemplate_WrapVariable', 'output');
 
 /**
  * Handler for classic PHP style templating.
@@ -102,7 +102,7 @@ class PhpTemplate implements TemplateHandler {
 		ob_start();
 		$this->writeTemplate($template);
 		if ($this->wrappedTemplate) {
-			$this->assign(OUTPUT_VAR, ob_get_contents());
+			$this->assign(PhpTemplate_WrapVariable, ob_get_contents());
 			ob_clean();
 			$this->writeTemplate($this->wrappedTemplate);
 		}
