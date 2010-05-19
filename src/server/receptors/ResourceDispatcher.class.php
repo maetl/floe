@@ -14,7 +14,7 @@
 /**
  * Bind base URL requests to this controller by default.
  */
-if (!defined('DefaultControllerBinding')) define('DefaultControllerBinding', 'index');
+if (!defined('ResourceDispatcher_DefaultBinding')) define('ResourceDispatcher_DefaultBinding', 'index');
 
 /**#@+
  * Required dependency.
@@ -45,7 +45,7 @@ class ResourceDispatcher implements Receptor {
 	public function run(Request $request, Response $response) {
 		$base = $request->uri->segment(0);
 		$params = $request->uri->segmentsFrom(1);
-		if ($base == '') $base = DefaultControllerBinding;
+		if ($base == '') $base = ResourceDispatcher_DefaultBinding;
 		$path = APP_DIR ."controllers/$base.controller.php";
 		if (!file_exists($path)) {
 			$identity = $request->uri->segment(1);

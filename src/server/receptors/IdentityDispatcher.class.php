@@ -20,10 +20,18 @@ require_once dirname(__FILE__) .'/../controllers/IdentityController.class.php';
 require_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 /**#@-*/
 
+if (defined('DefaultMethodBinding')) {
+	throw new Exception("Deprecated constant [DefaultMethodBinding]. Please use [IdentityDispatcher_DefaultBinding]");
+}
+
+if (defined('BindMissingDefault')) {
+	throw new Exception("Deprecated constant [BindMissingDefault]. Please use [IdentityDispatcher_BindMissing]");
+}
+
 /**
- * Bind base URL requests to this method by default.
+ * Bind base URL requests to this controller method by default.
  */
-if (!defined('DefaultMethodBinding')) define('DefaultMethodBinding', 'index');
+if (!defined('IdentityDispatcher_DefaultBinding')) define('IdentityDispatcher_DefaultBinding', 'index');
 
 /**
  * Delegates request binding to a controller based on URI identity.
@@ -55,7 +63,7 @@ class IdentityDispatcher implements Receptor {
 		$base = (count($request->uri->segments()) == 1) ? $request->uri->identity() : $request->uri->segment(0);
 		$identity = $request->uri->segment(1);
 		$params = $request->uri->segmentsFrom(2);
-		if ($base == '') $base = DefaultMethodBinding;
+		if ($base == '') $base = IdentityDispatcher_DefaultBinding;
 		if ($identity == '') $identity = $base;
 		$path = CTR_DIR ."/$base.controller.php";
 		if (!file_exists($path)) {
@@ -64,8 +72,8 @@ class IdentityDispatcher implements Receptor {
 			$identity = $request->uri->segment(2);
 			if ($identity == '') $identity = $base;
 			$params = $request->uri->segmentsFrom(3);
-			if (!file_exists($path) && defined('BindMissingDefault')) {
-				$base = DefaultMethodBinding;
+			if (!file_exists($path) && defined('IdentityDispatcher_BindMissing')) {
+				$base = IdentityDispatcher_DefaultBinding;
 				$path = CTR_DIR ."/$base.controller.php";
 				$params = $request->uri->segmentsFrom(0);
 				if (!$path) {
@@ -92,8 +100,8 @@ class IdentityDispatcher implements Receptor {
 		$identity = $this->stripActionIdentifier($identity);
 		if (method_exists($controller, $identity)) {
 			$this->invoke($controller, $identity, $params);
-		} elseif (method_exists($controller, DefaultMethodBinding)) {
-			$this->invoke($controller, DefaultMethodBinding, $request->uri->segmentsFrom(1));
+		} elseif (method_exists($controller, IdentityDispatcher_DefaultBinding)) {
+			$this->invoke($controller, IdentityDispatcher_DefaultBinding, $request->uri->segmentsFrom(1));
 		} else {
 			throw new ResourceNotFound("Method $identity not defined in $classname", $path);
 		}
