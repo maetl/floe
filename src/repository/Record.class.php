@@ -28,7 +28,7 @@ if (!defined('Record_DefinitionHook')) define('Record_DefinitionHook', '__define
 class Record {
 	protected $storage;
 	private $tableName;
-	private $recordInstance;
+	private $instance;
 	private $properties;
 	private $joins;
 	private $associations;
@@ -48,7 +48,7 @@ class Record {
 		$this->associations = array();
 		$this->rules = array();
 		$this->errors = array();
-		$this->recordInstance = new stdClass();
+		$this->instance = new stdClass();
 		if (get_parent_class($this) == 'Record') {
 			$this->initializeAsBaseAncestor();
 		} else {
@@ -82,11 +82,11 @@ class Record {
 	public function populate($record) {
 		foreach($record as $field=>$value) {
 			if ($field == 'id') {
-				$this->recordInstance->id = $value;
+				$this->instance->id = $value;
 			} else {
 				$this->$field = $value;
 			}
-		}		
+		}
 	}
 	
 	/**
@@ -213,7 +213,7 @@ class Record {
 	 *  - datetime 
 	 */
 	function property($name, $type) {
-		$this->recordInstance->$name = null;
+		$this->instance->$name = null;
 		$this->properties[$name] = $type;
 		$this->column($name, $type);
 	}
@@ -316,9 +316,9 @@ class Record {
 				}
 			}
 		} elseif ($this->hasProperty($key)) {
-			return $this->_castPropertyType($key);
+			return $this->castPropertyType($key);
 		} elseif ($key == 'id') {
-			return (isset($this->recordInstance->id)) ? $this->recordInstance->id : 0;
+			return (isset($this->instance->id)) ? $this->instance->id : 0;
 		}
 	}
 	
@@ -332,31 +332,49 @@ class Record {
 	}
 	
 	/**
-	 * Cast string from storage source to native type in accessor
+	 * Cast a property to defined type.
 	 * 
 	 * @return mixed
 	 */
-	private function _castPropertyType($key) {
-		$type = $this->properties[$key];
+	private function castPropertyType($property) {
+		if (!$this->instance) return null;
+		$type = $this->properties[$property];
 		switch($type) {
 			case 'string':
 			case 'text':
-				return $this->_getString($key);
+				return stripslashes($this->instance->$property);
 				break;
 			case 'int':
 			case 'integer':
-				return $this->_getInteger($key);
+				return (int)$this->instance->$property;
 				break;
 			case 'decimal':
 			case 'float':
-				return $this->_getFloat($key);
+				return (float)$this->instance->$property;
 				break;
 			case 'boolean':
-				return $this->_getBoolean($key);
+				return (boolean)$this->instance->$property;
 				break;
 			default:
-				return $this->_getValue($key, $type);
+				return $this->castValueType($key, $type);
 				break;
+		}
+	}
+
+	/**
+	 * Cast a property into a value type.
+	 */
+	function castValueType($property, $type) {
+		if (strtolower($type) == 'datetime') $type = "DateTime";
+
+		$camelCaseBullshitInputVar = $type.'Type';
+		if (!class_exists($camelCaseBullshitInputVar)) {
+			require_once dirname(__FILE__).'/types/'.$camelCaseBullshitInputVar.'.class.php';
+		}
+		if ($this->instance) {
+			return new $camelCaseBullshitInputVar($this->instance->$property);
+		} else {
+			return new $camelCaseBullshitInputVar();
 		}
 	}
 	
@@ -378,7 +396,7 @@ class Record {
 				$this->dependentRelations[$key][] = $value;
 			}
 		} elseif($key == "id") {
-			$this->recordInstance->id = $value;
+			$this->instance->id = $value;
 			$foreignKey = strtolower(get_class($this))."Id";
 			foreach($this->dependentRelations as $relation) {
 				if (is_array($relation)) {
@@ -413,16 +431,16 @@ class Record {
 				$value = date('Y-n-d', strtotime($value));
 			}
 			if (is_bool($this->properties[$property])) {
-				$this->recordInstance->$property = (boolean)$value;
+				$this->instance->$property = (boolean)$value;
 			} else {
-				$this->recordInstance->$property = $value;
+				$this->instance->$property = $value;
 			}
 			$this->clean = false;
 		}
 	}
 	
 	function getProperty($property) {
-		return $this->recordInstance->$property;
+		return $this->instance->$property;
 	}
 	
 	/**
@@ -430,48 +448,13 @@ class Record {
 	 */
 	function isClean() {
 		return $this->clean;
-	}	
-	
-	function _getId() {
-		return ($this->recordInstance) ? $this->recordInstance->id : 0;
-	}
-
-	function _getString($property) {
-		return ($this->recordInstance) ? stripslashes($this->recordInstance->$property) : null;
-	}
-
-	function _getInteger($property) {
-		return ($this->recordInstance) ? (int)$this->recordInstance->$property : null;
-	}
-
-	function _getFloat($property) {
-		return ($this->recordInstance) ? (float)$this->recordInstance->$property : null;
-	}
-	
-	function _getBoolean($property) {
-		return ($this->recordInstance) ? (boolean)$this->recordInstance->$property : null;
-	}
-
-	function _getValue($property, $type) {
-		if (strtolower($type) == 'datetime') {
-			$type = "DateTime";
-		}
-		$camelCaseBullshitInputVar = $type.'Type';
-		if (!class_exists($camelCaseBullshitInputVar)) {
-			require_once dirname(__FILE__).'/types/'.$camelCaseBullshitInputVar.'.class.php';
-		}
-		if ($this->recordInstance) {
-			return new $camelCaseBullshitInputVar($this->recordInstance->$property);
-		} else {
-			return new $camelCaseBullshitInputVar();
-		}
 	}
 	
 	/**
 	 * Returns a map of the values set for this instance.
 	 */
 	function getProperties() {
-		return get_object_vars($this->recordInstance);
+		return get_object_vars($this->instance);
 	}
 	
 	/**
@@ -482,7 +465,7 @@ class Record {
 	 * only the defined properties of the record.
 	 */
 	function validate() {
-		foreach(get_object_vars($this->recordInstance) as $field=>$value) {
+		foreach(get_object_vars($this->instance) as $field=>$value) {
 			if (isset($this->rules[$field])) {
 				foreach($this->rules[$field] as $rule) {
 					if (!$rule->validate($value, $this)) {
@@ -527,7 +510,7 @@ class Record {
 				}
 			}
 			$record = array();
-			foreach(get_object_vars($this->recordInstance) as $key=>$value) {
+			foreach(get_object_vars($this->instance) as $key=>$value) {
 				$record[Inflect::propertyToColumn($key)] = $value;
 			}
 			if ($this->id != 0) {
@@ -608,11 +591,11 @@ class Record {
 	}
 	
 	function toArray() {
-		return (array)$this->recordInstance;
+		return (array)$this->instance;
 	}
 	
 	function toJson() {
-		return json_encode($this->recordInstance);
+		return json_encode($this->instance);
 	}
 }
 
