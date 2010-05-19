@@ -1,11 +1,24 @@
 <?php
 /**
+ * This file is part of Floe, a graceful PHP framework.
+ * Copyright (C) 2005-2010 Mark Rickerby <http://maetl.net>
+ *
+ * See the LICENSE file distributed with this software for full copyright, disclaimer
+ * of liability, and the specific limitations that govern the use of this software.
+ *
  * $Id$
  * @package repository
  */
+
 require_once 'DependentRelation.class.php';
 require_once 'store/StorageAdaptor.class.php';
 require_once dirname(__FILE__) .'/../language/en/Inflect.class.php';
+
+/**
+ * Name of the hook method used to construct model properties, relationships and rules.
+ * @todo change name for 0.7 release
+ */
+if (!defined('Record_DefinitionHook')) define('Record_DefinitionHook', '__define');
 
 /**
  * Active record base class.
@@ -45,7 +58,8 @@ class Record {
 		}
 		if ($record) {
 			if (is_numeric($record)) {
-				$record = $this->findObjectById($record);
+				$this->storage->selectById($this->tableName, $id);
+				$record = $this->storage->getObject();
 				if (!$record) {
 					require_once dirname(__FILE__).'/RecordNotFound.class.php';
 					throw new RecordNotFound(get_class($this), dirname(__FILE__));
@@ -116,7 +130,7 @@ class Record {
 	private function initializeDefinedAncestors() {
 		$class = get_class($this);
 		while ($class != self::$baseAncestor) {
-			$parentDefinition = new ReflectionMethod($class, '__define');
+			$parentDefinition = new ReflectionMethod($class, Record_DefinitionHook);
 			$parentDefinition->invoke($this);
 			$this->tableName = Inflect::toTableName($class);
 			$class = get_parent_class($class);
@@ -125,7 +139,7 @@ class Record {
 	
 	private function initializeAsBaseAncestor() {
 		$class = get_class($this);
-		if (method_exists($this, '__define')) $this->__define();
+		if (method_exists($this, Record_DefinitionHook)) $this->{Record_DefinitionHook}();
 		$this->tableName = Inflect::toTableName($class);
 		if ($this->hasProperty('type')) $this->setProperty("type", get_class($this));
 	}
@@ -591,14 +605,6 @@ class Record {
 	 */
 	function remove() {
 		$this->storage->delete($this->tableName, array('id'=>$this->id));
-	}
-	
-	/**
-	 * @deprecated
-	 */
-	function findObjectById($id) {
-		$this->storage->selectById($this->tableName, $id);
-		return $this->storage->getObject();
 	}
 	
 	function toArray() {
