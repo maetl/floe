@@ -58,7 +58,7 @@ class Record {
 		}
 		if ($record) {
 			if (is_numeric($record)) {
-				$this->storage->selectById($this->tableName, $id);
+				$this->storage->selectById($this->tableName, $record);
 				$record = $this->storage->getObject();
 				if (!$record) {
 					require_once dirname(__FILE__).'/RecordNotFound.class.php';
