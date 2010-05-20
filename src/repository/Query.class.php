@@ -140,21 +140,21 @@ class Query {
 	 *
 	 * <code>Query::criteria("title", "=", "My Title");</code>
 	 * <code>Query::criteria("count", ">=", 999);</code>
-	 * @todo fix isJoin parameter hack	
+	 * @todo fix unquoted parameter hack
 	 * @return stdClass criteria object
 	 */
-	static function criteria($field, $operator, $value, $isJoin=false) {
+	static function criteria($field, $operator, $value, $unquoted=false) {
 		$criteria = new stdClass;
 		$criteria->field = Inflect::underscore($field);
 		$criteria->operator = $operator;
 		$criteria->value = $value;
-		$criteria->isJoin = $isJoin;
+		$criteria->unquoted = $unquoted;
 		return $criteria;
 	}
 
 	/**
 	 * Add a generic where predicate, matching value against the given operator.
-	 *
+	 * @todo fix unquoted parameter hack
 	 * @param string $field name of the field to match against
 	 * @param string $operator match operator (=, etc)
 	 * @return Query	
@@ -166,8 +166,7 @@ class Query {
 	
 	/**
 	 * Add join connection between PK and FK. Eg. trailers.movie_id=movies.id
-	 * @todo fix isJoin parameter hack
-	 *
+	 * @todo fix unquoted parameter hack
 	 * @param $left, the left key
 	 * @param $right, the right key
 	 * @return Query

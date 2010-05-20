@@ -26,10 +26,8 @@ class MysqlQuery extends Query {
 	 * @ignore
 	 */
 	private function mergeClauses($criteria) {
-	    if ($criteria->isJoin) {
-	       return "{$criteria->field} {$criteria->operator} {$criteria->value}";
-	    }
-		return "{$criteria->field} {$criteria->operator} '{$criteria->value}'";
+	    $value = ($criteria->unquoted) ? $criteria->value : "'{$criteria->value}'";
+		return "{$criteria->field} {$criteria->operator} $value";
 	}
 	
 	/**
