@@ -11,9 +11,7 @@
  * @subpackage store
  */
 
-require_once 'mysql/MysqlConnection.class.php';
-require_once 'mysql/MysqlGateway.class.php';
-require_once 'mysql/MysqlQuery.class.php';
+if (!defined('StorageAdaptor_DefaultInstance')) define('StorageAdaptor_DefaultInstance', 'Mysql');
 
 /**
  * High level wrapper around the gateway to a specific storage engine.
@@ -24,9 +22,7 @@ require_once 'mysql/MysqlQuery.class.php';
 class StorageAdaptor {
 
 		private static $adaptor = null;
-		
 		private static $implementation = null;
-		
 		private $currentRecordType;
 		
 		/**
@@ -38,10 +34,14 @@ class StorageAdaptor {
         }
 
 		/**
-		 * Returns a MysqlAdaptor instance
+		 * Returns a default instance
 		 */
-        static function gateway($plugin = false) {
-        	if (!self::$implementation) self::$implementation = new MysqlGateway(new MysqlConnection());
+        static function gateway($adaptor = false) {
+			$queryAdaptor = (($adaptor) ? $adaptor : StorageAdaptor_DefaultInstance)."Gateway";
+			$queryConnection = (($adaptor) ? $adaptor : StorageAdaptor_DefaultInstance)."Connection";
+			require_once 'store/'. strtolower($adaptor) .'/'. $queryAdaptor .'.class.php';
+			require_once 'store/'. strtolower($adaptor) .'/'. $queryConnection .'.class.php';
+        	if (!self::$implementation) self::$implementation = new $queryAdaptor(new $queryConnection());
         	return self::$implementation;
         }
 		

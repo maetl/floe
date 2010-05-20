@@ -13,6 +13,8 @@
 require_once dirname(__FILE__).'/../language/en/Inflect.class.php';
 require_once 'store/mysql/MysqlQuery.class.php';
 
+if (!defined('StorageAdaptor_DefaultInstance')) define('StorageAdaptor_DefaultInstance', 'Mysql');
+
 /**
  * Criteria based select query interface.
  * 
@@ -21,30 +23,23 @@ require_once 'store/mysql/MysqlQuery.class.php';
 class Query {
 	
 	protected $limitLower;
-	
 	protected $limitUpper;
-	
-	protected $groupBy;
-	
 	protected $orderBy;
-	
 	protected $orderDir;
-	
+	protected $groupBy;
 	protected $whereClauses;
-	
 	protected $havingClauses;
-	
 	protected $selectFields;
-	
-	protected $tableNames;
-	
-	public $tableName;
+	protected $tableName;
 
 	/**
 	 * Factory method for returning a Query object supporting the default storage adaptor.
 	 */
-	static function instance() {
-		return new MysqlQuery();
+	static function instance($adaptor=false) {
+		$adaptor = (($adaptor) ? $adaptor : StorageAdaptor_DefaultInstance);
+		$queryAdaptor = $adaptor."Query";
+		require_once 'store/'. strtolower($adaptor) .'/'. $queryAdaptor .'.class.php';
+		return new $queryAdaptor();
 	}
 	
 	function __construct() {
