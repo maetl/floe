@@ -43,6 +43,13 @@ class MysqlQuery extends Query {
 			$sql .= "WHERE ";
 			$sql .= implode(' AND ', array_map(array($this, 'mergeClauses'), $this->whereClauses));
 		}
+		if ($this->groupBy) {
+			$sql .= "GROUP BY {$this->groupBy}";
+			if (count($this->havingClauses) > 0) {
+				$sql .= " HAVING ";
+				$sql .= implode(' AND ', array_map(array($this, 'mergeClauses'), $this->havingClauses));
+			}
+		}
 		if ($this->orderBy) {
 			$sql .= " ORDER BY {$this->orderBy} ";
 			$sql .= ($this->orderDir) ? $this->orderDir : 'DESC';
@@ -60,7 +67,7 @@ class MysqlQuery extends Query {
 	 */
 	function __toString() {
 		$sql = "SELECT ";
-		$sql .= implode(',', $this->selectFields);
+		$sql .= ($this->selectFields) ? implode(',', $this->selectFields) : "*";
 		$sql .= " FROM ". implode(',', $this->tableNames) ." ";
 		$sql .= $this->toSql();
 		return trim($sql);

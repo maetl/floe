@@ -6,9 +6,15 @@ require_once dirname(__FILE__).'/../../src/repository/store/mysql/MysqlQuery.cla
 
 class MysqlQueryCriteriaTest extends UnitTestCase {
 
-	function testStarSelect() {
+	function testWildcardFieldsFromEmptyParameter() {
 		$query = Query::instance();
 		$query->select()->from("articles");
+		$this->assertEqual($query->__toString(), "SELECT * FROM articles");
+	}
+	
+	function testWildcardFieldsWithNoSelectGiven() {
+		$query = Query::instance();
+		$query->from("articles");
 		$this->assertEqual($query->__toString(), "SELECT * FROM articles");
 	}
 	
@@ -20,11 +26,11 @@ class MysqlQueryCriteriaTest extends UnitTestCase {
 	
 	function testMultipleColumnsSelectAsArgs() {
 		$query = Query::instance();
-		$query->select("title","summary","updated")->from("articles");
+		$query->select("title", "summary", "updated")->from("articles");
 		$this->assertEqual($query->__toString(), "SELECT title,summary,updated FROM articles");
 	}	
 	
-	function testSingleColumnsSelect() {
+	function testChainedColumnsSelect() {
 		$query = Query::instance();
 		$query->select("title")->select("summary")->from("articles");
 		$this->assertEqual($query->__toString(), "SELECT title,summary FROM articles");
@@ -107,8 +113,20 @@ class MysqlQueryCriteriaTest extends UnitTestCase {
 	
 	function testSelectCountFunction() {
 		$query = Query::instance();
-		$query->selectCount()->from("things");
+		$query->count()->from("things");
 		$this->assertEqual($query->__toString(), "SELECT COUNT(id) AS count FROM things");
+	}
+	
+	function testSelectCountFieldFunction() {
+		$query = Query::instance();
+		$query->count("name")->from("things");
+		$this->assertEqual($query->__toString(), "SELECT COUNT(name) AS name FROM things");
+	}
+	
+	function testSelectDistinctFieldFunction() {
+		$query = Query::instance();
+		$query->distinct("name")->from("things");
+		$this->assertEqual($query->__toString(), "SELECT DISTINCT(name) AS name FROM things");
 	}
 	
 	function testWhereJoinFunction() {
@@ -121,6 +139,12 @@ class MysqlQueryCriteriaTest extends UnitTestCase {
 		$query = Query::instance();
 		$query->select()->from('things')->where('key', '=', '1');
 	    $this->assertEqual($query->__toString(),"SELECT * FROM things WHERE key = 1");		
+	}
+	
+	function testGroupByClause() {
+		$query = Query::instance();
+		$query->from("things")->groupBy('name')->having('key', '=', '1');
+		$this->assertEqual($query->__toString(), "SELECT * FROM things GROUP BY name HAVING key = 1");
 	}
 	
 }

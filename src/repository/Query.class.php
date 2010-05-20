@@ -24,11 +24,15 @@ class Query {
 	
 	protected $limitUpper;
 	
+	protected $groupBy;
+	
 	protected $orderBy;
 	
 	protected $orderDir;
 	
 	protected $whereClauses;
+	
+	protected $havingClauses;
 	
 	protected $selectFields;
 	
@@ -46,6 +50,7 @@ class Query {
 	function __construct() {
 		$this->selectFields = array();
 		$this->whereClauses = array();
+		$this->havingClauses = array();
 		$this->tableNames = array();
 	}
 	
@@ -83,15 +88,36 @@ class Query {
 	}
 
 	/**
-	 * Select a count of the given column.
+	 * Count from the given column.
 	 *
 	 * If no column given, defaults to <code>id</code>.
 	 *
-	 * @todo move to MysqlSpecific query object
+	 * @param string $column
 	 * @return Query
 	 */
-	function selectCount($column="id") {
-		return $this->select("COUNT($column) AS count");
+	function count($column='id') {
+		$alias = ($column == 'id') ? 'count' : $column;
+		return $this->select("COUNT($column) AS $alias");
+	}
+	
+	/**
+	 * Select unique values from the given column.
+	 *
+	 * @param string $column
+	 * @return Query	 
+	 */
+	function distinct($column) {
+		return $this->select("DISTINCT($column) AS $column");
+	}
+	
+	/**
+	 * Sum of combined values from the given column.
+	 *
+	 * @param string $column
+	 * @return Query	 
+	 */
+	function sum($column) {
+		return $this->select("SUM($column) AS $column");
 	}
 	
 	/**
@@ -252,6 +278,24 @@ class Query {
 	    $operator = (is_string($upper)) ? "NOT BETWEEN '$upper' AND" : "NOT BETWEEN $upper AND";
 		$this->whereClauses[] = self::criteria($key, $operator, $lower);
 		return $this;		
+	}
+
+	/**
+	 * Group query results by the given column.
+	 *
+	 * @return Query
+	 */
+	function groupBy($field) {
+		$this->groupBy = Inflect::underscore($field);
+		return $this;
+	}
+	
+	/**
+	 * Constrain grouped results with a where clause
+	 */
+	function having($field, $operator, $value) {
+		$this->havingClauses[] = self::criteria($field, $operator, $value, true);
+		return $this;
 	}
 
 	/**
