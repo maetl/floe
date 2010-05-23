@@ -88,6 +88,7 @@ class Storage {
 		function getRecords() {
 			$type = $this->recordType;
 			$objects = $this->adaptor->getObjects();
+			$records = array();
 			foreach($objects as $object) {
 				$records[] = new $type($object);
 			}
