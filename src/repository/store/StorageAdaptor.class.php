@@ -40,8 +40,8 @@ class StorageAdaptor {
 			$adaptor = ($adaptor) ? $adaptor : StorageAdaptor_DefaultInstance;
 			$queryAdaptor = $adaptor.'Gateway';
 			$queryConnection = $adaptor."Connection";
-			require_once 'store/'. strtolower($adaptor) .'/'. $adaptor .'.class.php';
-			require_once 'store/'. strtolower($adaptor) .'/'. $adaptor .'.class.php';
+			require_once 'store/'. strtolower($adaptor) .'/'. $queryAdaptor .'.class.php';
+			require_once 'store/'. strtolower($adaptor) .'/'. $queryConnection .'.class.php';
         	if (!self::$implementation) self::$implementation = new $queryAdaptor(new $queryConnection());
         	return self::$implementation;
         }
