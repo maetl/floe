@@ -2,7 +2,6 @@
 require_once 'simpletest/autorun.php';
 require_once 'simpletest/mock_objects.php';
 require_once dirname(__FILE__).'/../../src/repository/Finder.class.php';
-require_once dirname(__FILE__).'/../../src/repository/store/mysql/MysqlQuery.class.php';
 
 if (!defined('DB_HOST')) {
 	define('DB_HOST', 'localhost');
@@ -26,7 +25,7 @@ class Person extends Record {
 class FinderBasicQueryTest extends UnitTestCase {
 	
 	function setUp() {
-		$db = StorageAdaptor::instance();
+		$db = Storage::init();
 		$person = new Person();
 		$db->createTable("people", $person->properties());
 		$db->insert("people", array("name"=>"Jack", "age"=>29, "gender"=>"male"));
@@ -55,7 +54,7 @@ class FinderBasicQueryTest extends UnitTestCase {
 	}
 
 	function tearDown() {
-		$db = StorageAdaptor::instance();
+		$db = Storage::init();
 		$db->dropTable("people");
 	}
 	

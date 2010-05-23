@@ -18,7 +18,7 @@ class Finder {
 	protected $tableName;
 	
 	function __construct($store=false, $cache=false) {
-		$this->storage = StorageAdaptor::instance();
+		$this->storage = Storage::init();
 		$collectionName = str_replace('Finder', '', get_class($this));
 		$recordName = Inflect::toSingular($collectionName);
 		$this->record = new $recordName;

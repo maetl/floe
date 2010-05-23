@@ -21,7 +21,7 @@ class Storage {
 
 		private static $storageAdaptor = null;
 		private static $implementation = null;
-		private $currentRecordType;
+		private $recordType;
 		private $adaptor;
 		
 		/**
@@ -35,27 +35,31 @@ class Storage {
 		/**
 		 * Access a global instance of a service adaptor.
 		 */
-        static function adaptor($adaptor = false) {
-			$adaptor = ($adaptor) ? $adaptor : Storage_DefaultInstance;
-			$serviceAdaptor = $adaptor.'Adaptor';
-			$serviceConnection = $adaptor.'Connection';
-			require_once 'services/'. strtolower($adaptor) .'/'. $serviceAdaptor .'.class.php';
-        	if (!self::$implementation) self::$implementation = new $serviceAdaptor(new $serviceConnection());
-        	return self::$implementation;
+        static function adaptor($service = false) {
+			$adaptor = ($service) ? $service : Storage_DefaultInstance;
+			$gateway = $adaptor.'Adaptor';
+			$connection = $adaptor.'Connection';
+			require_once 'services/'. strtolower($adaptor) .'/'. $gateway .'.class.php';
+        	if (!self::$implementation && !$service) {
+				self::$implementation = new $gateway(new $connection());
+        		return self::$implementation;
+			} else{
+				return new $gateway(new $connection());
+			}
         }
 		
 		/**
 		 * @ignore
 		 */
-		function __construct($gateway) {
-			$this->adaptor = $gateway;
+		function __construct($adaptor) {
+			$this->adaptor = $adaptor;
 		}
 		
 		/**
 		 * Converts a passed in value to a record class name.
 		 */
 		function setRecordType($type) {
-			$this->currentRecordType = Inflect::toClassName(Inflect::toSingular($type));
+			$this->recordType = Inflect::toClassName(Inflect::toSingular($type));
 		}
 		
 		/**
@@ -68,7 +72,7 @@ class Storage {
 				if (isset($object->type)) {
 					$record = $object->type;
 				} else {
-					$record = $this->currentRecordType;				
+					$record = $this->recordType;				
 				}
 				return new $record($object);
 			} else {
@@ -82,7 +86,7 @@ class Storage {
 		 * @return array<Record>
 		 */
 		function getRecords() {
-			$type = $this->currentRecordType;
+			$type = $this->recordType;
 			$objects = $this->adaptor->getObjects();
 			foreach($objects as $object) {
 				$records[] = new $type($object);
