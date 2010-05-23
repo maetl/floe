@@ -25,7 +25,7 @@ class ModelWithBasicPropertiesTest extends UnitTestCase {
 
 	function setUp() {
 		$dogModel = new Dog();
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->createTable("dogs", $dogModel->properties());
 	}
 
@@ -51,7 +51,7 @@ class ModelWithBasicPropertiesTest extends UnitTestCase {
 	}
 	
 	function tearDown() {
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->dropTable("dogs");
 	}
 
@@ -72,12 +72,12 @@ class RecordPropertyTypesTest extends UnitTestCase {
 
 	function setUp() {
 		$model = new Thing();
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->createTable("things", $model->properties());
 	}
 
 	function testCanManipulateAllPrimitiveTypes() {
-		$query = StorageAdaptor::instance();
+		$query = Storage::init();
 	
 		$typeValues = array(
 			'string_field' => 'a string',
@@ -105,7 +105,7 @@ class RecordPropertyTypesTest extends UnitTestCase {
 	}
 	
 	function tearDown() {
-		$adaptor = StorageAdaptor::instance();	
+		$adaptor = Storage::init();	
 		$adaptor->dropTable("things");
 	}
 
@@ -131,7 +131,7 @@ class OneToManyAssociationTest extends UnitTestCase {
 	function setUp() {
 		$projectModel = new Project();
 		$taskModel = new Task();
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->createTable("projects", $projectModel->properties());
 		$adaptor->createTable("tasks", $taskModel->properties());
 	}
@@ -155,7 +155,7 @@ class OneToManyAssociationTest extends UnitTestCase {
 		$id = $project->id;
 		unset($project);
 		
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->selectById("projects", $id);
 		$proj = $adaptor->getRecord();
 		
@@ -179,7 +179,7 @@ class OneToManyAssociationTest extends UnitTestCase {
 	}
 	
 	function tearDown() {
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->dropTable("projects");
 		$adaptor->dropTable("tasks");
 	}
@@ -209,7 +209,7 @@ class ManyToManyRelationshipTest extends UnitTestCase {
 	function setUp() {
 		$post = new Post();
 		$topic = new Topic();
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->createTable("posts", $post->properties());
 		$adaptor->createTable("topics", $topic->properties());
 		$adaptor->createTable("posts_topics", array("post_id" => "integer", "topic_id" => "integer"));
@@ -232,7 +232,7 @@ class ManyToManyRelationshipTest extends UnitTestCase {
 		
 		$id = $post->id;
 		unset($post);
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->selectById("posts", $id);
 		$post = $adaptor->getRecord();
 		
@@ -241,7 +241,7 @@ class ManyToManyRelationshipTest extends UnitTestCase {
 		$this->assertEqual("world", $post->topics[1]->name);
 		
 		unset($post);
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->selectById("posts", $id);
 		$post = $adaptor->getRecord();
 		
@@ -251,7 +251,7 @@ class ManyToManyRelationshipTest extends UnitTestCase {
 		$this->assertEqual("world", $post->topics[1]->name);
 		
 		unset($post);
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->selectById("topics", 1);
 		$topic = $adaptor->getRecord();
 		
@@ -260,7 +260,7 @@ class ManyToManyRelationshipTest extends UnitTestCase {
 	}
 
 	function tearDown() {
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->dropTable("posts");
 		$adaptor->dropTable("topics");
 		$adaptor->dropTable("posts_topics");
@@ -306,7 +306,7 @@ class Bowler extends Cricketer {
 class SingleTableInheritanceTest extends UnitTestCase {
 	
 	function setUp() {
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->createTable("players", array('name'=>'string', 'topScore'=>'int', 'wicketsTaken'=>'int', 'club'=>'string', 'type'=>'string'));
 	}
 	
@@ -375,7 +375,7 @@ class SingleTableInheritanceTest extends UnitTestCase {
 	}
 	
 	function tearDown() {
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->dropTable("players");
 	}
 	
@@ -426,7 +426,7 @@ class SingleTableInheritanceWithRelationshipsTest extends UnitTestCase {
 		//$child = new ChildObj();
 		$related = new RelatedObj();
 		$other = new OtherRelatedObj();
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->createTable("base_objs", $base->properties());
 		$adaptor->addColumn("base_objs", "number_of_problems", "integer");
 		$adaptor->createTable("related_objs", $related->properties());
@@ -434,7 +434,7 @@ class SingleTableInheritanceWithRelationshipsTest extends UnitTestCase {
 	}
 	
 	function tearDown() {
-		$adaptor = StorageAdaptor::instance();
+		$adaptor = Storage::init();
 		$adaptor->dropTable("base_objs");
 		$adaptor->dropTable("related_objs");
 		$adaptor->dropTable("other_related_objs");
@@ -537,7 +537,7 @@ class Toggle extends Record {
 class BooleanCastingTest extends UnitTestCase {
 	
 	function setUp() {
-		$db = StorageAdaptor::instance();
+		$db = Storage::init();
 		$t = new Toggle();
 		$db->createTable("toggles", $t->properties());
 	}
@@ -574,7 +574,7 @@ class BooleanCastingTest extends UnitTestCase {
 	}
 	
 	function tearDown() {
-		$db = StorageAdaptor::instance();
+		$db = Storage::init();
 		$db->dropTable("toggles");
 	}
 	

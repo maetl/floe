@@ -12,13 +12,23 @@
  */
  
 require_once dirname(__FILE__) .'/../../../framework/EventLog.class.php';
-require_once dirname(__FILE__) .'/../ResourceError.class.php';
 
 /**
  * If a UTF8 connection is needed, this constant should be set to true.
  * Should only be used if the name is not correctly configured for UTF8 connections.
  */
 if (!defined('MysqlConnection_ForceUTF8')) define('MysqlConnection_ForceUTF8', false);
+
+/**
+ * @package repository
+ * @subpackage services.mysql
+ * @todo move this somewhere sensible
+ */
+class ResourceError extends Exception {
+
+	var $message = "Unable to connect to the selected resource: %s";
+
+}
 
 /**
  * An active connection to a MySql name server.

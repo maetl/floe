@@ -11,7 +11,7 @@
  */
 
 require_once 'DependentRelation.class.php';
-require_once 'store/StorageAdaptor.class.php';
+require_once 'Storage.class.php';
 require_once dirname(__FILE__) .'/../language/en/Inflect.class.php';
 
 /**
@@ -42,7 +42,7 @@ class Record {
 		$this->dependentRelations = array();
 		$this->parentRelations = array();
 		$this->clean = true;
-		$this->storage = StorageAdaptor::instance();
+		$this->storage = Storage::init();
 		$this->properties = array();
 		$this->joins = array();
 		$this->associations = array();
@@ -356,7 +356,7 @@ class Record {
 				return (boolean)$this->instance->$property;
 				break;
 			default:
-				return $this->castValueType($key, $type);
+				return $this->castValueType($property, $type);
 				break;
 		}
 	}

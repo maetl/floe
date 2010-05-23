@@ -10,7 +10,6 @@
  * @package repository
  * @subpackage services.mysql
  */
-require_once dirname(__FILE__).'/../StorageIterator.class.php';
 
 /**
  * Iterator over a Mysql result set.

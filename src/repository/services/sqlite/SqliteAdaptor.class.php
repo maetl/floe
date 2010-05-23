@@ -6,20 +6,18 @@
  * See the LICENSE file distributed with this software for full copyright, disclaimer
  * of liability, and the specific limitations that govern the use of this software.
  *
- * @version $Id$
+ * @version $Id: SqliteGateway.class.php 413 2010-05-23 18:59:36Z coretxt $
  * @package repository
- * @subpackage store.sqlite
+ * @subpackage services.sqlite
  */
 require_once 'SqliteConnection.class.php';
-require_once dirname(__FILE__) .'/../SqlGateway.class.php';
 require_once dirname(__FILE__) .'/../../../framework/EventLog.class.php';
-require_once dirname(__FILE__) .'/../ResourceError.class.php';
 
 /**
  * @package repository
- * @subpackage store.sqlite
+ * @subpackage services.sqlite
  */
-class SqliteGateway implements SqlGateway {
+class SqliteAdaptor {
 	private $connection;
 	private $result;
 	

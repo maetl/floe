@@ -1,6 +1,6 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once dirname(__FILE__).'/../../src/repository/store/StorageAdaptor.class.php';
+require_once dirname(__FILE__).'/../../src/repository/Storage.class.php';
 
 if (!defined('DB_HOST')) {
 	define('DB_HOST', 'localhost');
@@ -11,15 +11,18 @@ if (!defined('DB_HOST')) {
 
 class StorageAdaptorSingletonTest extends UnitTestCase {
 	
-	function testMysqlAdaptorInstance() {
-		$adaptor = StorageAdaptor::instance();
-		$this->assertIsA($adaptor, 'StorageAdaptor');
-		$this->assertIdentical($adaptor, StorageAdaptor::instance());
-		$this->assertIdentical($adaptor, StorageAdaptor::instance());
+	function testDefaultAdaptorInstance() {
+		$s = Storage::init();
+		$this->assertIsA($s, 'Storage');
+		$this->assertIdentical($s, Storage::init());
+		$this->assertIdentical($s, Storage::init());
 	}
 	
-	function testStorageAdaptorAPI() {
-		$adaptor = StorageAdaptor::instance();
+	function testSupportedAdaptorInstances() {
+		$m = Storage::adaptor('Mysql');
+		$this->assertIsA($m, 'MysqlAdaptor');
+		$s = Storage::adaptor('Sqlite');
+		$this->assertIsA($s, 'SqliteAdaptor');
 	}
 	
 }

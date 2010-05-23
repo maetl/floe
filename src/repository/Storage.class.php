@@ -28,18 +28,19 @@ class Storage {
 		 * Access a global instance of the Storage wrapper.
 		 */
         static function init($adaptor = false) {
-        	if (!self::$storageAdaptor) self::$storageAdaptor = new StorageAdaptor(self::service());
+        	if (!self::$storageAdaptor) self::$storageAdaptor = new Storage(self::adaptor());
         	return self::$storageAdaptor;
         }
 
 		/**
 		 * Access a global instance of a service adaptor.
 		 */
-        static function service($adaptor = false) {
+        static function adaptor($adaptor = false) {
 			$adaptor = ($adaptor) ? $adaptor : Storage_DefaultInstance;
 			$serviceAdaptor = $adaptor.'Adaptor';
-			require_once 'service/'. strtolower($adaptor) .'/'. $queryAdaptor .'.class.php';
-        	if (!self::$implementation) self::$implementation = new $queryAdaptor(new $queryConnection());
+			$serviceConnection = $adaptor.'Connection';
+			require_once 'services/'. strtolower($adaptor) .'/'. $serviceAdaptor .'.class.php';
+        	if (!self::$implementation) self::$implementation = new $serviceAdaptor(new $serviceConnection());
         	return self::$implementation;
         }
 		

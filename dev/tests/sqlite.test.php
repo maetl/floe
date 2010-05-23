@@ -1,7 +1,7 @@
 <?php
 require_once 'simpletest/autorun.php';
 require_once dirname(__FILE__).'/../../src/language/en/Inflect.class.php';
-require_once dirname(__FILE__).'/../../src/repository/store/sqlite/SqliteGateway.class.php';
+require_once dirname(__FILE__).'/../../src/repository/services/sqlite/SqliteAdaptor.class.php';
 
 if (!defined('DB_HOST')) {
 	define('DB_HOST', 'localhost');
@@ -27,13 +27,13 @@ class SqliteQueryTest extends UnitTestCase {
 	}
 	
 	function testCanCreateTable() {
-		$gateway = new SqliteGateway($this->db);
+		$gateway = new SqliteAdaptor($this->db);
 		$gateway->createTable("people", array('first_name'=>'string'));
 		$this->assertTrue($this->db->execute("SELECT * FROM people"));
 	}
 	
 	function testCanInsertAndUpdateOnTableWithSingleRecord() {
-		$gateway = new SqliteGateway($this->db);
+		$gateway = new SqliteAdaptor($this->db);
 		$gateway->createTable("people", array('first_name'=>'string', 'age'=>'number'));
 		$gateway->insert('people', array('id'=>1, 'first_name'=>'jim','age'=>27));
 		$gateway->query('SELECT * FROM people WHERE id="1"');
@@ -49,7 +49,7 @@ class SqliteQueryTest extends UnitTestCase {
 	}
 	
 	function testCanDeleteFromTable() {
-		$gateway = new SqliteGateway($this->db);
+		$gateway = new SqliteAdaptor($this->db);
 		$gateway->createTable("people", array('first_name'=>'string', 'age'=>'number'));
 		$gateway->insert('people', array('id'=>1, 'first_name'=>'jules','age'=>26));
 		$gateway->delete('people', array('id'=>1));
@@ -66,7 +66,7 @@ class SqliteQueryTest extends UnitTestCase {
 	}
 	
 	function testCanSelectFromTable() {
-		$gateway = new SqliteGateway($this->db);
+		$gateway = new SqliteAdaptor($this->db);
 		$gateway->createTable("people", array('first_name'=>'string', 'age'=>'number'));
 		$gateway->insert('people', array('id'=>1, 'first_name'=>'mark','age'=>26));
 		$gateway->insert('people', array('id'=>2, 'first_name'=>'markus','age'=>26));
@@ -83,7 +83,7 @@ class SqliteQueryTest extends UnitTestCase {
 	}
 	
 	function testCanAlterTable() {
-		$gateway = new SqliteGateway($this->db);
+		$gateway = new SqliteAdaptor($this->db);
 		$gateway->createTable("people", array('first_name'=>'string', 'age'=>'number'));
 		$gateway->insert('people', array('id'=>1, 'first_name'=>'peter','age'=>26));
 		$gateway->insert('people', array('id'=>2, 'first_name'=>'paul','age'=>26));

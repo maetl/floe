@@ -1,7 +1,7 @@
 <?php
 require_once 'simpletest/autorun.php';
 require_once dirname(__FILE__).'/../../src/language/en/Inflect.class.php';
-require_once dirname(__FILE__).'/../../src/repository/store/mysql/MysqlGateway.class.php';
+require_once dirname(__FILE__).'/../../src/repository/services/mysql/MysqlAdaptor.class.php';
 require_once dirname(__FILE__).'/../../src/repository/Record.class.php';
 
 if (!defined('DB_HOST')) {
@@ -32,13 +32,13 @@ class MysqlQuerySingleTableTest extends MysqlQueryTest {
 	}
 	
 	function testCanCreateTable() {
-		$query = new MysqlGateway($this->db);
+		$query = new MysqlAdaptor($this->db);
 		$query->createTable("people", array('first_name'=>'string'));
 		$this->assertTrue($this->db->execute("DESCRIBE people"));
 	}
 	
 	function testCanInsertIntoAndUpdateTable() {
-		$query = new MysqlGateway($this->db);
+		$query = new MysqlAdaptor($this->db);
 		$query->createTable("people", array('first_name'=>'string', 'age'=>'number'));
 		$query->insert('people', array('id'=>1, 'first_name'=>'mark','age'=>26));
 		$result = mysql_fetch_object($this->db->execute('SELECT * FROM people WHERE id="1"'));
@@ -55,7 +55,7 @@ class MysqlQuerySingleTableTest extends MysqlQueryTest {
 	}
 	
 	function testCanDeleteFromTable() {
-		$query = new MysqlGateway($this->db);
+		$query = new MysqlAdaptor($this->db);
 		$query->createTable("people", array('first_name'=>'string', 'age'=>'number'));
 		$query->insert('people', array('id'=>1, 'first_name'=>'mark','age'=>26));
 		$query->delete('people', array('id'=>1));
@@ -71,7 +71,7 @@ class MysqlQuerySingleTableTest extends MysqlQueryTest {
 	}
 	
 	function testCanSelectFromTable() {
-		$query = new MysqlGateway($this->db);
+		$query = new MysqlAdaptor($this->db);
 		$query->createTable("people", array('first_name'=>'string', 'age'=>'number'));
 		$query->insert('people', array('id'=>1, 'first_name'=>'mark','age'=>26));
 		$query->insert('people', array('id'=>2, 'first_name'=>'markus','age'=>26));
@@ -88,7 +88,7 @@ class MysqlQuerySingleTableTest extends MysqlQueryTest {
 	}
 	
 	function testCanAlterTable() {
-		$query = new MysqlGateway($this->db);
+		$query = new MysqlAdaptor($this->db);
 		$query->createTable("people", array('first_name'=>'string', 'age'=>'number'));
 		$query->insert('people', array('id'=>1, 'first_name'=>'mark','age'=>26));
 		$query->insert('people', array('id'=>2, 'first_name'=>'markus','age'=>26));
@@ -107,19 +107,19 @@ class MysqlQuerySingleTableTest extends MysqlQueryTest {
 class MysqlRecordIteratorTest extends MysqlQueryTest {
 
 	function setUp() {
-		$query = new MysqlGateway($this->db);
+		$query = new MysqlAdaptor($this->db);
 		$query->createTable("books", array('title'=>'string','author_id'=>'int'));
 		$query->createTable("authors", array('name'=>'string'));
 	}
 	
 	function tearDown() {
-		$query = new MysqlGateway($this->db);
+		$query = new MysqlAdaptor($this->db);
 		$query->dropTable("books");
 		$query->dropTable("authors");
 	}
 
 	function testCanIterateFromQuery() {
-		$query = new MysqlGateway($this->db);
+		$query = new MysqlAdaptor($this->db);
 		$query->insert('authors', array('name'=>'James Joyce'));
 		$author_id = $query->insertId();
 		$query->insert('books', array('title'=>'Finnegans Wake','author_id'=>$author_id));
@@ -143,17 +143,17 @@ class MysqlRecordIteratorTest extends MysqlQueryTest {
 class MysqlAlterTableTest extends MysqlQueryTest {
 
 	function setUp() {
-		$query = new MysqlGateway($this->db);
+		$query = new MysqlAdaptor($this->db);
 		$query->createTable("books", array('title'=>'string','tags'=>'string','author'=>'string'));
 	}
 	
 	function tearDown() {
-		$query = new MysqlGateway($this->db);
+		$query = new MysqlAdaptor($this->db);
 		$query->dropTable("books");
 	}
 	
 	function testCanAddIndex() {
-		$query = new MysqlGateway($this->db);
+		$query = new MysqlAdaptor($this->db);
 		$query->addIndex('books', 'text_fields', array('title','tags','author'));
 		$query->query("SHOW INDEXES FROM books");
 		$this->assertEqual(4, count($query->getObjects()));
