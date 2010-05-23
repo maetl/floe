@@ -8,29 +8,31 @@
  *
  * $Id$
  * @package repository
- * @subpackage store.mysql
+ * @subpackage services.mysql
  */
 
+require_once 'MysqlConnection.class.php';
+require_once 'MysqlQuery.class.php';
 require_once 'MysqlIterator.class.php';
 
 /**
  * Gateway for managing common database operations.
  *
  * @package repository
- * @subpackage store.mysql
+ * @subpackage services.mysql
  */
-class MysqlGateway {
+class MysqlAdaptor {
 
-	var $_connection;
-	var $_result;
-	var $_currentTable;
+	var $connection;
+	var $result;
+	var $currentTable;
 
 	function __construct($connection) {
-		$this->_connection = $connection;
+		$this->connection = $connection;
 	}
 	
 	function affectedRows() {
-		return mysql_affected_rows($this->_result);
+		return mysql_affected_rows($this->result);
 	}
 	
 	/**
@@ -46,7 +48,7 @@ class MysqlGateway {
 	 * @return stdClass
 	 */
 	function getObject() {
-		return mysql_fetch_object($this->_result);
+		return mysql_fetch_object($this->result);
 	}
 	
 	/**
@@ -55,7 +57,7 @@ class MysqlGateway {
 	 * @return mixed value
 	 */
 	function getValue() {
-		$result = mysql_fetch_array($this->_result);
+		$result = mysql_fetch_array($this->result);
 		return $result[0];
 	}
 
@@ -66,7 +68,7 @@ class MysqlGateway {
 	 */
 	function getObjects() {
 		$i=0; $objects = array();
-		while ($row = mysql_fetch_object($this->_result)) {
+		while ($row = mysql_fetch_object($this->result)) {
 			$objects[$i] = $row; $i++;
 		}
 		return $objects;
@@ -78,34 +80,34 @@ class MysqlGateway {
 	 * @return Iterator<stdClass>
 	 */
 	function getIterator() {
-		return new MysqlIterator($this->_result);
+		return new MysqlIterator($this->result);
 	}
 	
 	/**
 	 *
 	 */
 	function selectById($table, $id, $target=false) {
-		$this->_currentTable = $table;
+		$this->currentTable = $table;
 		$fields = (!$target) ? '*' : implode(',', array_keys($target));
 		$sql = 'SELECT '.$fields.' FROM `'.$table.'` WHERE id="'.$id.'"';
-		$this->_result = $this->_connection->execute($sql);
+		$this->result = $this->connection->execute($sql);
 	}
 	
 	/**
 	 *
 	 */
 	function selectAll($table) {
-		$this->_currentTable = $table;
+		$this->currentTable = $table;
 		$sql = 'SELECT * FROM `'.$table.'`';
-		$this->_result = $this->_connection->execute($sql);
+		$this->result = $this->connection->execute($sql);
 	}
 
 	/**
 	 *
 	 */	
 	function selectByKey($table, $target) {
-		$this->_connection->connect();
-		$this->_currentTable = $table;
+		$this->connection->connect();
+		$this->currentTable = $table;
 		$sql = 'SELECT * FROM `'.$table.'` WHERE ';
 		$where = '';
 		foreach ($target as $key => $value) {
@@ -115,18 +117,18 @@ class MysqlGateway {
 			$where .= mysql_real_escape_string($key) .'="'. mysql_real_escape_string($value) .'" ';
 		}
 		$sql .= $where;
-		$this->_result = $this->_connection->execute($sql);
+		$this->result = $this->connection->execute($sql);
 	}
 	
 	/**
 	 *
 	 */
 	 function selectByAssociation($table, $join_table, $target=false) {
-	 	 $this->_currentTable = $table;
+	 	 $this->currentTable = $table;
 		 $sql = "SELECT * FROM `$table`,`$join_table` ";
 		 $sql .= "WHERE $table.id=$join_table.".Inflect::toSingular($table)."_id";
 		 if ($target) $sql .= " AND $join_table.".key($target)."='".current($target)."'";
-		 $this->_result = $this->_connection->execute($sql);
+		 $this->result = $this->connection->execute($sql);
 	 }
 	
 	/**
@@ -136,8 +138,8 @@ class MysqlGateway {
 	 * @param $columns associative array of column=>value pairs to create
 	 */
 	function insert($table, $columns) {
-		$this->_connection->connect();
-		$this->_currentTable = $table;
+		$this->connection->connect();
+		$this->currentTable = $table;
 		$keys = array_keys($columns);
 		$values = array_values($columns);
 		$colnum = count($columns);
@@ -151,7 +153,7 @@ class MysqlGateway {
 			$sql .= '"'.mysql_real_escape_string((string)$values[$i]).'"';
 			$i==($colnum-1) ? $sql .= ')' : $sql .= ',';
 		}
-		$this->_connection->execute($sql);
+		$this->connection->execute($sql);
 	}
 	
 	/**
@@ -165,7 +167,7 @@ class MysqlGateway {
 	 * Updates a row in specified table
 	 */
 	function update($table, $target, $columns) {
-		$this->_connection->connect();
+		$this->connection->connect();
 		$colnum = count($columns);
 		$i = 1;
 		$sql = 'UPDATE `'.mysql_real_escape_string($table).'` SET ';
@@ -175,7 +177,7 @@ class MysqlGateway {
 			$i++;
 		}
 		$sql .= 'WHERE '.mysql_real_escape_string(key($target)).'="'.mysql_real_escape_string(current($target)).'"';
-		$this->_connection->execute($sql);
+		$this->connection->execute($sql);
 	}
 	
 	/**
@@ -192,23 +194,23 @@ class MysqlGateway {
 			}
 			$where .= mysql_real_escape_string($key) .'="'. mysql_real_escape_string($value) .'" ';
 		}
-		$this->_connection->execute($sql . $where);
+		$this->connection->execute($sql . $where);
 	}
 	
 	/**
 	 * Executes an arbitrary SQL query on the connection.
 	 */
 	function query($sql) {
-		$this->_result = $this->_connection->execute($sql);
+		$this->result = $this->connection->execute($sql);
 	}
 	
 	/**
 	 * Executes an arbitrary SELECT query on the connection.
 	 */
 	function select($table, $clauses) {
-		$this->_currentTable = $table;
+		$this->currentTable = $table;
 		$sql = "SELECT * FROM `$table` $clauses";
-		$this->_result = $this->_connection->execute($sql);
+		$this->result = $this->connection->execute($sql);
 	}	
 
 	/** 
@@ -225,28 +227,28 @@ class MysqlGateway {
 		}
 		$sql .= "\nPRIMARY KEY  (`id`)\n";
 		$sql .= ") TYPE=$type AUTO_INCREMENT=1 ;";
-		$this->_connection->execute($sql);
+		$this->connection->execute($sql);
 	}
 	
 	/**
 	 * Destroys an existing table and all its data
 	 */
 	 function dropTable($table) {
-		 $this->_connection->execute("DROP TABLE `$table`");
+		 $this->connection->execute("DROP TABLE `$table`");
 	 }
 	
 	/**
 	 * Renames a table
 	 */
 	function renameTable($tableFrom, $tableTo) {
-		$this->_connection->execute("RENAME TABLE `$tableFrom` TO `$tableTo`");
+		$this->connection->execute("RENAME TABLE `$tableFrom` TO `$tableTo`");
 	}
 
  	/**
 	 * Checks if a table exists
 	 */
 	 function tableExists($table) {
-		 $this->_connection->execute("DROP TABLE IF EXISTS `$table``");
+		 $this->connection->execute("DROP TABLE IF EXISTS `$table``");
 	 }
 	 
 	/**
@@ -255,14 +257,14 @@ class MysqlGateway {
 	function changeColumn($table, $oldCol, $newCol, $type=false) {
 		if (!$type) {
 			$sql = "SHOW FIELDS FROM `$table` LIKE '$oldCol'";
-			$this->_result = $this->_connection->execute($sql);
+			$this->result = $this->connection->execute($sql);
 			$field = $this->getObject();
 			$definition = $field->Type;
 		} else {
 			$definition = $this->defineType($type);
 		}
 		$sql = "ALTER TABLE `$table` CHANGE COLUMN $oldCol $newCol ". $definition;
-		$this->_connection->execute($sql);
+		$this->connection->execute($sql);
 	}
 	
 	/**
@@ -271,7 +273,7 @@ class MysqlGateway {
 	 function addColumn($table, $name, $type) {
 	 	 $name = Inflect::propertyToColumn($name);
 		 $sql = "ALTER TABLE `$table` ADD COLUMN $name " . $this->defineType($type);
-		 $this->_connection->execute($sql);
+		 $this->connection->execute($sql);
 	 }
 	
 	/**
@@ -280,7 +282,7 @@ class MysqlGateway {
 	 function dropColumn($table, $name) {
 	 	 $name = Inflect::propertyToColumn($name);
 		 $sql = "ALTER TABLE `$table` DROP COLUMN $name";
-		 $this->_connection->execute($sql);
+		 $this->connection->execute($sql);
 	 }	
 
 	/**
@@ -289,7 +291,7 @@ class MysqlGateway {
 	function addIndex($table, $name, $columns) {
 		$name = strtoupper($name);
 		$sql = "ALTER TABLE `$table` ADD INDEX `$name` (". array_reduce($columns, array($this,'reduceIndexColumns')) .")";
-		$this->_connection->execute($sql);
+		$this->connection->execute($sql);
 	}
 	
 	/**
@@ -311,7 +313,7 @@ class MysqlGateway {
 	function dropIndex($table, $name) {
 		$name = strtoupper($name);
 		$sql = "DROP INDEX `$name` ON `$table`";
-		$this->_connection->execute($sql);
+		$this->connection->execute($sql);
 	}
 	
 	/**
@@ -321,7 +323,7 @@ class MysqlGateway {
 	 */
 	function hasTable($table) {
 		$sql = "SHOW TABLES LIKE '$table'";
-		return (boolean)mysql_num_rows($this->_connection->execute($sql));
+		return (boolean)mysql_num_rows($this->connection->execute($sql));
 	}	 
 	 
 	 /**

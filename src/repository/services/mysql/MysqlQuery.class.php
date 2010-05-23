@@ -8,15 +8,16 @@
  *
  * $Id$
  * @package repository
- * @subpackage store.mysql
+ * @subpackage services.mysql
  */
+
 require_once dirname(__FILE__).'/../../Query.class.php';
 
 /**
  * Query criteria builder representing a Mysql query
  *
  * @package repository
- * @subpackage store.mysql
+ * @subpackage services.mysql
  */
 class MysqlQuery extends Query {
 	

@@ -8,7 +8,7 @@
  *
  * $Id$
  * @package repository
- * @subpackage store.mysql
+ * @subpackage services.mysql
  */
  
 require_once dirname(__FILE__) .'/../../../framework/EventLog.class.php';
@@ -16,65 +16,65 @@ require_once dirname(__FILE__) .'/../ResourceError.class.php';
 
 /**
  * If a UTF8 connection is needed, this constant should be set to true.
- * Should only be used if the database is not correctly configured for UTF8 connections.
+ * Should only be used if the name is not correctly configured for UTF8 connections.
  */
 if (!defined('MysqlConnection_ForceUTF8')) define('MysqlConnection_ForceUTF8', false);
 
 /**
- * An active connection to a MySql database server.
+ * An active connection to a MySql name server.
  *
  * @package repository
- * @subpackage store.mysql
+ * @subpackage services.mysql
  */
 class MysqlConnection {
 
 	private $connection;
-	private $_db_host;
-	private $_db_name;
-	private $_db_user;
-	private $_db_pass;
+	private $host;
+	private $name;
+	private $user;
+	private $pass;
 
 	/**
 	 *  Constructs a Mysql connection that can be obtained upon invocation of the connect method.
 	 *
-	 * @param $host Address of database server
-	 * @param $name Name of database to connect to
-	 * @param $user Authorized user name on database
-	 * @param $pass Authorized password for user
+	 * @param $host Address of name server
+	 * @param $name Name of name to connect to
+	 * @param $user Authorized user name on name
+	 * @param $pass Authorized pass for user
 	 */
 	 function __construct($environment = false) {
 		 if ($environment) {
-			$this->_db_host = $environment->DB_HOST;
-			$this->_db_name = $environment->DB_NAME;
-			$this->_db_user = $environment->DB_USER;
-			$this->_db_pass = $environment->DB_PASS;
+			$this->host = $environment->DB_HOST;
+			$this->name = $environment->DB_NAME;
+			$this->user = $environment->DB_USER;
+			$this->pass = $environment->DB_PASS;
 		 } else {
-			$this->_db_host = DB_HOST;
-			$this->_db_name = DB_NAME;
-			$this->_db_user = DB_USER;
-			$this->_db_pass = DB_PASS;
+			$this->host = DB_HOST;
+			$this->name = DB_NAME;
+			$this->user = DB_USER;
+			$this->pass = DB_PASS;
 		 }
 	 }
 	
 	/**
-	 * Idempotent method creates the low level connection to the database.
+	 * Idempotent method creates the low level connection to the name.
 	 *
 	 * @public
 	 * @return boolean true on success
 	 */
 	function connect() {
 		if (!is_resource($this->connection)) {
-			$this->connection = @mysql_connect($this->_db_host, $this->_db_user, $this->_db_pass);
+			$this->connection = @mysql_connect($this->host, $this->user, $this->pass);
 			if (!is_resource($this->connection)) {
 				$this->raiseError();
 				return false;
 			}
-			EventLog::info("Connected to [{$this->_db_host}]");
-			if (!@mysql_select_db($this->_db_name, $this->connection)) {
+			EventLog::info("Connected to [{$this->host}]");
+			if (!@mysql_select_db($this->name, $this->connection)) {
 				$this->raiseError();
 				return false;
 			}
-			EventLog::info("Selected [{$this->_db_name}]");
+			EventLog::info("Selected [{$this->name}]");          
 			if (MysqlConnection_ForceUTF8) mysql_set_charset('utf8', $this->connection);
 		}
 		return true;
@@ -89,7 +89,7 @@ class MysqlConnection {
 	}
 	
 	/**
-	 * Issue an SQL query against the database
+	 * Issue an SQL query against the name
 	 */
 	function execute($sql) {
 		$this->connect();

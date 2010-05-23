@@ -8,7 +8,7 @@
  *
  * $Id$
  * @package repository
- * @subpackage store.mysql
+ * @subpackage services.mysql
  */
 require_once dirname(__FILE__).'/../StorageIterator.class.php';
 
@@ -16,7 +16,7 @@ require_once dirname(__FILE__).'/../StorageIterator.class.php';
  * Iterator over a Mysql result set.
  *
  * @package repository
- * @subpackage store.mysql
+ * @subpackage services.mysql
  */
 class MysqlIterator implements Iterator {
 
