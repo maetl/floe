@@ -28,7 +28,7 @@ class StorageAdaptor {
 		/**
 		 * Access a singleton instance of the StorageAdaptor
 		 */
-        static function instance($plugin = false) {
+        static function instance($adaptor = 'Mysql') {
         	if (!self::$adaptor) self::$adaptor = new StorageAdaptor(self::gateway());
         	return self::$adaptor;
         }
@@ -36,11 +36,12 @@ class StorageAdaptor {
 		/**
 		 * Returns a default instance
 		 */
-        static function gateway($adaptor = false) {
-			$queryAdaptor = (($adaptor) ? $adaptor : StorageAdaptor_DefaultInstance)."Gateway";
-			$queryConnection = (($adaptor) ? $adaptor : StorageAdaptor_DefaultInstance)."Connection";
-			require_once 'store/'. strtolower($adaptor) .'/'. $queryAdaptor .'.class.php';
-			require_once 'store/'. strtolower($adaptor) .'/'. $queryConnection .'.class.php';
+        static function gateway($adaptor = 'Mysql') {
+			$adaptor = (($adaptor) ? $adaptor : StorageAdaptor_DefaultInstance)
+			$queryAdaptor = $adaptor.'Gateway';
+			$queryConnection = $adaptor."Connection";
+			require_once 'store/'. strtolower($adaptor) .'/'. $adaptor .'.class.php';
+			require_once 'store/'. strtolower($adaptor) .'/'. $adaptor .'.class.php';
         	if (!self::$implementation) self::$implementation = new $queryAdaptor(new $queryConnection());
         	return self::$implementation;
         }
