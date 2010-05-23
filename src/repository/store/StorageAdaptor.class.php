@@ -37,7 +37,7 @@ class StorageAdaptor {
 		 * Returns a default instance
 		 */
         static function gateway($adaptor = 'Mysql') {
-			$adaptor = (($adaptor) ? $adaptor : StorageAdaptor_DefaultInstance;
+			$adaptor = ($adaptor) ? $adaptor : StorageAdaptor_DefaultInstance;
 			$queryAdaptor = $adaptor.'Gateway';
 			$queryConnection = $adaptor."Connection";
 			require_once 'store/'. strtolower($adaptor) .'/'. $adaptor .'.class.php';
