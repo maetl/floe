@@ -8,51 +8,46 @@
  *
  * $Id$
  * @package repository
- * @subpackage store
  */
 
-if (!defined('StorageAdaptor_DefaultInstance')) define('StorageAdaptor_DefaultInstance', 'Mysql');
+if (!defined('Storage_DefaultInstance')) define('Storage_DefaultInstance', 'Mysql');
 
 /**
- * High level wrapper around the gateway to a specific storage engine.
+ * Wrapper around the adaptor to a specific storage engine.
  *
  * @package repository
- * @subpackage store
  */
-class StorageAdaptor {
+class Storage {
 
-		private static $adaptor = null;
+		private static $storageAdaptor = null;
 		private static $implementation = null;
 		private $currentRecordType;
+		private $adaptor;
 		
 		/**
-		 * Access a singleton instance of the StorageAdaptor
+		 * Access a global instance of the Storage wrapper.
 		 */
-        static function instance($adaptor = 'Mysql') {
-        	if (!self::$adaptor) self::$adaptor = new StorageAdaptor(self::gateway());
-        	return self::$adaptor;
+        static function init($adaptor = false) {
+        	if (!self::$storageAdaptor) self::$storageAdaptor = new StorageAdaptor(self::service());
+        	return self::$storageAdaptor;
         }
 
 		/**
-		 * Returns a default instance
+		 * Access a global instance of a service adaptor.
 		 */
-        static function gateway($adaptor = 'Mysql') {
-			$adaptor = ($adaptor) ? $adaptor : StorageAdaptor_DefaultInstance;
-			$queryAdaptor = $adaptor.'Gateway';
-			$queryConnection = $adaptor."Connection";
-			require_once 'store/'. strtolower($adaptor) .'/'. $queryAdaptor .'.class.php';
-			require_once 'store/'. strtolower($adaptor) .'/'. $queryConnection .'.class.php';
+        static function service($adaptor = false) {
+			$adaptor = ($adaptor) ? $adaptor : Storage_DefaultInstance;
+			$serviceAdaptor = $adaptor.'Adaptor';
+			require_once 'service/'. strtolower($adaptor) .'/'. $queryAdaptor .'.class.php';
         	if (!self::$implementation) self::$implementation = new $queryAdaptor(new $queryConnection());
         	return self::$implementation;
         }
-		
-		private $gateway;
 		
 		/**
 		 * @ignore
 		 */
 		function __construct($gateway) {
-			$this->gateway = $gateway;
+			$this->adaptor = $gateway;
 		}
 		
 		/**
@@ -87,7 +82,7 @@ class StorageAdaptor {
 		 */
 		function getRecords() {
 			$type = $this->currentRecordType;
-			$objects = $this->gateway->getObjects();
+			$objects = $this->adaptor->getObjects();
 			foreach($objects as $object) {
 				$records[] = new $type($object);
 			}
@@ -99,7 +94,7 @@ class StorageAdaptor {
 		 * @return stdClass
 		 */
 		function getObject() {
-			return $this->gateway->getObject();
+			return $this->adaptor->getObject();
 		}
 		
 		/**
@@ -107,21 +102,21 @@ class StorageAdaptor {
 		 * @return array<strClass>
 		 */
 		function getObjects() {
-			return $this->gateway->getObjects();
+			return $this->adaptor->getObjects();
 		}
 		
 		/**
 		 * Provides a single value from a query result.
 		 */
 		function getValue() {
-			return $this->gateway->getValue();
+			return $this->adaptor->getValue();
 		}
 		
 		/**
 		 * Provides an iterator over a result set.
 		 */
 		function getIterator() {
-			return $this->gateway->getIterator();
+			return $this->adaptor->getIterator();
 		}		
 
 		/**
@@ -129,7 +124,7 @@ class StorageAdaptor {
 		 */
 		function selectById($table, $id) {
 			$this->setRecordType($table);
-			return $this->gateway->selectById($table, $id);
+			return $this->adaptor->selectById($table, $id);
 		}
 		
 		/**
@@ -137,7 +132,7 @@ class StorageAdaptor {
 		 */
 		function selectByKey($table, $key) {
 			$this->setRecordType($table);
-			return $this->gateway->selectByKey($table, $key);
+			return $this->adaptor->selectByKey($table, $key);
 		}
 		
 		/**
@@ -145,7 +140,7 @@ class StorageAdaptor {
 		 */
 		function selectAll($table) {
 			$this->setRecordType($table);
-			return $this->gateway->selectAll($table);
+			return $this->adaptor->selectAll($table);
 		}
 		
 		/**
@@ -153,7 +148,7 @@ class StorageAdaptor {
 		 */
 		function select($table, $target) {
 			$this->setRecordType($table);
-			return $this->gateway->select($table, $target);
+			return $this->adaptor->select($table, $target);
 		}
 		
 		/**
@@ -161,14 +156,14 @@ class StorageAdaptor {
 		 */
 		function selectByAssociation($table, $join_table, $target=false) {
 			$this->setRecordType($table);
-			return $this->gateway->selectByAssociation($table, $join_table, $target);
+			return $this->adaptor->selectByAssociation($table, $join_table, $target);
 		}
 		
 		/**
 		 * @todo extract to SqlAdaptor interface
 		 */
 		function insertId() {
-			return $this->gateway->insertId();
+			return $this->adaptor->insertId();
 		}		
 
 		/**
@@ -176,7 +171,7 @@ class StorageAdaptor {
 		 */
 		function insert($table, $properties) {
 			$this->setRecordType($table);
-			return $this->gateway->insert($table, $properties);
+			return $this->adaptor->insert($table, $properties);
 		}
 		
 		/**
@@ -184,7 +179,7 @@ class StorageAdaptor {
 		 */
 		function update($table, $target, $properties) {
 			$this->setRecordType($table);
-			return $this->gateway->update($table, $target, $properties);
+			return $this->adaptor->update($table, $target, $properties);
 		}
 		
 		/**
@@ -192,7 +187,7 @@ class StorageAdaptor {
 		 */
 		function delete($table, $matching) {
 			$this->setRecordType($table);
-			return $this->gateway->delete($table, $matching);
+			return $this->adaptor->delete($table, $matching);
 		}
 		
 		/**
@@ -201,7 +196,7 @@ class StorageAdaptor {
 		 */
 		function query($statement) {
 			if (is_object($statement)) $this->setRecordType($statement->tableName);
-			return $this->gateway->query($statement);
+			return $this->adaptor->query($statement);
 		}
 
 		/**
@@ -209,7 +204,7 @@ class StorageAdaptor {
 		 */
 		function createTable($name, $properties) {
 			$this->setRecordType($name);
-			return $this->gateway->createTable($name, $properties);
+			return $this->adaptor->createTable($name, $properties);
 		}
 		
 		/**
@@ -217,7 +212,7 @@ class StorageAdaptor {
 		 */
 		function dropTable($name) {
 			$this->setRecordType($name);
-			return $this->gateway->dropTable($name);
+			return $this->adaptor->dropTable($name);
 		}
 		
 		/**
@@ -225,7 +220,7 @@ class StorageAdaptor {
 		 */
 		function addColumn($table, $column, $type) {
 			$this->setRecordType($table);
-			return $this->gateway->addColumn($table, $column, $type);
+			return $this->adaptor->addColumn($table, $column, $type);
 		}
 		
 		/**
@@ -233,7 +228,7 @@ class StorageAdaptor {
 		 */
 		function dropColumn($table, $column) {
 			$this->setRecordType($table);
-			return $this->gateway->dropColumn($table, $column);
+			return $this->adaptor->dropColumn($table, $column);
 		}
 		
 }
