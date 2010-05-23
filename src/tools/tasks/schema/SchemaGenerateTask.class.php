@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Floe, a graceful PHP framework.
+ * This file is part of Floe, a graceful web framework.
  * Copyright (C) 2005-2010 Mark Rickerby <http://maetl.net>
  *
  * See the LICENSE file distributed with this software for full copyright, disclaimer
@@ -11,7 +11,6 @@
  * @subpackage tasks
  */
 
-require_once  dirname(__FILE__).'/../../../repository/store/StorageAdaptor.class.php';
 require_once dirname(__FILE__).'/../../../repository/Record.class.php';
 
 /** 

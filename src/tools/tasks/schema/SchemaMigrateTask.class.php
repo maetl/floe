@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Floe, a graceful PHP framework.
+ * This file is part of Floe, a graceful web framework.
  * Copyright (C) 2005-2010 Mark Rickerby <http://maetl.net>
  *
  * See the LICENSE file distributed with this software for full copyright, disclaimer
@@ -28,7 +28,7 @@ class SchemaMigrateTask {
 			$args[0] = 'up';
 		}
 		
-		$db = StorageAdaptor::gateway();
+		$db = Storage::adaptor();
 		if (!$db->hasTable("schema")) {
 			echo "Creating schema table...\n";
 			$db->createTable("schema", array("version"=>"integer"));
