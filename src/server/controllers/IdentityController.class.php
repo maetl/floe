@@ -6,14 +6,14 @@
  * See the LICENSE file distributed with this software for full copyright, disclaimer
  * of liability, and the specific limitations that govern the use of this software.
  *
- * @version $Id$
  * @package server
  * @subpackage controllers
  */
 
 /**#@+
- * Required dependency.
+ * Required dependencies.
  */
+require_once dirname(__FILE__) .'/../receptors/IdentityDispatcher.class.php';
 require_once dirname(__FILE__) .'/../SessionState.class.php';
 /**#@-*/
 
@@ -65,6 +65,3 @@ class IdentityController {
 	}
 
 }
-
-
-?>

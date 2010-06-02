@@ -6,7 +6,6 @@
  * See the LICENSE file distributed with this software for full copyright, disclaimer
  * of liability, and the specific limitations that govern the use of this software.
  *
- * $Id$
  * @package server
  */
 
@@ -14,6 +13,7 @@ require_once dirname(__FILE__)."/UriPath.class.php";
 require_once dirname(__FILE__)."/UserAgent.class.php";
 require_once dirname(__FILE__)."/HttpEnvelope.class.php";
 require_once dirname(__FILE__)."/template/PhpTemplate.class.php";
+require_once dirname(__FILE__)."/../framework/EventLog.class.php";
 
 /**
  * Renders data output from server process.
@@ -257,5 +257,3 @@ class Response {
 		return $this->buffer;
 	}
 }
-
-?>

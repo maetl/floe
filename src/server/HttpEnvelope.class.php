@@ -6,7 +6,6 @@
  * See the LICENSE file distributed with this software for full copyright, disclaimer
  * of liability, and the specific limitations that govern the use of this software.
  *
- * $Id$
  * @package server
  */
 
@@ -81,7 +80,7 @@ class HttpEnvelope {
 	}
 	
 	/**
-	 * Parse the Accept-Language header and return the list of
+	 * Match the Accept-Language header and return the list of
 	 * accepted languages in order of priority.
 	 *
 	 * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
@@ -106,5 +105,3 @@ class HttpEnvelope {
 		return $this->languages;
 	}
 }
-
-?>
