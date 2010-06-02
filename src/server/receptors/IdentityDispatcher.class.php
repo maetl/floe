@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Floe, a graceful PHP framework.
+ * This file is part of Floe, a graceful web framework.
  * Copyright (C) 2005-2009 Mark Rickerby <http://maetl.net>
  *
  * See the LICENSE file distributed with this software for full copyright, disclaimer
@@ -18,6 +18,14 @@ require_once dirname(__FILE__) .'/../../language/en/Inflect.class.php';
 require_once dirname(__FILE__) .'/../controllers/IdentityController.class.php';
 require_once dirname(__FILE__).'/../ResourceNotFound.class.php';
 /**#@-*/
+
+if (defined('TPL_DIR')) {
+	throw new Exception("Deprecated constant [FloeApp_Templates]. Please use [FloeApp_Templates]");
+}
+
+if (defined('CTR_DIR')) {
+	throw new Exception("Deprecated constant [FloeApp_Controllers]. Please use [FloeApp_Controllers]");
+}
 
 if (defined('DefaultMethodBinding')) {
 	throw new Exception("Deprecated constant [DefaultMethodBinding]. Please use [IdentityDispatcher_DefaultBinding]");
@@ -64,16 +72,16 @@ class IdentityDispatcher implements Receptor {
 		$params = $request->uri->segmentsFrom(2);
 		if ($base == '') $base = IdentityDispatcher_DefaultBinding;
 		if ($identity == '') $identity = $base;
-		$path = CTR_DIR ."/$base.controller.php";
+		$path = FloeApp_Controllers ."/$base.controller.php";
 		if (!file_exists($path)) {
-			$path = CTR_DIR ."/$base/$identity.controller.php";
+			$path = FloeApp_Controllers ."/$base/$identity.controller.php";
 			$base = $identity;
 			$identity = $request->uri->segment(2);
 			if ($identity == '') $identity = $base;
 			$params = $request->uri->segmentsFrom(3);
 			if (!file_exists($path) && defined('IdentityDispatcher_BindMissing')) {
 				$base = IdentityDispatcher_DefaultBinding;
-				$path = CTR_DIR ."/$base.controller.php";
+				$path = FloeApp_Controllers ."/$base.controller.php";
 				$params = $request->uri->segmentsFrom(0);
 				if (!$path) {
 					throw new ResourceNotFound("Controller not found", $path);
@@ -83,7 +91,7 @@ class IdentityDispatcher implements Receptor {
 		if (file_exists($path)) {
 			include_once $path;
 		} else {
-			if (file_exists(TPL_DIR.'/'.$base.'.php')) {
+			if (file_exists(FloeApp_Templates.'/'.$base.'.php')) {
 				$response->render($base);
 				return;
 			} else {

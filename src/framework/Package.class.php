@@ -1,6 +1,5 @@
 <?php
 /**
- * $Id$
  * @deprecated
  * @package framework
  */
@@ -12,21 +11,29 @@ if (!defined('LIB_DIR')) define('LIB_DIR', dirname(__FILE__).'/../../');
 require_once dirname(__FILE__)."/Using.class.php";
 
 /**
- * Package based class loader, used in lieu of
- * having real namespaces.
+ * Derives a package schema for the application load path.
  *
  * @deprecated
  * @package framework
  */
 class Package {
 	
+	private static $searchPaths = array('server','server/receptors', 'server/controllers');
+	
 	/**
 	 * Load a library class specified by package path.
 	 *
 	 * @param $class
 	 */
-	public static function import($class) {
-		require_once LIB_DIR . str_replace(".", "/", $class) . ".class.php";
+	public static function import($path) {
+		self::$searchPaths[] = $path;
+	}
+	
+	/**
+	 * List of locations in the package search path.
+	 */
+	public static function locations() {
+		return self::$searchPaths;
 	}
 	
 }

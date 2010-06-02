@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id$
+ * $Id: MysqlResourceError.class.php 417 2010-05-23 19:48:23Z coretxt $
  * @package repository
  * @subpackage store.mysql
  *

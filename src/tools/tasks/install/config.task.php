@@ -14,7 +14,7 @@
  * @package tools
  * @subpackage tasks
  */
-class ConfigureTask {
+class ConfigTask {
 	
 	/**
 	 * @description load a configuration file into the include path
@@ -26,7 +26,7 @@ class ConfigureTask {
 		}
 		$source = DEV_DIR."/config/{$env[0]}.config.php";
 		if (file_exists($source)) {
-			copy($source, APP_DIR.'/config.php');
+			copy($source, APP_DIR.'/app.config.php');
 		}
 		ConsoleText::printLine("Installed configuration for {$env[0]} environment.");
 	}

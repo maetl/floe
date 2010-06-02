@@ -1,12 +1,11 @@
 <?php
 /**
- * This file is part of Floe, a minimalist PHP framework.
+ * This file is part of Floe, a minimalist web framework.
  * Copyright (C) 2007-2009 Mark Rickerby <http://maetl.net>
  *
  * See the LICENSE file distributed with this software for full copyright, disclaimer
  * of liability, and the specific limitations that govern the use of this software.
  *
- * @version $Id: SqliteGateway.class.php 413 2010-05-23 18:59:36Z coretxt $
  * @package repository
  * @subpackage services.sqlite
  */

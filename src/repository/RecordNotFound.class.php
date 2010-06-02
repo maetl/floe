@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id$
+ * $Id: RecordNotFound.class.php 311 2009-10-04 09:51:35Z coretxt $
  * @package repository
  */
 

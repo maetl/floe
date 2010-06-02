@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Floe, a graceful PHP framework.
+ * This file is part of Floe, a graceful web framework.
  * Copyright (C) 2005-2010 Mark Rickerby <http://maetl.net>
  *
  * See the LICENSE file distributed with this software for full copyright, disclaimer
@@ -21,7 +21,7 @@ class TwigTemplate implements TemplateHandler {
 
 	function __construct() {
 		$this->variables = array();
-		$loader = new Twig_Loader_Filesystem(TPL_DIR);
+		$loader = new Twig_Loader_Filesystem(FloeApp_Templates);
 		$this->environment = new Twig_Environment($loader, array('cache' => TMP_DIR.'/cache_t'));
 	}
 	

@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Floe, a graceful PHP framework.
+ * This file is part of Floe, a graceful web framework.
  * Copyright (C) 2005-2009 Mark Rickerby <http://maetl.net>
  *
  * See the LICENSE file distributed with this software for full copyright, disclaimer
@@ -51,7 +51,7 @@ class IdentityController {
 	 * @todo should this be phased out in favor of autoload?
 	 */
 	private function importModel() {
-		$modelPath = MOD_DIR . '/' . $this->identity() . '.model.php';
+		$modelPath = FloeApp_Models . '/' . $this->identity() . '.model.php';
 		if (file_exists($modelPath)) require_once $modelPath;
 	}
 	

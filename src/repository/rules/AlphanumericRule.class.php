@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id$
+ * $Id: AlphanumericRule.class.php 264 2009-03-22 06:29:51Z coretxt $
  * @package repository
  * @subpackage rules
  *

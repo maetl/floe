@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Floe, a graceful PHP framework.
+ * This file is part of Floe, a graceful web framework.
  * Copyright (C) 2005-2010 Mark Rickerby <http://maetl.net>
  *
  * See the LICENSE file distributed with this software for full copyright, disclaimer
@@ -18,10 +18,10 @@ class SmartyTemplate implements TemplateHandler {
 
 	function __construct() {
 		$this->smarty = new Smarty();
-		$this->smarty->template_dir = TPL_DIR;
+		$this->smarty->template_dir = FloeApp_Templates;
 		$this->smarty->compile_dir = TMP_DIR.'./templates';
 		$this->smarty->cache_dir = TMP_DIR.'./cache';
-		$this->smarty->config_dir = TPL_DIR.'/config';
+		$this->smarty->config_dir = FloeApp_Templates.'/config';
 	}
 	
 	/**

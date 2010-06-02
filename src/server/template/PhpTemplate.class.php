@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Floe, a graceful PHP framework.
+ * This file is part of Floe, a graceful web framework.
  * Copyright (C) 2005-2010 Mark Rickerby <http://maetl.net>
  *
  * See the LICENSE file distributed with this software for full copyright, disclaimer
@@ -82,7 +82,7 @@ class PhpTemplate implements TemplateHandler {
 	 */
 	private function writeTemplate($template) {
 		extract($this->variables);
-		$templatePath = TPL_DIR . "/" . $template . ".php";
+		$templatePath = FloeApp_Templates . "/" . $template . ".php";
 		if (file_exists($templatePath)) {
 			include $templatePath;
 		} else {

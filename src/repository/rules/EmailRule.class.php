@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id$
+ * $Id: EmailRule.class.php 290 2009-06-19 13:48:29Z coretxt $
  * @package repository
  * @subpackage rules
  *
