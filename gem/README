@@ -1,8 +1,0 @@
-====== Floe: Command pipe for web publishing ======
-
-The aim of Floe is to build web applications using the principles of [[http://todotxt.org|todo.txt]]
-
-==== What does Floe do? ====
-
-  * Provides a PHP5 architecture for MVC web applications
-  * Provides a Rake based environment for managing web projects using a convenient command interface
