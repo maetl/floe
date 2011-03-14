@@ -31,7 +31,7 @@ class FloeApp {
 		$floePath = dirname(__FILE__);
 		
 		try {
-			if (!require_once $app.'/app.php')
+			if (!require_once $app.'/config.php')
 				throw new Exception("No application configured.");
 
 			if (!defined('FloeApp_Controllers')) define('FloeApp_Controllers', $app.'/controllers');
