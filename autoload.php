@@ -10,6 +10,7 @@
  */
 
 require_once 'framework/Package.class.php';
+require_once 'framework/Using.class.php';
 require_once 'server/Membrane.class.php';
 
 /**

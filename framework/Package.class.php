@@ -26,7 +26,7 @@ class Package {
 	 * @param $class
 	 */
 	public static function import($path) {
-		self::$searchPaths[] = $path;
+		Using::import($path);
 	}
 	
 	/**
