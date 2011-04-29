@@ -49,7 +49,7 @@ class RouteDispatcher implements Receptor {
 	
 	function run(Request $request, Response $response) {
 		$binding = $this->matchRoutingPattern($request->uri);
-		require_once CTR_DIR.$binding.'.controller.php';
+		require_once FloeApp_Controllers.$binding.'.controller.php';
 	}
 	
 	function matchRoutingPattern($uri) {

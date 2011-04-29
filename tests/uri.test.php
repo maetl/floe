@@ -1,6 +1,6 @@
 <?php
 require_once "simpletest/autorun.php";
-require_once dirname(__FILE__).'/../../src/server/UriPath.class.php';
+require_once dirname(__FILE__).'/../src/server/UriPath.class.php';
 
 class UriPathReaderTest extends UnitTestCase {
 

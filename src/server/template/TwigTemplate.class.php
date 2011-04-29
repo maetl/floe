@@ -13,6 +13,8 @@
 require_once 'Twig/Autoloader.php';
 Twig_Autoloader::register();
 
+if (!defined('FloeApp_Scratch')) define('FloeApp_Scratch', sys_get_temp_dir());
+
 if (!defined('OUTPUT_VAR')) define('OUTPUT_VAR', 'output');
 
 class TwigTemplate implements TemplateHandler {
@@ -22,7 +24,7 @@ class TwigTemplate implements TemplateHandler {
 	function __construct() {
 		$this->variables = array();
 		$loader = new Twig_Loader_Filesystem(FloeApp_Templates);
-		$this->environment = new Twig_Environment($loader, array('cache' => TMP_DIR.'/cache_t'));
+		$this->environment = new Twig_Environment($loader, array('cache' => FloeApp_Scratch.'/cache_t'));
 	}
 	
 	function assign($key, $value) {

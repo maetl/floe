@@ -1,6 +1,6 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once dirname(__FILE__).'/../../src/language/Translation.class.php';
+require_once dirname(__FILE__).'/../src/language/Translation.class.php';
 
 class LanguageTranslateTest extends UnitTestCase {
 	

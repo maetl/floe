@@ -2,17 +2,18 @@
 require_once "simpletest/autorun.php";
 require_once "simpletest/mock_objects.php";
 
-require_once dirname(__FILE__).'/../../src/server/Membrane.class.php';
-require_once dirname(__FILE__).'/../../src/server/receptors/IdentityDispatcher.class.php';
-require_once dirname(__FILE__).'/../../src/server/receptors/RouteDispatcher.class.php';
-require_once dirname(__FILE__).'/../../src/server/controllers/BaseController.class.php';
+require_once dirname(__FILE__).'/../src/server/Membrane.class.php';
+require_once dirname(__FILE__).'/../src/server/receptors/IdentityDispatcher.class.php';
+require_once dirname(__FILE__).'/../src/server/receptors/RouteDispatcher.class.php';
+require_once dirname(__FILE__).'/../src/server/controllers/BaseController.class.php';
 
 
 class ServerTestCase extends UnitTestCase {
 	
 	function setUp() {
-		if (!defined('CTR_DIR')) define('CTR_DIR', dirname(__FILE__).'/resources/server/');
+		if (!defined('FloeApp_Controllers')) define('FloeApp_Controllers', dirname(__FILE__).'/resources/server/');
 		if (!defined('MOD_DIR')) define('MOD_DIR', dirname(__FILE__).'/resources/models/');
+		if (!defined('FloeApp_Templates')) define('FloeApp_Templates', dirname(__FILE__).'/resources/templates/');
 		$this->getRequest = $_GET;
 		$this->postRequest = $_POST;
 		$this->serverEnv = $_SERVER;
@@ -172,7 +173,7 @@ class IdentityDispatchTest extends ServerTestCase {
 		$request = new Request();
 		$response = new Response();
 		
-		define('BindMissingDefault', true);
+		define('IdentityDispatcher_BindMissing', true);
 		$dispatcher = new IdentityDispatcher();
 		$dispatcher->run($request, $response);
 		$this->assertTrue(class_exists('IndexController'));

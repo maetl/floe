@@ -10,7 +10,6 @@
  * @subpackage store.memcached
  */
 require_once dirname(__FILE__) .'/../../../framework/EventLog.class.php';
-require_once dirname(__FILE__).'/../ResourceError.class.php';
 
 /**
  * @package repository

@@ -1,11 +1,11 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once dirname(__FILE__).'/../../src/repository/store/redis/RedisConnection.class.php';
+require_once dirname(__FILE__).'/../src/repository/services/redis/RedisConnection.class.php';
 
 class RedisConnectionTest extends UnitTestCase {
 	
 	function skip() {
-		$this->skipUnless(true);
+		$this->skipIf(true);
 	}
 	
 	function testIdempotentConnectionToLocalhost() {

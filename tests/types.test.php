@@ -1,9 +1,9 @@
 <?php
 require_once 'simpletest/autorun.php';
 
-require_once dirname(__FILE__).'/../../src/repository/types/DateTimeType.class.php';
-require_once dirname(__FILE__).'/../../src/repository/types/DateType.class.php';
-require_once dirname(__FILE__).'/../../src/repository/types/TimeType.class.php';
+require_once dirname(__FILE__).'/../src/repository/types/DateTimeType.class.php';
+require_once dirname(__FILE__).'/../src/repository/types/DateType.class.php';
+require_once dirname(__FILE__).'/../src/repository/types/TimeType.class.php';
 
 class DateTimeTypeTest extends UnitTestCase {
 	
