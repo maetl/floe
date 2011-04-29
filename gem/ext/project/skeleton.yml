@@ -1,0 +1,18 @@
+---
+project:
+  app:
+    controllers:
+    models:
+    templates:
+  dev:
+    config:
+    fixtures:
+    tasks:
+    tests:
+  lib:
+  tmp:
+  web:
+    ui:
+      css:
+      img:
+      js:
