@@ -49,7 +49,7 @@ class Environment {
 	}
 	
 	public static function loadClass($class) {
-		if (array_key_exists($class, self::$manifest) && file_exists(self::$manifest)) {
+		if (array_key_exists($class, self::$manifest) && file_exists(self::$manifest[$class])) {
 			require_once self::$manifest[$class];
 		}
 	}
