@@ -1,3 +1,6 @@
+TODO
+====
+
 Current Priorities
 ------------------
 
@@ -26,3 +29,18 @@ Fixes
 - normalize line endings
 - phpcheckstyle on the whole project
  
+Packaging
+---------
+
+- Add XML rake task that builds a non-pear zip file download package + README/INSTALL instructions
+- setup ex.floesive.org pear channel
+- write fabric script for remote deployment to pear channel
+- consider doing the remote deployment via rake (if possible?)
+
+Documentation
+-------------
+
+- add notes on using the cli/app installer to the INSTALL file
+- add gh-pages branch for floesive.org website
+- track down old template files/css designs for floesive website
+- write documentation about new configuration
