@@ -8,9 +8,21 @@ Current Priorities
 - Setup project/file structure installer
 - Build default pear package with bin script tool
 - Proper support for dev/test/live environment switch
+- Configuration generator working with different formats
 - Sketch out package dependencies
-- Followup GitHub issues
+- Followup GitHub issues: add this todo list by May 5th
 - Milestone date for 0.7.0 release
 
+Fixes
+-----
 
+- remove non essential classes from framework
+- Sqlite database should be in temp directory for testing
+- Weird cursor color when shell colorize is turned on
+- HttpGateway should be HttpClient
+- services should move outside of repository
+- remove trailing ?> tags from PHP class files
+- normalize all file header comments
+- normalize line endings
+- phpcheckstyle on the whole project
  
