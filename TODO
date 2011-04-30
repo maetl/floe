@@ -1,0 +1,16 @@
+Current Priorities
+------------------
+
+- Get the framework running properly for existing upgrades
+- Get the tests running with no failures
+- Cleanup the configuration constant issue
+- Move to the new autoloader format
+- Setup project/file structure installer
+- Build default pear package with bin script tool
+- Proper support for dev/test/live environment switch
+- Sketch out package dependencies
+- Followup GitHub issues
+- Milestone date for 0.7.0 release
+
+
+ 
