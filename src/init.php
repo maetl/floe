@@ -19,6 +19,8 @@ require_once 'server/Membrane.class.php';
  */
 class FloeApp {
 	
+	const VERSION = '0.6.6';
+	
 	/**
 	 * Load the application config.
 	 *

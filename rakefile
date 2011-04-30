@@ -2,21 +2,16 @@ require 'rake'
 require 'rake/tasklib'
 require 'rake/packagetask'
 
-$version = File.read('src/VERSION').strip()
+$version = File.read('VERSION').strip()
 
-################################################################################################
-# Building Floe:
-#
-#  1. Set version number to the latest minor point release
-#     $> echo "0.6.4" > /src/VERSION
-#
-#  2. Generate documentation
-#     $> rake phpdoc; rake webdoc
-#
-#  3. Extract and package release, and upload to Google Code
-#     $> rake tag; rake release
-#
-#
+desc "Replaces the version string in files where necessary"
+task :stamp_version do
+  initfile = File.read('src/init.php')
+  initfile.gsub!(/VERSION = '.+'/, 'VERSION = \''+ $version +'\'')
+  File.open('src/init.php', 'w') do |file|
+    file.puts initfile
+  end
+end
 
 desc "Remove exported files"
 task :package_clean do
@@ -76,7 +71,6 @@ task :apidoc do
   sh "rm -r doc/api/*"
   sh "phpdoc -d floe -t doc/api -ti 'Floe #{$version}' -dn 'api' -o HTML:Smarty:floe -ed doc/examples"
 end
-
 
 desc "Generate static website for the project"
 task :webdoc do
