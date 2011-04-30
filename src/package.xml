@@ -28,10 +28,14 @@
  <license uri="http://www.opensource.org/licenses/mit-license.php">MIT</license>
  <notes>-</notes>
  <contents>
-   <dir name="/">
-     <file name="README" role="doc" />
-     <file name="LICENSE" role="doc" />
-     <file name="VERSION" role="doc" />
+   <dir name="/" baseinstalldir="floe">
+	<file name="init.php" role="php" />
+	<dir name="tools">
+		<file name="CommandIndex.class.php" role="php" />
+		<file name="ConsoleText.class.php" role="php" />
+		<file name="ShellScript.class.php" role="php" />
+		<file name="TaskManager.class.php" role="php" />
+	</dir>
    </dir>
  </contents>
  <dependencies>
