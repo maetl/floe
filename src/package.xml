@@ -3,50 +3,191 @@
     http://pear.php.net/dtd/tasks-1.0.xsd
     http://pear.php.net/dtd/package-2.0
     http://pear.php.net/dtd/package-2.0.xsd">
- <name>Floe</name>
- <channel>pear.php.net</channel>
- <summary>Graceful web framework.</summary>
- <description>
-   ...
- </description>
- <lead>
-  <name>Mark Rickerby</name>
-  <user>maetl</user>
-  <email>me@maetl.net</email>
-  <active>yes</active>
- </lead>
- <date>2011-02-27</date>
- <time>12:31:00</time>
- <version>
-  <release>0.6.5</release>
-  <api>0.6.5</api>
- </version>
- <stability>
-  <release>alpha</release>
-  <api>alpha</api>
- </stability>
- <license uri="http://www.opensource.org/licenses/mit-license.php">MIT</license>
- <notes>-</notes>
- <contents>
-   <dir name="/" baseinstalldir="floe">
-	<file name="init.php" role="php" />
-	<dir name="tools">
-		<file name="CommandIndex.class.php" role="php" />
-		<file name="ConsoleText.class.php" role="php" />
-		<file name="ShellScript.class.php" role="php" />
-		<file name="TaskManager.class.php" role="php" />
+	<name>floe</name>
+	<channel>pear.php.net</channel>
+	<summary>Graceful web framework.</summary>
+	<description>{{fillme}}</description>
+	<lead>
+		<name>Mark Rickerby</name>
+		<user>maetl</user>
+		<email>me@maetl.net</email>
+		<active>yes</active>
+	</lead>
+	<date>2011-02-27</date>
+	<time>12:31:00</time>
+	<version>
+		<release>0.6.5</release>
+		<api>0.6.5</api>
+	</version>
+	<stability>
+		<release>alpha</release>
+		<api>alpha</api>
+	</stability>
+	<license uri="http://www.opensource.org/licenses/mit-license.php">MIT</license>
+	<notes>{{fillme}}</notes>
+	<contents>
+	<dir name="/" baseinstalldir="floe">
+		<file name="init.php" role="php" />
+
+		<dir name="framework">
+			<file name="EventLog.class.php" role="php" />
+			<file name="Level.class.php" role="php" />
+			<file name="LogHandler.class.php" role="php" />
+			<file name="MissingDependency.class.php" role="php" />
+			<file name="Package.class.php" role="php" />
+			<file name="Timer.class.php" role="php" />
+			<file name="Using.class.php" role="php" />
+		</dir>
+
+		<dir name="language">
+			<file name="Convert.class.php" role="php" />
+			<file name="Inflections.class.php" role="php" />
+			<file name="LocaleFormat.class.php" role="php" />
+			<file name="Translation.class.php" role="php" />
+			<dir name="de">
+				<file name="de.class.php" role="php" />
+			</dir>
+			<dir name="en">
+				<file name="en.class.php" role="php" />
+				<file name="Inflect.class.php" role="php" />			
+			</dir>
+			<dir name="fr">
+				<file name="fr.class.php" role="php" />			
+			</dir>
+		</dir>
+		<dir name="repository">
+			<file name="DependentRelation.class.php" role="php" />
+			<file name="Finder.class.php" role="php" />
+			<file name="Query.class.php" role="php" />
+			<file name="Record.class.php" role="php" />
+			<file name="RecordNotFound.class.php" role="php" />
+			<file name="Storage.class.php" role="php" />
+			<file name="Type.class.php" role="php" />
+			<dir name="rules">
+				<file name="AlphanumericRule.class.php" role="php" />
+				<file name="EmailRule.class.php" role="php" />
+				<file name="MatchingRule.class.php" role="php" />
+				<file name="NumericRule.class.php" role="php" />
+				<file name="RequiredRule.class.php" role="php" />
+				<file name="SocialSecurityNumberRule.class.php" role="php" />
+				<file name="ValidationRule.class.php" role="php" />			
+			</dir>
+			<dir name="services">
+				<dir name="http">
+					<file name="HttpGateway.class.php" role="php" />
+				</dir>
+				<dir name="memcached">
+					<file name="MemcachedAdaptor.class.php" role="php" />
+					<file name="MemcachedConnection.class.php" role="php" />				
+				</dir>
+				<dir name="mysql">
+					<file name="MysqlAdaptor.class.php" role="php" />
+					<file name="MysqlConnection.class.php" role="php" />
+					<file name="MysqlIterator.class.php" role="php" />
+					<file name="MysqlQuery.class.php" role="php" />
+					<file name="MysqlResourceError.class.php" role="php" />				
+				</dir>
+				<dir name="redis">
+					<file name="RedisConnection.class.php" role="php" />				
+				</dir>
+				<dir name="sqlite">
+					<file name="SqliteAdaptor.class.php" role="php" />
+					<file name="SqliteConnection.class.php" role="php" />				
+				</dir>
+			</dir>
+			<dir name="store">
+				<file name="Connection.class.php" role="php" />
+				<file name="DataMapper.class.php" role="php" />
+				<file name="Gateway.class.php" role="php" />
+				<file name="LocalScope.class.php" role="php" />
+				<file name="Migrator.class.php" role="php" />
+				<file name="ObjectStore.class.php" role="php" />
+				<file name="RelationalStore.class.php" role="php" />
+				<file name="ResourceError.class.php" role="php" />
+				<file name="StorageIterator.class.php" role="php" />			
+			</dir>
+			<dir name="types">
+				<file name="DateTimeType.class.php" role="php" />
+				<file name="DateType.class.php" role="php" />
+				<file name="TimeType.class.php" role="php" />			
+			</dir>
+		</dir>	
+		<dir name="server">
+			<file name="HttpEnvelope.class.php" role="php" />
+			<file name="HttpError.class.php" role="php" />
+			<file name="Membrane.class.php" role="php" />
+			<file name="Receptor.class.php" role="php" />
+			<file name="Request.class.php" role="php" />
+			<file name="ResourceNotFound.class.php" role="php" />
+			<file name="Response.class.php" role="php" />
+			<file name="SessionState.class.php" role="php" />
+			<file name="Unauthorized.class.php" role="php" />
+			<file name="UnsupportedMethod.class.php" role="php" />
+			<file name="UriPath.class.php" role="php" />
+			<file name="UserAgent.class.php" role="php" />
+			<dir name="controllers" role="php">
+				<file name="BaseController.class.php" role="php" />
+				<file name="IdentityController.class.php" role="php" />
+			</dir>
+			<dir name="receptors">
+				<file name="IdentityDispatcher.class.php" role="php" />
+				<file name="ResourceDispatcher.class.php" role="php" />
+				<file name="RouteDispatcher.class.php" role="php" />
+			</dir>
+			<dir name="template">
+				<file name="PhpTemplate.class.php" role="php" />
+				<file name="SmartyTemplate.class.php" role="php" />
+				<file name="TemplateHandler.class.php" role="php" />
+				<file name="TwigTemplate.class.php" role="php" />
+			</dir>
+		</dir>
+		<dir name="tools">
+			<file name="CommandIndex.class.php" role="php" />
+			<file name="ConsoleText.class.php" role="php" />
+			<file name="ShellScript.class.php" role="php" />
+			<file name="TaskManager.class.php" role="php" />
+			<dir name="assets">
+				<file name="CONFIG" role="php" />
+				<file name="HEADER" role="php" />
+				<file name="HELP" role="php" />
+				<file name="INDEX" role="php" />
+				<file name="RUNNER" role="php" />			
+			</dir>
+			<dir name="tasks">
+				<dir name="build">
+					<file name="BuildFormTask.class.php" role="php" />
+				</dir>
+				<dir name="fixtures">
+					<file name="FixturesClearTask.class.php" role="php" />
+					<file name="FixturesDumpTask.class.php" role="php" />
+					<file name="FixturesLoadTask.class.php" role="php" />				
+				</dir>
+				<dir name="install">
+					<file name="config.task.php" role="php" />
+					<file name="configure.task.php" role="php" />
+				</dir>
+				<dir name="schema">
+					<file name="SchemaGenerateTask.class.php" role="php" />
+					<file name="SchemaMigrateTask.class.php" role="php" />				
+				</dir>
+				<dir name="test">
+					<file name="TestAllTask.class.php" role="php" />
+					<file name="TestGroupTask.class.php" role="php" />
+					<file name="TestListTask.class.php" role="php" />				
+				</dir>
+			</dir>
+		</dir>
 	</dir>
-   </dir>
- </contents>
- <dependencies>
-  <required>
-   <php>
-    <min>5.2.0</min>
-   </php>
-   <pearinstaller>
-    <min>1.4.0</min>
-   </pearinstaller>
-  </required>
- </dependencies>
- <phprelease />
+	</contents>
+	<dependencies>
+		<required>
+			<php>
+				<min>5.2.0</min>
+			</php>
+			<pearinstaller>
+				<min>1.4.0</min>
+			</pearinstaller>
+			</required>
+		</dependencies>
+	<phprelease />
 </package>
