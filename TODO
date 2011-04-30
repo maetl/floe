@@ -12,6 +12,7 @@ Current Priorities
 - Build default pear package with bin script tool
 - Proper support for dev/test/live environment switch
 - Configuration generator working with different formats
+- Handle manifest loading/caching with a sensible default
 - Sketch out package dependencies
 - Followup GitHub issues: add this todo list by May 5th
 - Milestone date for 0.7.0 release
@@ -28,10 +29,12 @@ Fixes
 - normalize all file header comments
 - normalize line endings
 - phpcheckstyle on the whole project
+- reorganize the exception classes
  
 Packaging
 ---------
 
+- Add time/date update to version stamping task
 - Add XML rake task that builds a non-pear zip file download package + README/INSTALL instructions
 - setup ex.floesive.org pear channel
 - write fabric script for remote deployment to pear channel
