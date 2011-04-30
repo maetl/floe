@@ -21,7 +21,7 @@ define("BR", "\n");
 class ConsoleText {
 
 	function printHeader() {
-		echo self::white('Floe. '.file_get_contents(dirname(__FILE__).'/../VERSION')).BR;
+		echo self::white('Floe. '. FloeApp::VERSION).BR;
 	}
 
 	function printBlocks() {
