@@ -34,9 +34,7 @@
 			<file name="Level.class.php" role="php" />
 			<file name="LogHandler.class.php" role="php" />
 			<file name="MissingDependency.class.php" role="php" />
-			<file name="Package.class.php" role="php" />
 			<file name="Timer.class.php" role="php" />
-			<file name="Using.class.php" role="php" />
 		</dir>
 
 		<dir name="language">
