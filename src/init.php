@@ -28,7 +28,7 @@ class Floe {
 	const TPL_DIR = 'templates';
 	
 	/**
-	 * Register the application environment.
+	 * Register the application environment and register the autoloader.
 	 *
 	 * @param string $path path to the application root.
 	 */
