@@ -6,7 +6,6 @@
  * See the LICENSE file distributed with this software for full copyright, disclaimer
  * of liability, and the specific limitations that govern the use of this software.
  *
- * $Id: Storage.class.php 421 2010-05-23 20:28:19Z coretxt $
  * @package repository
  */
 

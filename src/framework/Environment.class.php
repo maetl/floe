@@ -6,7 +6,7 @@
  * See the LICENSE file distributed with this software for full copyright, disclaimer
  * of liability, and the specific limitations that govern the use of this software.
  *
- * @package floe
+ * @package framework
  */
 
 class Environment {

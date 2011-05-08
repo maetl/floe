@@ -1,7 +1,12 @@
 <?php
 /**
- * $Id: RecordNotFound.class.php 311 2009-10-04 09:51:35Z coretxt $
- * @package repository
+* This file is part of Floe, a graceful web framework.
+* Copyright (C) 2005-2010 Mark Rickerby <http://maetl.net>
+*
+* See the LICENSE file distributed with this software for full copyright, disclaimer
+* of liability, and the specific limitations that govern the use of this software.
+*
+* @package repository
  */
 
 /**

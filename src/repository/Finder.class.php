@@ -6,7 +6,6 @@
 * See the LICENSE file distributed with this software for full copyright, disclaimer
 * of liability, and the specific limitations that govern the use of this software.
 *
-* $Id: Finder.class.php 419 2010-05-23 20:08:15Z coretxt $
 * @package repository
  */
 require_once 'Record.class.php';
