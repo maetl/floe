@@ -39,6 +39,3 @@ class SocialSecurityNumberRule extends ValidationRule {
 	}
 
 }
-
-
-?>

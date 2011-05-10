@@ -24,5 +24,3 @@ interface Type {
 	function __toString();
 	
 }
-
-?>

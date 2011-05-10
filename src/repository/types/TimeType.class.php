@@ -78,4 +78,3 @@ class TimeType implements Type {
 	
 }
 
-?>

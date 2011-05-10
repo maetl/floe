@@ -26,5 +26,3 @@ class RecordNotFound extends Exception {
 	}
 	
 }
-
-?>
