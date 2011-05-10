@@ -2,30 +2,20 @@ require 'rake'
 require 'rake/tasklib'
 require 'rake/packagetask'
 
-$version = File.read('src/VERSION').strip()
+$version = File.read('VERSION').strip()
 
-################################################################################################
-# Building Floe:
-#
-#  1. Set version number to the latest minor point release
-#     $> echo "0.6.4" > /src/VERSION
-#
-#  2. Generate documentation
-#     $> rake phpdoc; rake webdoc
-#
-#  3. Extract and package release, and upload to Google Code
-#     $> rake tag; rake release
-#
-#
+desc "Replaces the version string in files where necessary"
+task :stamp_version do
+  initfile = File.read('src/init.php')
+  initfile.gsub!(/VERSION = '.+'/, 'VERSION = \''+ $version +'\'')
+  File.open('src/init.php', 'w') do |file|
+    file.puts initfile
+  end
+end
 
 desc "Remove exported files"
 task :package_clean do
 	sh "rm -r floe"
-end
-
-desc "Export the latest revision of the framework from trunk"
-task :package_export => :package_clean do
-	sh "svn export http://floe.googlecode.com/svn/trunk/src floe"
 end
 
 desc "Build .tar and .zip packages of the latest version"
@@ -34,51 +24,9 @@ task :package => :package_export do
   sh "zip -r pkg/floe-#{$version}.zip floe"
 end
 
-desc "Upload version release to Google Code"
-task :release => :package do
-  cmd = "./release -s 'Alpha release' -p floe -l Featured,Type-Source pkg/floe-#{$version}"
-  sh cmd + ".tar.gz"
-  sh cmd + ".zip"
-  sh "rm -r floe"
-end
-
-desc "Tag current release version in Google Code SVN"
-task :tag do
-  sh "svn copy https://floe.googlecode.com/svn/trunk/src https://floe.googlecode.com/svn/tags/#{$version} -m 'tagging #{$version} release'"
-end
-
-# Build process
-# - run the mirror script, and it will continuously poll the repository and push updates to github
-# otherwise, the rake task can manually trigger a mirror here.
-
-desc "Mirror local git-svn link to source on GitHub"
-task :mirror do
-	sh "../mirrors/mirror.sh"
-end
-
-desc "Run all testcases for the Floe project"
 task :test do
-	sh "php dev/tests/floe.suite.php"
+  sh "php tests/floe.suite.php"
 end
 
-#desc "run tests by default"
+desc "run tests by default"
 task :default => :test
-
-# Documentation steps:
-# Documentation is currently a mess.
-
-#  Api documentation
-#  - Will build HTML templates from PHP documentor.
-#  But none of us are happy with this.
-
-desc "Unfortunately we can't run this with the -tb switch because phpDocumentor is screwed 6 ways from Sunday"
-task :apidoc do
-  sh "rm -r doc/api/*"
-  sh "phpdoc -d floe -t doc/api -ti 'Floe #{$version}' -dn 'api' -o HTML:Smarty:floe -ed doc/examples"
-end
-
-
-desc "Generate static website for the project"
-task :webdoc do
-  #sh ""
-end

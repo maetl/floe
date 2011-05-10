@@ -1,8 +1,8 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once dirname(__FILE__).'/../../src/server/Response.class.php';
+require_once dirname(__FILE__).'/../src/server/Response.class.php';
 
-if (!defined('TPL_DIR')) define('TPL_DIR', dirname(__FILE__).'/resources/templates/');
+if (!defined('FloeApp_Templates')) define('FloeApp_Templates', dirname(__FILE__).'/resources/templates/');
 
 class ResponseTest extends UnitTestCase {
 	

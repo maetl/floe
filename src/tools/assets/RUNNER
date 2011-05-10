@@ -1,0 +1,12 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Command runner for floe source project
+ */
+
+define('DEV_DIR', dirname(__FILE__).'/dev');
+
+require_once 'src/tools/ShellScript.class.php';
+
+ConsoleText::colorize();
+ShellScript::start();

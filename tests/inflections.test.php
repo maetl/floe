@@ -1,6 +1,6 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once dirname(__FILE__).'/../../src/language/en/Inflect.class.php';
+require_once dirname(__FILE__).'/../src/language/en/Inflect.class.php';
 
 class EnglishPluralsTest extends UnitTestCase {
 

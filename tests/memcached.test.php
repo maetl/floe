@@ -1,6 +1,6 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once dirname(__FILE__).'/../../src/repository/store/memcached/MemcachedAdaptor.class.php';
+require_once dirname(__FILE__).'/../src/repository/services/memcached/MemcachedAdaptor.class.php';
 
 /**
  * Cache Rules Everything Around Me (C.R.E.A.M), Get the Memory, Hit and Hit and Miss Yo...

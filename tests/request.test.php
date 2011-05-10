@@ -2,8 +2,8 @@
 require_once "simpletest/autorun.php";
 require_once "simpletest/mock_objects.php";
 
-require_once dirname(__FILE__).'/../../src/server/Request.class.php';
-require_once dirname(__FILE__).'/../../src/server/HttpEnvelope.class.php';
+require_once dirname(__FILE__).'/../src/server/Request.class.php';
+require_once dirname(__FILE__).'/../src/server/HttpEnvelope.class.php';
 
 Mock::generate("HttpEnvelope");
 Mock::generatePartial("HttpEnvelope", "StubHttpEnvelope", array('header'));

@@ -1,6 +1,6 @@
 <?php
 require_once 'simpletest/autorun.php';
-require_once dirname(__FILE__).'/../../src/repository/services/http/HttpGateway.class.php';
+require_once dirname(__FILE__).'/../src/repository/services/http/HttpGateway.class.php';
 
 
 class HttpServiceTest extends UnitTestCase {

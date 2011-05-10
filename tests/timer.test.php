@@ -1,6 +1,6 @@
 <?php
 require_once "simpletest/autorun.php";
-require_once dirname(__FILE__).'/../../src/framework/Timer.class.php';
+require_once dirname(__FILE__).'/../src/framework/Timer.class.php';
 
 class TimerTest extends UnitTestCase {
 	

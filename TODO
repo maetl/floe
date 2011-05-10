@@ -1,0 +1,49 @@
+TODO
+====
+
+Current Priorities
+------------------
+
+- Get the framework running properly for existing upgrades
+- Get the tests running with no failures
+- Cleanup the configuration constant issue
+- Move to the new autoloader format
+- Setup project/file structure installer
+- Build default pear package with bin script tool
+- Proper support for dev/test/live environment switch
+- Configuration generator working with different formats
+- Handle manifest loading/caching with a sensible default
+- Sketch out package dependencies
+- Followup GitHub issues: add this todo list by May 5th
+- Milestone date for 0.7.0 release
+
+Fixes
+-----
+
+- remove non essential classes from framework
+- Sqlite database should be in temp directory for testing
+- Weird cursor color when shell colorize is turned on
+- HttpGateway should be HttpClient
+- services should move outside of repository
+- remove trailing ?> tags from PHP class files
+- normalize all file header comments
+- normalize line endings
+- phpcheckstyle on the whole project
+- reorganize the exception classes
+ 
+Packaging
+---------
+
+- Add time/date update to version stamping task
+- Add XML rake task that builds a non-pear zip file download package + README/INSTALL instructions
+- setup ex.floesive.org pear channel
+- write fabric script for remote deployment to pear channel
+- consider doing the remote deployment via rake (if possible?)
+
+Documentation
+-------------
+
+- add notes on using the cli/app installer to the INSTALL file
+- add gh-pages branch for floesive.org website
+- track down old template files/css designs for floesive website
+- write documentation about new configuration
