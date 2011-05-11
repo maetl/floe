@@ -21,5 +21,3 @@ class de implements LocaleFormat {
 		return array('de', 'de_DE', 'de_DE.UTF8', 'de.UTF8');
 	}
 }
-
-?>

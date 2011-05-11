@@ -42,5 +42,3 @@ class Level {
 	const Critical = 4;
 
 }
-
-?>
