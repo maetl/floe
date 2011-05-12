@@ -14,7 +14,7 @@ Current Priorities
 - Configuration generator working with different formats
 - Handle manifest loading/caching with a sensible default
 - Sketch out package dependencies
-- Followup GitHub issues: add this todo list by May 5th
+- Followup GitHub issues: add this todo list
 - Milestone date for 0.7.0 release
 
 Fixes
@@ -25,12 +25,12 @@ Fixes
 - Weird cursor color when shell colorize is turned on
 - HttpGateway should be HttpClient
 - services should move outside of repository
-- remove trailing ?> tags from PHP class files (check this is complete)
 - replace http://maetl.net with http://floesive.org in file headers
 - normalize all file header comments
 - normalize line endings
 - phpcheckstyle on the whole project
 - reorganize the exception classes
+- remove old phpdoc hacks from @subpackage tags 
  
 Packaging
 ---------
