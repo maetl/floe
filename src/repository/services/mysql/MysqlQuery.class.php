@@ -72,5 +72,3 @@ class MysqlQuery extends Query {
 	}
 	
 }
-
-?>

@@ -364,5 +364,3 @@ class MysqlAdaptor {
 	 }
 	
 }
-
-?>

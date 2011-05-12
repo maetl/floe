@@ -53,5 +53,3 @@ $config = "<?php\n
 \n	define('MOMENT', date('Y-n-d H:i:s', mktime()));";
 
 file_put_contents('index.php', $index);
-
-?>

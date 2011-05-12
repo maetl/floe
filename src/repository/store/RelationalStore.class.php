@@ -94,5 +94,3 @@ interface RelationalStore {
 	 function dropColumn($table, $name);
 
 }
-
-?>

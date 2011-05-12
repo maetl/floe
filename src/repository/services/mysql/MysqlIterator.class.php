@@ -65,5 +65,3 @@ class MysqlIterator implements Iterator {
 	}
 	
 }
-
-?>

@@ -40,5 +40,3 @@ interface Connection {
 	public function execute($query);
 
 }
-
-?>

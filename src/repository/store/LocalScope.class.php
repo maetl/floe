@@ -88,5 +88,3 @@ class LocalScope {
 		return $properties;
 	}
 }
-
-?>
