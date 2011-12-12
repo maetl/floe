@@ -70,66 +70,31 @@ class EventLog {
 	}
 
 	/**
-	 * Sends a Debug level message to the log.
-	 * 
-	 * Debug messages are temporary dumps and tests
-	 * of code.
-	 */
-	static function debug($message) {
-		foreach(self::$handlers as $handler) {
-			$handler->emit(Level::Debug, $message);
-		}
-	}	
-
-	/**
-	 * Sends an Info level message to the log.
-	 * 
-	 * Info level messages relate to routine aspects of
-	 * a system, such as loading a resource or executing
-	 * a query.
+	 * Sends FYI level message to the log.
 	 */	
-	static function info($message) {
+	static function fyi($message) {
 		foreach(self::$handlers as $handler) {
 			$handler->emit(Level::Info, $message);
 		}
 	}
 
 	/**
-	 * Sends an Warning level message to the log.
-	 * 
-	 * The Warning level denotes non-harmful boundary conditions
-	 * or breakages of contract within the system. 
+	 * Sends WTF level message to the log.
 	 */		
-	static function warning($message) {
+	static function wtf($message) {
 		foreach(self::$handlers as $handler) {
 			$handler->emit(Level::Warning, $message);
 		}
 	}
 
 	/**
-	 * Sends an Error level message to the log.
-	 * 
-	 * The Error level represents a serious system error that
-	 * has caused a process to malfunction.
+	 * Sends OMG level message to the log.
 	 */
 	static function error($message) {
 		foreach(self::$handlers as $handler) {
 			$handler->emit(Level::Error, $message);
 		}
 	}
-	
-	/**
-	 * Sends an Critical level message to the log.
-	 * 
-	 * The Critical level is a serious infrastructure or
-	 * service shutdown that will disrupt a range of processes.
-	 */
-	static function critical($message) {
-		foreach(self::$handlers as $handler) {
-			$handler->emit(Level::Critical, $message);
-		}
-	}
-
 	
 }
 
